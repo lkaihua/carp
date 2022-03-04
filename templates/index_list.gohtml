@@ -1,0 +1,33 @@
+{{define "index_list"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/static/bootstrap.min.css?static=1">
+    <link rel="stylesheet" href="/static/style.css?static=1">
+</head>
+<body>
+    <h1>Folder list for {{ .Dir }}</h1>
+
+    <section id="TopBreadcrumb">
+        {{ with .Breadcrumb }}
+        <ul>
+            {{ range . }}
+            <li>
+                <a href="{{ .UrlString }}">{{ .Name }}</a>
+            </li>
+            {{ end }}
+        </ul>
+        {{ end }}
+    </section>
+{{end}}
+
+
+{{define "index_list_footer"}}
+    <footer>Made with Go</footer>
+</body>
+</html>
+{{end}}
