@@ -7,6 +7,7 @@
 [ ] To highlight video or image files in current folder
 
 ### Nice to have
+[ ] To have a config yaml.
 [ ] To highlight the previous folder after navigation to upper folder. 
 [ ] To generate thumbnails when entering a gallery folder
 
