@@ -1,90 +1,257 @@
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  /* [class*="col-"] {
+    width: 100%;
+  } */
+}
+
+section {
+  margin: 0 1rem;
+}
+.hidden {
+  display: none !important;
+}
+
+ul li .icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+ul li span.icon::before{
+  content: '';
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+ul li .icon.home::before{
+  background-image: url('/static/icons/house-door.svg?static=1');
+}
+ul li .icon.image::before{
+  background-image: url('/static/icons/file-earmark-image.svg?static=1');
+}
+ul li .icon.folder::before{
+  background-image: url('/static/icons/folder.svg?static=1');
+}
+ul li .icon.folder-open::before{
+  background-image: url('/static/icons/folder-open.svg?static=1');
+}
+ul li .icon.video::before{
+  background-image: url('/static/icons/file-earmark-play.svg?static=1');
+}
+ul li .icon.file::before{
+  background-image: url('/static/icons/file-earmark.svg?static=1');
+}
+ul li .icon.default::before{
+  background-image: url('/static/icons/file-earmark.svg?static=1');
+}
+ul li .icon.music::before{
+  background-image: url('/static/icons/file-earmark-music.svg?static=1');
+}
+
+/* .names {
+  display: flex;
+} */
+
+.firstName {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding-left: 5px;
+  margin-right: -3px;
+}
+
+.lastName {
+  padding-left: 5px;
+}
+
+
+
+#TopBreadcrumb{
+}
+
+#TopBreadcrumb ul li {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+#TopBreadcrumb ul.enable-shrink li {
+  display: inline-block;
+}
+#TopBreadcrumb ul.enable-shrink li a{
+  border-radius: 5px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+/* The last 2 breadcrumb levels should occupy one row */
+#TopBreadcrumb ul.enable-shrink li:nth-last-child(-n+2) {
+  display: list-item;
+  border-top: 1px solid rgba(0,0,0,.15);
+}
+#TopBreadcrumb ul.enable-shrink li:nth-last-child(-n+2) a{
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* The first link for root should be have the correct left padding distance */
+#TopBreadcrumb ul.enable-shrink li:nth-child(1) a{
+  /* border-radius: 0 5px 5px 0; */
+  padding-left: 16px;
+  padding-right: 6px;
+}
+
+/* The last 2 breadcrumb levels should have 3 separate */
+#TopBreadcrumb ul li:nth-last-child(-n+2) {
+  border-top: 1px solid rgba(0,0,0,.15);
+}
+#TopBreadcrumb ul li:first-child{
+  border-top: none !important;
+}
+
+#FolderContent ul li {
+  position: relative;
+  /* padding-left: 30px; */
+}
+#FolderContent ul li .item-icon-name { 
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-right: 50px; /* Leave trailing space for three-dot more button */
+}
+
+#FolderContent ul li .btn-more {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 40px;
+}
+#FolderContent ul li .btn-more::before{
+  content: '';
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-image: url('/static/icons/three-dots-vertical.svg?static=1');
+}
+
+
+#FolderContent #FolderEmptyPlaceholder {
+  display: block;
+  /* max-height: 80vw; */
+  height: 300px;
+  width: 300px;
+  max-width: 100%;
+
+
+  background-color: #fdfdfd;
+  background-image: radial-gradient(circle, #ddd 1px, rgba(0,0,0,0) 1px);
+  background-size: 1rem 1rem;
+}
+
+#FolderContent .btn-preview {
+  margin-left: 2rem;
+  cursor: zoom-in;
+  
+}
+
+#FolderContent .btn-preview img.image-preview{
+  max-width: 120px;
+  max-height: 80px;
+  border: 1px solid rgba(0,0,0,.15)
+
+}
+
 .b-example-divider {
-    height: 3rem;
-    background-color: rgba(0, 0, 0, .1);
-    border: solid rgba(0, 0, 0, .15);
-    border-width: 1px 0;
-    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-  }
-  
-  .bi {
-    vertical-align: -.125em;
-    fill: currentColor;
-  }
-  
-  .dropdown-menu {
-    position: static;
-    display: block;
-    width: auto;
-    margin: 4rem auto;
-  }
-  
-  .dropdown-menu-macos {
-    display: grid;
-    gap: .25rem;
-    padding: .5rem;
-    border-radius: .5rem;
-  }
-  .dropdown-menu-macos .dropdown-item {
-    border-radius: .25rem;
-  }
-  
-  .dropdown-item-danger {
-    color: var(--bs-red);
-  }
-  .dropdown-item-danger:hover,
-  .dropdown-item-danger:focus {
-    color: #fff;
-    background-color: var(--bs-red);
-  }
-  .dropdown-item-danger.active {
-    background-color: var(--bs-red);
-  }
-  
-  .btn-hover-light {
-    text-align: left;
-    background-color: var(--bs-white);
-    border-radius: .25rem;
-  }
-  .btn-hover-light:hover,
-  .btn-hover-light:focus {
-    color: var(--bs-blue);
-    background-color: var(--bs-light);
-  }
-  
-  .cal-month,
-  .cal-days,
-  .cal-weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    align-items: center;
-  }
-  .cal-month-name {
-    grid-column-start: 2;
-    grid-column-end: 7;
-    text-align: center;
-  }
-  .cal-weekday,
-  .cal-btn {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    height: 3rem;
-    padding: 0;
-  }
-  .cal-btn:not([disabled]) {
-    font-weight: 500;
-  }
-  .cal-btn:hover,
-  .cal-btn:focus {
-    background-color: rgba(0, 0, 0, .05);
-  }
-  .cal-btn[disabled] {
-    opacity: .5;
-  }
-  
-  .form-control-dark {
-    background-color: rgba(255, 255, 255, .05);
-    border-color: rgba(255, 255, 255, .15);
-  }
-  
+  height: 3rem;
+  background-color: rgba(0, 0, 0, .1);
+  border: solid rgba(0, 0, 0, .15);
+  border-width: 1px 0;
+  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+.bi {
+  vertical-align: -.125em;
+  fill: currentColor;
+}
+
+.dropdown-menu {
+  position: static;
+  display: block;
+  width: auto;
+  margin: 1rem auto;
+}
+
+.dropdown-menu-macos {
+  /* display: grid; */
+  /* gap: .25rem; */
+  padding: .5rem;
+  border-radius: .5rem;
+}
+.dropdown-menu-macos .dropdown-item {
+  border-radius: .25rem;
+}
+
+.dropdown-item-danger {
+  color: var(--bs-red);
+}
+.dropdown-item-danger:hover,
+.dropdown-item-danger:focus {
+  color: #fff;
+  background-color: var(--bs-red);
+}
+.dropdown-item-danger.active {
+  background-color: var(--bs-red);
+}
+
+.btn-hover-light {
+  text-align: left;
+  background-color: var(--bs-white);
+  border-radius: .25rem;
+}
+.btn-hover-light:hover,
+.btn-hover-light:focus {
+  color: var(--bs-blue);
+  background-color: var(--bs-light);
+}
+
+.cal-month,
+.cal-days,
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: center;
+}
+.cal-month-name {
+  grid-column-start: 2;
+  grid-column-end: 7;
+  text-align: center;
+}
+.cal-weekday,
+.cal-btn {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+  padding: 0;
+}
+.cal-btn:not([disabled]) {
+  font-weight: 500;
+}
+.cal-btn:hover,
+.cal-btn:focus {
+  background-color: rgba(0, 0, 0, .05);
+}
+.cal-btn[disabled] {
+  opacity: .5;
+}
+
+.form-control-dark {
+  background-color: rgba(255, 255, 255, .05);
+  border-color: rgba(255, 255, 255, .15);
+}

@@ -1,0 +1,57 @@
+{{define "folder_content_video"}}
+<section id="FolderContent">
+<h4>Video</h4>
+{{ with . }}
+<ul class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+    {{ range . }}
+        {{ if eq .EntryType "video" }}
+        <li>
+            <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
+                <span class="icon {{ .EntryType }}"></span>
+                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+            </a>
+            
+            <button type="button" class="btn btn-more"></button>
+            
+            {{ if eq .EntryType "image" }}
+            <button type="button" class="btn btn-preview">
+                <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
+            </button>
+            {{ end }}
+        </li>
+        {{ end }}
+    {{ else }}
+    {{/* TODO: The below logics to count videos are not correct */}}
+    {{/* <li> No videos here. </li>
+    <li> Do you want to add video file formats? </li> */}}
+    {{ end }}
+</ul>
+
+<ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+    {{ range . }}
+        {{ if ne .EntryType "video" }}
+        <li>
+            <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
+                <span class="icon {{ .EntryType }}"></span>
+                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+            </a>
+            
+            {{ if ne .EntryType "folder" }}
+            <button type="button" class="btn btn-more"></button>
+            {{ end }}
+            
+        </li>
+        {{ end }}
+    {{ end }}
+</ul>
+
+<script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
+{{ else }}
+<div id="FolderEmptyPlaceholder" class="mb-4 border rounded-3 d-flex align-items-center justify-content-center p-3 py-6">
+    <span>The folder is empty.</span>
+</div>
+{{ end }}
+</section>
+{{ end }}

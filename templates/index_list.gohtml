@@ -8,26 +8,50 @@
     <title>{{ .Title }}</title>
     <link rel="stylesheet" href="/static/bootstrap.min.css?static=1">
     <link rel="stylesheet" href="/static/style.css?static=1">
+    <script src="/static/scripts/lazyload.js?static=1"></script>
 </head>
 <body>
+    <section id="Header"></section>
     <h1>Folder list for {{ .Dir }}</h1>
+
+    <section id="CategorySelector">
+        <ul>
+            <li><a>All</a></li>
+            <li><a>Image</a></li>
+
+        </ul>
+    </section>
 
     <section id="TopBreadcrumb">
         {{ with .Breadcrumb }}
-        <ul>
-            {{ range . }}
+        
+        <ul class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow
+            {{- if gt (len .) 3 }} enable-shrink {{ else }} disable-shrink {{ end -}}        
+        '>
+            {{ range $index, $value := . }}
             <li>
-                <a href="{{ .UrlString }}">{{ .Name }}</a>
+                <a class="dropdown-item d-flex gap-2 align-items-center " href="{{ $value.UrlString }}">
+                    <span class='icon
+                        {{- if eq $index 0 }} home {{- else if $value.IsCurrent }} folder-open {{ else }} folder {{ end -}}
+                    '></span>
+                    <span class="name">{{ .Name }}</span>
+                </a>
             </li>
+
+            {{ else }}
+            <li> Ops! Nothing here. </li>
             {{ end }}
         </ul>
         {{ end }}
     </section>
+
+    
+
 {{end}}
 
 
 {{define "index_list_footer"}}
-    <footer>Made with Go</footer>
+    <section id="Footer">Made with Go.</footer>
 </body>
 </html>
 {{end}}

@@ -1,0 +1,13 @@
+video:
+  - mp4
+  - mov
+
+image:
+  - jpg
+  - jpeg
+  - png
+  - gif
+  - tiff
+  - webp
+  - pic
+  - raw

@@ -1,11 +1,3 @@
-/*
-Serve is a very simple static file server in go
-Usage:
-	-p="8100": port to serve on
-	-d=".":    the directory of static files to host
-Navigating to http://localhost:8100 will display the index.html or directory
-listing file.
-*/
 package main
 
 import (
@@ -17,19 +9,29 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/lkaihua/carp-web-gallery/lib/myhttp"
+	"github.com/lkaihua/carp-web-gallery/packages/myhttp"
+	"github.com/lkaihua/carp-web-gallery/packages/mypath"
 )
 
 var rootDir string
 var staticDir string = "./static/"
 
 func main() {
+	/*
+		Serve is a very simple static file server in go
+		Usage:
+			-p="8100": port to serve on
+			-d=".":    the directory of static files to host
+		Navigating to http://localhost:8100 will display the index.html or directory
+		listing file.
+	*/
+
 	port := flag.String("p", "8100", "port to serve on")
 	directory := flag.String("d", ".", "the directory of static file to host")
 	flag.Parse()
 
 	rootDir = *directory
-	http.HandleFunc("/", serveList)
+	http.HandleFunc("/", indexHandler)
 
 	log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
@@ -38,7 +40,7 @@ func main() {
 type data struct {
 	Title      string
 	Dir        string
-	Breadcrumb []string
+	Breadcrumb []mypath.BreadcrumbLevel
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +54,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) {
 	myhttp.ServeFile(w, r, staticDir+filePath)
 }
 
-func serveList(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(r.URL.RawQuery, "static=") {
 		serveStatic(w, r)
 		return
@@ -84,9 +86,10 @@ func serveList(w http.ResponseWriter, r *http.Request) {
 	*/
 
 	templates := []string{
-		filepath.Join("templates", "index_list.html"),
+		filepath.Join("templates", "index_list.gohtml"),
 	}
 	parsedTemplate, err := template.ParseFiles(templates...)
+
 	if err != nil {
 		// Log the detailed error
 		log.Println(err.Error())
@@ -95,15 +98,17 @@ func serveList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := r.URL.Path
-	breadcrumb := strings.Split(path, "/")
-	// save point: 2022-02-03
+	breadcrumb := mypath.Breadcrumb(r.URL.Path)
+	// save point: 2022-03-05
 	// next step: each breadcrumb should have one its Name and Path
 
-	d := &data{Title: "List example", Dir: "test dir", Breadcrumb: breadcrumb}
-
 	// Html Header
-	err = parsedTemplate.ExecuteTemplate(w, "index_list", d)
+	err = parsedTemplate.ExecuteTemplate(w, "index_list", data{
+		Title:      "Carp - " + r.URL.Path,
+		Dir:        rootDir,
+		Breadcrumb: breadcrumb,
+	})
+
 	if err != nil {
 		log.Println(err.Error())
 		http.Error(w, http.StatusText(500), 500)

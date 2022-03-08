@@ -1,8 +1,9 @@
-// Copyright 2009 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 // HTTP file system request handler
+// Customized from Go's offical `HTTP file system request handler`.
+//
+// 1. Fix dependent function and const
+// 2. New functions to output HTML with templates
+// 3. Go's offical HTTP file system request handler
 
 package myhttp
 
@@ -25,8 +26,8 @@ import (
 	"time"
 )
 
-// ============
-// fix private from http
+// ======= Section 1 ======
+// Fix dependent function and const
 
 func logf(r *http.Request, format string, args ...interface{}) {
 	fmt.Printf(format, args...)
@@ -34,13 +35,15 @@ func logf(r *http.Request, format string, args ...interface{}) {
 
 const sniffLen = 512
 
-// ============
-// new functions
+// ========================
+
+// ======= Section 2 ======
+// New functions to output HTML with templates
 
 type DirEntry struct {
-	Name      string
 	UrlString string
 	IsFolder  bool
+	Name      string // Full string of hanlder
 }
 
 var imageExtension = []string{"jpg", "jpeg", "png", "gif", "tiff", "webp", "pic", "raw"}
@@ -62,13 +65,15 @@ func IsVideo(name string) bool {
 	return isExtension(name, &videoExtension)
 }
 
-type entry struct {
+type DisplayEntry struct {
 	Name      string
 	EntryType string
 	UrlString string
+	FirstName string // Valid length for display
+	LastName  string // File extension string if it's a file, or "/" if it's a folder
 }
 
-func formatDirHtml(w http.ResponseWriter, dirData *[]DirEntry) {
+func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) {
 
 	htmlReplacer := strings.NewReplacer(
 		"&", "&amp;",
@@ -81,47 +86,90 @@ func formatDirHtml(w http.ResponseWriter, dirData *[]DirEntry) {
 	)
 
 	templates := []string{
-		filepath.Join("./templates", "section_list.html"),
+		filepath.Join("./templates", "folder_content_default.gohtml"),
+		filepath.Join("./templates", "folder_content_video.gohtml"),
+		filepath.Join("./templates", "folder_content_image.gohtml"),
 	}
 	parsedTemplate, _ := template.ParseFiles(templates...)
 
-	data := []entry{}
+	data := []DisplayEntry{}
 	for _, d := range *dirData {
 		name := htmlReplacer.Replace(d.Name)
 		urlString := d.UrlString
-		var entryType string
+		var firstName, lastName, entryType string
 
 		if d.IsFolder {
-			name += "/"
-			urlString += "/"
+			lastName = "/"
+			firstName = name
+
 			entryType = "folder"
+
+			urlString += "/"
 		} else {
-			entryType = "file"
+			// It's legal for a file without any extention
+			if lastDotIndex := strings.LastIndex(name, "."); lastDotIndex == -1 {
+				lastName = ""
+				firstName = name
+			} else {
+				lastName = name[lastDotIndex:]
+				firstName = name[:lastDotIndex]
+			}
+
+			entryType = "default"
 			if IsImage(name) {
-				// fmt.Fprintf(w, "<img src=\"%s\" width=\"50\" height=\"50\" />", urlString)
 				entryType = "image"
 			}
 			if IsVideo(name) {
 				entryType = "video"
 			}
-			urlString = urlString + "?file=" + entryType
+
+			urlString += "?file=" + entryType
 		}
 
-		data = append(data, entry{
+		data = append(data, DisplayEntry{
 			Name:      name,
+			FirstName: firstName,
+			LastName:  lastName,
 			EntryType: entryType,
 			UrlString: urlString,
 		})
-		// fmt.Fprintf(w, "<li><a href=\"%s\">%s</a></li>\n", url.String(), htmlReplacer.Replace(name))
+
 	}
 
-	err := parsedTemplate.Execute(w, data)
+	template := "folder_content_"
+	category := "default"
+
+	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
+		if q, ok := queries["entryType"]; ok {
+			switch q[0] {
+			case "video":
+			case "image":
+				category = q[0]
+			default:
+				category = "default"
+			}
+		}
+	}
+	template += category
+	fmt.Println("[formatDirHtml] template is", template)
+
+	err := parsedTemplate.ExecuteTemplate(w, template, data)
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 	}
 }
 
-// ============
+// ========================
+
+// ======= Section 3 ======
+// Go's offical HTTP file system request handler
+// ========================
+
+// Copyright 2009 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+// HTTP file system request handler
 
 // A Dir implements FileSystem using the native file system restricted to a
 // specific directory tree.
@@ -228,7 +276,7 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 		})
 	}
 
-	formatDirHtml(w, &dirData)
+	formatDirHtml(w, r, &dirData)
 
 	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	/*
