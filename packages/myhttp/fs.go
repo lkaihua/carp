@@ -136,24 +136,27 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) 
 
 	}
 
-	template := "folder_content_"
-	category := "default"
+	template_prefix := "folder_content_"
+	template_name := "default"
 
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if q, ok := queries["entryType"]; ok {
 			switch q[0] {
 			case "video":
+				template_name = q[0]
 			case "image":
-				category = q[0]
+				template_name = q[0]
+			case "all":
+				template_name = "default"
 			default:
-				category = "default"
+				template_name = "default"
 			}
 		}
 	}
-	template += category
-	fmt.Println("[formatDirHtml] template is", template)
+	template_name = template_prefix + template_name
+	fmt.Println("[formatDirHtml] template is", template_name)
 
-	err := parsedTemplate.ExecuteTemplate(w, template, data)
+	err := parsedTemplate.ExecuteTemplate(w, template_name, data)
 	if err != nil {
 		http.Error(w, http.StatusText(500), 500)
 	}
