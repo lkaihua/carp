@@ -74,42 +74,38 @@ ul li .icon.music::before{
 }
 
 #TopBreadcrumb ul li {
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-
-#TopBreadcrumb ul.enable-shrink li {
+  /* border-radius: 0.5rem; */
+  border-radius: 0;
   display: inline-block;
-}
-#TopBreadcrumb ul.enable-shrink li a{
-  border-radius: 5px;
-  padding-left: 6px;
-  padding-right: 6px;
-}
-/* The last 2 breadcrumb levels should occupy one row */
-#TopBreadcrumb ul.enable-shrink li:nth-last-child(-n+2) {
-  display: list-item;
-  border-top: 1px solid rgba(0,0,0,.15);
-}
-#TopBreadcrumb ul.enable-shrink li:nth-last-child(-n+2) a{
-  padding-left: 16px;
-  padding-right: 16px;
+  background-color: var(--bs-gray-200);
+  border-top: 2px solid var(--bs-gray-200);
+  border-bottom: 2px solid var(--bs-gray-200);
 }
 
-/* The first link for root should be have the correct left padding distance */
-#TopBreadcrumb ul.enable-shrink li:nth-child(1) a{
-  /* border-radius: 0 5px 5px 0; */
-  padding-left: 16px;
-  padding-right: 6px;
+#TopBreadcrumb ul li:last-child {
+  border-bottom: 2px solid var(--bs-primary);
+  /* border inside edge hack for 'border: 2px solid var(--bs-primary);' */
+  /* box-shadow:inset 0px 0px 0px 2px var(--bs-primary);  */
+
 }
 
-/* The last 2 breadcrumb levels should have 3 separate */
-#TopBreadcrumb ul li:nth-last-child(-n+2) {
-  border-top: 1px solid rgba(0,0,0,.15);
+#TopBreadcrumb ul li:first-child {
 }
-#TopBreadcrumb ul li:first-child{
-  border-top: none !important;
+
+
+#TopBreadcrumb ul li a{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
+#TopBreadcrumb ul li:first-child a{
+  padding-left: 1rem;
+}
+#TopBreadcrumb ul li:last-child a{
+  /* padding-left: 1rem;
+  padding-right: 1rem; */
+}
+
+
 
 #FolderContent ul li {
   position: relative;
@@ -160,8 +156,9 @@ ul li .icon.music::before{
 }
 
 #FolderContent .btn-preview img.image-preview{
-  max-width: 120px;
+  max-width: 50vw;
   max-height: 80px;
+  min-height: 60px;
   border: 1px solid rgba(0,0,0,.15)
 
 }

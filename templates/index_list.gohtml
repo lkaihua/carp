@@ -12,32 +12,26 @@
 </head>
 <body>
     <section id="Header"></section>
-    <h1>Folder list for {{ .Dir }}</h1>
 
-    <section id="CategorySelector">
-        <ul>
-            <li><a>All</a></li>
-            <li><a>Image</a></li>
-
-        </ul>
+    <section id="HeaderInfo">
+        <h4> This is only visible to admin and will NOT be shown for other remote clients. </h4>
+        <div> Only visible in domain localhost and 127.0.0.1 for administration use. </div>
+        <div>Root folder path: {{ .Dir }}</div>
     </section>
-
+    
     <section id="TopBreadcrumb">
         {{ with .Breadcrumb }}
         
-        <ul class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow
-            {{- if gt (len .) 3 }} enable-shrink {{ else }} disable-shrink {{ end -}}        
-        '>
+        <ul class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow'>
             {{ range $index, $value := . }}
             <li>
-                <a class="dropdown-item d-flex gap-2 align-items-center " href="{{ $value.UrlString }}">
+                <a class="dropdown-item d-flex gap-2 align-items-center btn" href="{{ $value.UrlString }}">
                     <span class='icon
                         {{- if eq $index 0 }} home {{- else if $value.IsCurrent }} folder-open {{ else }} folder {{ end -}}
                     '></span>
                     <span class="name">{{ .Name }}</span>
                 </a>
             </li>
-
             {{ else }}
             <li> Ops! Nothing here. </li>
             {{ end }}
@@ -45,7 +39,16 @@
         {{ end }}
     </section>
 
-    
+    <section id="CategorySelector">
+        <ul>
+            <li><a href="?entryType=all">All</a></li>
+            <li><a href="?entryType=image">Image</a></li>
+            <li><a href="?entryType=video">Video</a></li>
+            <li><a href="?entryType=image&video">Image & Video</a></li>
+            <li><a href="?entryType=audio">Music</a></li>
+        </ul>
+    </section>
+
 
 {{end}}
 
