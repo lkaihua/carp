@@ -101,9 +101,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) 
 		if d.IsFolder {
 			lastName = "/"
 			firstName = name
-
 			entryType = "folder"
-
 			urlString += "/"
 		} else {
 			// It's legal for a file without any extention
@@ -111,7 +109,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) 
 				lastName = ""
 				firstName = name
 			} else {
-				lastName = name[lastDotIndex:]
+				lastName = name[lastDotIndex+1:]
 				firstName = name[:lastDotIndex]
 			}
 

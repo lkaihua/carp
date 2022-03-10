@@ -13,6 +13,17 @@ import (
 	"github.com/lkaihua/carp-web-gallery/packages/mypath"
 )
 
+type category struct {
+	EntryType   string
+	DisplayText string
+}
+type data struct {
+	Title      string
+	Dir        string
+	Breadcrumb []mypath.BreadcrumbLevel
+	Categories []category
+}
+
 var rootDir string
 var staticDir string = "./static/"
 
@@ -35,12 +46,6 @@ func main() {
 
 	log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
-}
-
-type data struct {
-	Title      string
-	Dir        string
-	Breadcrumb []mypath.BreadcrumbLevel
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request) {
@@ -102,11 +107,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// save point: 2022-03-05
 	// next step: each breadcrumb should have one its Name and Path
 
+	categories := []category{
+		{EntryType: "all", DisplayText: "All"},
+		{EntryType: "image+video", DisplayText: "Image & Video"},
+		{EntryType: "audio", DisplayText: "Music"},
+	}
 	// Html Header
 	err = parsedTemplate.ExecuteTemplate(w, "index_list", data{
 		Title:      "Carp - " + r.URL.Path,
 		Dir:        rootDir,
 		Breadcrumb: breadcrumb,
+		Categories: categories,
 	})
 
 	if err != nil {

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/bootstrap.min.css?static=1">
     <link rel="stylesheet" href="/static/style.css?static=1">
     <script src="/static/scripts/lazyload.js?static=1"></script>
+    <script src="/static/scripts/index_list.js?static=1"></script>
 </head>
 <body>
     <section id="Header"></section>
@@ -16,12 +17,11 @@
     <section id="HeaderInfo">
         <h4> This is only visible to admin and will NOT be shown for other remote clients. </h4>
         <div> Only visible in domain localhost and 127.0.0.1 for administration use. </div>
-        <div>Root folder path: {{ .Dir }}</div>
+        <p>Root folder path: {{ .Dir }}</p>
     </section>
     
     <section id="TopBreadcrumb">
         {{ with .Breadcrumb }}
-        
         <ul class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow'>
             {{ range $index, $value := . }}
             <li>
@@ -36,17 +36,42 @@
             <li> Ops! Nothing here. </li>
             {{ end }}
         </ul>
+        <script> window.addTopBreadcrumbTralingItems && addTopBreadcrumbTralingItems(); </script>
         {{ end }}
     </section>
+    
 
     <section id="CategorySelector">
-        <ul>
-            <li><a href="?entryType=all">All</a></li>
-            <li><a href="?entryType=image">Image</a></li>
-            <li><a href="?entryType=video">Video</a></li>
-            <li><a href="?entryType=image&video">Image & Video</a></li>
-            <li><a href="?entryType=audio">Music</a></li>
+        {{ with .Categories }}      
+        <ul class="row row-cols-3 row-cols-sm-3 row-cols-lg-6 row-cols-xl-8 list-unstyled list">
+            {{ range . }}
+            {{/* <li class="col mb-4"> */}}
+            <li class="col" >
+                <a class="d-block text-dark text-decoration-none" href="?entryType={{- .EntryType -}}">
+                    <div class="p-3 mb-2 rounded-pill text-center rounded category-btn-icon">
+                        {{/* <svg class="bi" width="1em" height="1em" fill="currentColor">
+                        <use xlink:href="bootstrap-icons.svg#123"></use>
+                        </svg> */}}
+                        {{ if eq .EntryType "all"}}
+                            <img src='/static/icons/files.svg?static=1' />
+                        {{ else if eq .EntryType "image&video" }}
+                            <span id="ImageAndVideoIcon">
+                                <img src='/static/icons/file-image.svg?static=1' />
+                                <img src='/static/icons/file-play.svg?static=1' class="video-icon "/>
+                            </span>
+                            
+                        {{ else if eq .EntryType "audio" }}
+                            <img src='/static/icons/file-music.svg?static=1' />
+                        {{ end }}
+                    </div>
+                    <small class="name text-decoration-none text-center pt-0 text-max-lines-2">
+                        {{- .DisplayText -}}
+                    </small>
+                </a>
+            </li>
+            {{ end }}
         </ul>
+        {{ end }}
     </section>
 
 

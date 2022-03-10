@@ -1,10 +1,10 @@
-{{define "folder_content_video"}}
+{{define "folder_content_image_and_video"}}
 <section id="FolderContent">
-<h4>Video</h4>
+<h4>Image</h4>
 {{ with . }}
 <ul class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
-        {{ if eq .EntryType "video" }}
+        {{ if eq .EntryType "image" }}
         <li>
             <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
                 <span class="icon {{ .EntryType }}"></span>
@@ -14,28 +14,26 @@
             
             <button type="button" class="btn btn-more"></button>
             
-            {{ if eq .EntryType "image" }}
             <button type="button" class="btn btn-preview">
                 <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
             </button>
-            {{ end }}
         </li>
         {{ end }}
     {{ else }}
     {{/* TODO: The below logics to count videos are not correct */}}
-    <li> No videos here. </li>
-    <li> Do you want to add video file formats? </li>
+    {{/* <li> No videos here. </li>
+    <li> Do you want to add video file formats? </li> */}}
     {{ end }}
 </ul>
 
 {{/* <ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
-        {{ if ne .EntryType "video" }}
+        {{ if ne .EntryType "image" }}
         <li>
             <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
                 <span class="icon {{ .EntryType }}"></span>
                 <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
             </a>
             
             {{ if ne .EntryType "folder" }}

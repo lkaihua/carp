@@ -4,12 +4,18 @@
 [x] To have a breadcrumb navigation bar
 [x] To abbreviate very long folder/file name smartly
 [x] To dynamically load images to preview 
-[ ] To highlight video or image files in current folder
+[ ] To highlight certain category of files in current folder
 
 ### Nice to have
 [ ] To have a config yaml.
 [ ] To highlight the previous folder after navigation to upper folder. 
-[ ] To generate thumbnails when entering a gallery folder
+[ ] To generate thumbnails when entering a gallery folder 
+[ ] A web-based local admin panel and a remote rich media browser.
+[ ] Simple password protection.
+[ ] Prompt to get Admin's confirmation to generate thumbnails of images/vidoes. This sounds unsafe, write operation from html access. 
+    1. To resize image to a thumbnail
+    2. https://github.com/xfrr/goffmpeg to extract first frame of video
+    3. Show a progress of above progress
 
 ### Work log
 
@@ -32,14 +38,10 @@
 - Add a url query `entryType` to highlight file types in current folder.
 [ ] Plans to keep query between page jumps.
 
-### features
+#### 2022-03-09
 
-[ ] A web-based local admin panel and a remote rich media browser.
+- Find an elegant approach to make sure Breadcrumb folder pills have a stable width between page navigations,
+  and also the trailing item in each row will fulfill the spaces until the row end. 
+- Add the filter bar, now there are "All", "Image & Video", "Music" three filters for users to click. 
 
-[ ] Simple password protection.
-
-[ ] Prompt to get user's confirmation to generate thumbnails of images/vidoes
-1. To resize image to a thumbnail
-1. https://github.com/xfrr/goffmpeg to extract first frame of video
-
-[ ] Show a progress of above progress
+![docs/images/2020-03-09-1.png](docs/images/2020-03-09-1.png)

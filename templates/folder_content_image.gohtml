@@ -26,14 +26,14 @@
     {{ end }}
 </ul>
 
-<ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+{{/* <ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
         {{ if ne .EntryType "image" }}
         <li>
             <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
                 <span class="icon {{ .EntryType }}"></span>
                 <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
             </a>
             
             {{ if ne .EntryType "folder" }}
@@ -43,7 +43,7 @@
         </li>
         {{ end }}
     {{ end }}
-</ul>
+</ul> */}}
 
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
 {{ else }}

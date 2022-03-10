@@ -4,7 +4,7 @@
 <ul class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
     <li>
-        <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
+        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
             <span class="icon {{ .EntryType }}"></span>
             <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
             <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
@@ -15,7 +15,7 @@
         {{ end }}
         
         {{ if eq .EntryType "image" }}
-        <button type="button" class="btn btn-preview">
+        <button type="button" class="btn btn-preview border rounded">
             <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
         </button>
         {{ end }}
