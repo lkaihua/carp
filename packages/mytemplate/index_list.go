@@ -1,0 +1,5 @@
+package mytemplate
+
+func IndexList() {
+
+}

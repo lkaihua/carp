@@ -1,7 +1,4 @@
-video:
-  - mp4
-  - mov
-
+# Extensions
 image:
   - jpg
   - jpeg
@@ -11,3 +8,62 @@ image:
   - webp
   - pic
   - raw
+
+video:
+  - mp4
+  - mov
+
+audio:
+  - mp3
+
+
+# Thumbnail image is used for image and video preview, and as the music cover photo.
+#
+# + Camera/
+#   +--- IMG_0001.jpg           # Original photo.
+#   +                           # Return first file found from list as the thumbnail
+#   +--- IMG_0001.jpg_th.jpg    
+#   +--- IMG_0001.jpg_th_1.jpg
+#   +--- IMG_0001.jpg_th_2.jpg
+#   +--- ...
+#   +--- IMG_0001_th.jpg        
+#   +--- IMG_0001_th_1.jpg      
+#   +--- IMG_0001_th_2.jpg
+#   +--- ...
+#
+#
+# + Video/
+#   +--- VIDEO_0001.mp4           # Original video.
+#   +                             # Return first file found from list as the thumbnail
+#   +--- VIDEO_0001.mp4_th.jpg    
+#   +--- VIDEO_0001.mp4_th_1.jpg
+#   +--- VIDEO_0001.mp4_th_2.jpg
+#   +--- ...
+#   +--- VIDEO_0001_th.jpg        
+#   +--- VIDEO_0001_th_1.jpg      
+#   +--- VIDEO_0001_th_2.jpg
+#   +--- ...
+#
+#
+# + Music/
+#   +--- Queen - Bohemian Rhapsody.mp3          # Original music. 
+#   +                                           # Return first file found from list as the cover
+#   +--- Queen - Bohemian Rhapsody.mp3_th.jpg    
+#   +--- Queen - Bohemian Rhapsody.mp3_th_1.jpg    
+#   +--- Queen - Bohemian Rhapsody.mp3_th_2.jpg    
+#   +--- ...
+#   +--- Queen - Bohemian Rhapsody_th.jpg        
+#   +--- Queen - Bohemian Rhapsody_th_1.jpg     
+#   +--- Queen - Bohemian Rhapsody_th_2.jpg     
+#   +--- ...
+#   +--- cover.jpg
+
+thumbnail:
+  read_rule: 
+    - $fullname$_th.jpg
+    - $fullname$_th_$version$.jpg
+    - $name$_th.jpg
+    - $name$_th_$version$.jpg
+  write_rule: 
+    default: - $fullname$_th.jpg
+    version: - $fullname$_th_$version$.jpg

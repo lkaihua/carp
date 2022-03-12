@@ -1,32 +1,28 @@
 {{define "folder_content_image_and_video"}}
 <section id="FolderContent">
-<h4>Image</h4>
+<h4>Image & Video</h4>
 {{ with . }}
-<ul class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+<div id="ImageVideoContainer">
+<div class="row row-cols-3 row-cols-lg-5 g-2 g-lg-3">
     {{ range . }}
         {{ if eq .EntryType "image" }}
-        <li>
-            <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
-                <span class="icon {{ .EntryType }}"></span>
-                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
-            </a>
-            
-            <button type="button" class="btn btn-more"></button>
-            
-            <button type="button" class="btn btn-preview">
+        <div class="col">
+        <div class="p-3 border bg-light">
+            <a href="{{ .UrlString }}">
                 <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
-            </button>
-        </li>
+            </a>
+        </div>
+        </div>
         {{ end }}
     {{ else }}
     {{/* TODO: The below logics to count videos are not correct */}}
     {{/* <li> No videos here. </li>
     <li> Do you want to add video file formats? </li> */}}
     {{ end }}
-</ul>
+</div>
+</div>
 
-{{/* <ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+<ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
         {{ if ne .EntryType "image" }}
         <li>
@@ -39,11 +35,10 @@
             {{ if ne .EntryType "folder" }}
             <button type="button" class="btn btn-more"></button>
             {{ end }}
-            
         </li>
         {{ end }}
     {{ end }}
-</ul> */}}
+</ul>
 
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
 {{ else }}

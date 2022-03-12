@@ -6,22 +6,25 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"net/url"
 	"path/filepath"
 	"strings"
 
 	"github.com/lkaihua/carp-web-gallery/packages/myhttp"
 	"github.com/lkaihua/carp-web-gallery/packages/mypath"
+	"github.com/lkaihua/carp-web-gallery/packages/mytemplate"
 )
 
-type category struct {
-	EntryType   string
+type Category struct {
+	Value       string
 	DisplayText string
 }
-type data struct {
-	Title      string
-	Dir        string
-	Breadcrumb []mypath.BreadcrumbLevel
-	Categories []category
+type IndexView struct {
+	Title          string
+	Dir            string
+	Breadcrumb     []mypath.BreadcrumbLevel
+	Categories     []Category
+	ActiveCategory string
 }
 
 var rootDir string
@@ -60,14 +63,20 @@ func serveStatic(w http.ResponseWriter, r *http.Request) {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if strings.Contains(r.URL.RawQuery, "static=") {
-		serveStatic(w, r)
-		return
-	}
+	activeCategory := "all"
 
-	if strings.Contains(r.URL.RawQuery, "file=") {
-		serveFile(w, r)
-		return
+	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
+		if _, ok := queries["static"]; ok {
+			serveStatic(w, r)
+			return
+		}
+		if _, ok := queries["file"]; ok {
+			serveFile(w, r)
+			return
+		}
+		if value, ok := queries["category"]; ok {
+			activeCategory = value[0]
+		}
 	}
 
 	/*
@@ -107,18 +116,22 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// save point: 2022-03-05
 	// next step: each breadcrumb should have one its Name and Path
 
-	categories := []category{
-		{EntryType: "all", DisplayText: "All"},
-		{EntryType: "image+video", DisplayText: "Image & Video"},
-		{EntryType: "audio", DisplayText: "Music"},
+	categories := []Category{
+		{Value: "all", DisplayText: "All"},
+		{Value: "image-video", DisplayText: "Image & Video"},
+		{Value: "music", DisplayText: "Music"},
+	}
+
+	d := IndexView{
+		Title:          "Carp - " + r.URL.Path,
+		Dir:            rootDir,
+		Breadcrumb:     breadcrumb,
+		Categories:     categories,
+		ActiveCategory: activeCategory,
 	}
 	// Html Header
-	err = parsedTemplate.ExecuteTemplate(w, "index_list", data{
-		Title:      "Carp - " + r.URL.Path,
-		Dir:        rootDir,
-		Breadcrumb: breadcrumb,
-		Categories: categories,
-	})
+	mytemplate.IndexList()
+	err = parsedTemplate.ExecuteTemplate(w, "index_list", &d)
 
 	if err != nil {
 		log.Println(err.Error())

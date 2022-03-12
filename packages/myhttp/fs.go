@@ -22,8 +22,10 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"text/template"
 	"time"
+
+	"github.com/lkaihua/carp-web-gallery/packages/mytemplate"
+	"github.com/lkaihua/carp-web-gallery/packages/utils"
 )
 
 // ======= Section 1 ======
@@ -46,34 +48,8 @@ type DirEntry struct {
 	Name      string // Full string of hanlder
 }
 
-var imageExtension = []string{"jpg", "jpeg", "png", "gif", "tiff", "webp", "pic", "raw"}
-var videoExtension = []string{"mp4", "mov"}
-
-func isExtension(name string, exts *[]string) bool {
-	for _, ext := range *exts {
-		if strings.HasSuffix(name, "."+ext) {
-			return true
-		}
-	}
-	return false
-}
-
-func IsImage(name string) bool {
-	return isExtension(name, &imageExtension)
-}
-func IsVideo(name string) bool {
-	return isExtension(name, &videoExtension)
-}
-
-type DisplayEntry struct {
-	Name      string
-	EntryType string
-	UrlString string
-	FirstName string // Valid length for display
-	LastName  string // File extension string if it's a file, or "/" if it's a folder
-}
-
-func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) {
+func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
+	data := []mytemplate.DisplayEntry{}
 
 	htmlReplacer := strings.NewReplacer(
 		"&", "&amp;",
@@ -85,15 +61,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) 
 		"'", "&#39;",
 	)
 
-	templates := []string{
-		filepath.Join("./templates", "folder_content_default.gohtml"),
-		filepath.Join("./templates", "folder_content_video.gohtml"),
-		filepath.Join("./templates", "folder_content_image.gohtml"),
-	}
-	parsedTemplate, _ := template.ParseFiles(templates...)
-
-	data := []DisplayEntry{}
-	for _, d := range *dirData {
+	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
 		urlString := d.UrlString
 		var firstName, lastName, entryType string
@@ -114,17 +82,17 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) 
 			}
 
 			entryType = "default"
-			if IsImage(name) {
+			if utils.IsImage(name) {
 				entryType = "image"
 			}
-			if IsVideo(name) {
+			if utils.IsVideo(name) {
 				entryType = "video"
 			}
 
 			urlString += "?file=" + entryType
 		}
 
-		data = append(data, DisplayEntry{
+		data = append(data, mytemplate.DisplayEntry{
 			Name:      name,
 			FirstName: firstName,
 			LastName:  lastName,
@@ -134,30 +102,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData *[]DirEntry) 
 
 	}
 
-	template_prefix := "folder_content_"
-	template_name := "default"
-
-	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
-		if q, ok := queries["entryType"]; ok {
-			switch q[0] {
-			case "video":
-				template_name = q[0]
-			case "image":
-				template_name = q[0]
-			case "all":
-				template_name = "default"
-			default:
-				template_name = "default"
-			}
-		}
-	}
-	template_name = template_prefix + template_name
-	fmt.Println("[formatDirHtml] template is", template_name)
-
-	err := parsedTemplate.ExecuteTemplate(w, template_name, data)
-	if err != nil {
-		http.Error(w, http.StatusText(500), 500)
-	}
+	mytemplate.FolderContent(w, r, &data)
 }
 
 // ========================
@@ -275,9 +220,11 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 			UrlString: urlString,
 			IsFolder:  d.IsDir(),
 		})
+
 	}
 
-	formatDirHtml(w, r, &dirData)
+	// fmt.Printf("%d, %d, %v", len(dirData), cap(dirData), dirData)
+	formatDirHtml(w, r, dirData)
 
 	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	/*
