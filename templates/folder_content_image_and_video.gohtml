@@ -7,21 +7,37 @@
     {{ range . }}
         {{ if eq .EntryType "image" }}
         <div class="col">
-        <div class="p-3 border bg-light">
-            <a href="{{ .UrlString }}">
-                <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
-            </a>
+            <div class="container">
+            <div class="p-1 border bg-light">
+                <a href="{{ .UrlString }}">
+                    <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
+                </a>
+            </div>
+            </div>
         </div>
+        {{ else if eq .EntryType "video" }}
+        <div class="col">
+            <div class="container">
+            <div class="p-1 border bg-light">
+                <a href="{{ .UrlString }}">
+                    <span class="icon {{ .EntryType }}"></span>
+                    <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                    <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                </a>
+            </div>
+            </div>
         </div>
         {{ end }}
     {{ else }}
     {{/* TODO: The below logics to count videos are not correct */}}
-    {{/* <li> No videos here. </li>
-    <li> Do you want to add video file formats? </li> */}}
+    <li> No videos here. </li>
+    <li> Do you want to add video file formats? </li>
     {{ end }}
 </div>
 </div>
 
+<hr/>
+<h4>Other Files</h4>
 <ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
         {{ if ne .EntryType "image" }}
@@ -43,7 +59,7 @@
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
 {{ else }}
 <div id="FolderEmptyPlaceholder" class="mb-4 border rounded-3 d-flex align-items-center justify-content-center p-3 py-6">
-    <span>The folder is empty.</span>
+    <h4>The folder is empty.</h4>
 </div>
 {{ end }}
 </section>

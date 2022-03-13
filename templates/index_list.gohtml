@@ -11,7 +11,7 @@
     <script src="/static/scripts/lazyload.js?static=1"></script>
     <script src="/static/scripts/index_list.js?static=1"></script>
 </head>
-<body>
+<body class="event-dom-content-not-loaded event-body-not-loaded">
     <section id="Header"></section>
 
     <section id="HeaderInfo">
@@ -46,17 +46,13 @@
     <section id="CategorySelector">
         {{ $activeCategory := .ActiveCategory }}
         {{ with .Categories }}      
-        <ul class="row row-cols-3 row-cols-sm-3 row-cols-lg-6 row-cols-xl-8 list-unstyled list">
+        <ul class="row row-cols-3 row-cols-s-3 row-cols-m-4 row-cols-lg-6 row-cols-xl-8 list-unstyled list">
             {{ range . }}
             {{/* <li class="col mb-4"> */}}
             <li class="col {{ if eq .Value $activeCategory -}} active {{- end }}" >
                 <a class="d-block text-dark text-decoration-none" href="?category={{- .Value -}}">
                     <span class="mb-1 rounded-pill text-center rounded category-btn category-btn-{{- .Value}}">
-                        
-                        {{/* <svg class="bi" width="1em" height="1em" fill="currentColor">
-                        <use xlink:href="bootstrap-icons.svg#123"></use>
-                        </svg> */}}
-
+                    
                         {{ if eq .Value "all"}}
                             <span id="AllIcon"><img src='/static/icons/files.svg?static=1' class="all-icon"/></span>
                         {{ else if eq .Value "image-video" }}
@@ -71,8 +67,7 @@
                             </span>
                         {{ end }}
 
-                       
-                    </span>
+                     </span>
                     <small class="name text-decoration-none text-center pt-0 text-max-lines-2">
                         {{- .DisplayText -}}
                     </small>
@@ -90,5 +85,18 @@
 {{define "index_list_footer"}}
     <section id="Footer">Made with Go.</footer>
 </body>
+<script>
+(function(){
+  // To remove body class according to events
+  window.addEventListener("DOMContentLoaded", function(event) { 
+    // console.debug('DOM fully loaded and parsed'); 
+    document.body.classList.remove("event-dom-content-not-loaded");
+  });
+  window.addEventListener("load", function(event) { 
+    // console.debug('Page fully loaded');
+    document.body.classList.remove("event-body-not-loaded");
+  });
+})();
+</script>
 </html>
 {{end}}

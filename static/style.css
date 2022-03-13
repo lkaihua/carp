@@ -1,5 +1,25 @@
+:root{
+  --gray-border-color:#d8d8d8;
+}
+
+.event-body-not-loaded *{
+  /* Only allows css transition and animation when page is fully loaded */
+  /* There might be some cases that there is a huge amount of files/sub-folders */
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+
+  -webkit-animation:none !important;;
+  -moz-animation:none !important;;
+  -ms-animation:none !important;;
+  -o-animation:none !important;;
+  animation: none !important;;
+}
+
 section {
-  margin: 0 1rem;
+  margin: 0 2rem;
 }
 .hidden {
   display: none !important;
@@ -29,28 +49,28 @@ ul li span.icon::before{
   background-size: cover;
 }
 
-ul li .icon.home::before{
+.icon.home::before{
   background-image: url('/static/icons/house-door.svg?static=1');
 }
-ul li .icon.image::before{
+.icon.image::before{
   background-image: url('/static/icons/file-earmark-image.svg?static=1');
 }
-ul li .icon.folder::before{
+.icon.folder::before{
   background-image: url('/static/icons/folder-plus.svg?static=1');
 }
-ul li .icon.folder-open::before{
+.icon.folder-open::before{
   background-image: url('/static/icons/folder.svg?static=1');
 }
-ul li .icon.video::before{
+.icon.video::before{
   background-image: url('/static/icons/file-earmark-play.svg?static=1');
 }
-ul li .icon.file::before{
+.icon.file::before{
   background-image: url('/static/icons/file-earmark.svg?static=1');
 }
-ul li .icon.default::before{
+.icon.default::before{
   background-image: url('/static/icons/file-earmark.svg?static=1');
 }
-ul li .icon.music::before{
+.icon.music::before{
   background-image: url('/static/icons/file-earmark-music.svg?static=1');
 }
 
@@ -101,14 +121,19 @@ ul li .icon.music::before{
 #TopBreadcrumb ul li.row-trailing-item{
   /* Let the trailing item to fulfill all the space until the row end */
   flex-grow: 1;
+  max-width: 75vw;
 }
 
 #TopBreadcrumb ul li a{
   padding-left: 0.5rem;
   padding-right: 0.5rem;
-  /* border-radius: 0!important; */
   border-radius: 0.5rem;
 }
+
+#TopBreadcrumb ul li a:active{
+  color: black;
+}
+
 #TopBreadcrumb ul li a>span{
   padding-left: calc(0.5rem - 2px);
   padding-right: calc(0.5rem - 2px);
@@ -132,49 +157,90 @@ ul li .icon.music::before{
 
 
 #TopBreadcrumb ul li:last-child{
-  /* max-width: 100vw; */
   /* padding-left: 1rem;
   padding-right: 1rem; */
-  background-color: transparent;
+  /* background-color: transparent; */
+
+  /* The current folder can take up a separate new row */
+  max-width: calc(100vw - 3rem);
 }
 #TopBreadcrumb ul li:last-child a{
+  --btn-background-color: white;
   padding: 2px;
   /* border-bottom: 2px solid var(--bs-primary); */
   /* border inside edge hack for 'border: 2px solid var(--bs-primary);' */
   /* box-shadow:inset 0px 0px 0px 2px var(--bs-primary);  */
   background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), 
-  linear-gradient(30deg, var(--bs-red), var(--bs-blue));
+                    linear-gradient(30deg, var(--bs-red), var(--bs-blue));
   background-origin: border-box;
   background-clip: content-box, border-box;
 
-  background-color: var(--btn-background-color);
+  /* background-color: var(--btn-background-color); */
  }
 
  #TopBreadcrumb ul li:last-child a>span{
    margin: 2px calc(0.5rem - 2px) ;
  }
 
-
 #CategorySelector {
+  
+}
 
+#CategorySelector ul{
+  margin: 0 0.5rem;
+  justify-content: center;
+}
+
+#CategorySelector .row{
+  --bs-gutter-x: 0;
 }
 
 #CategorySelector .col{
   --btn-background-color: var(--bs-gray-200);
-  --btn-border-width: 0px;
-  --btn-border-color: black;
+  --btn-border-width: 2px;
+  --btn-border-start-color: var(--btn-background-color);
+  --btn-border-end-color: var(--btn-background-color);
+  position: relative;
+  overflow: hidden;
+}
+
+#CategorySelector .col::before{
+  content: "";
+  background: var(--bs-gray-200);
+  display:inline-block;
+  width: 50%;
+  height: 45px;
+  z-index: -999;
+  position: absolute;
+}
+
+#CategorySelector .col:nth-child(1)::before{
+  top: 0;
+  right: 0;
+}
+#CategorySelector .col:nth-child(2)::before{
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+#CategorySelector .col:nth-child(3)::before{
+  top: 0;
+  left: 0;
 }
 
 #CategorySelector .col.active {
+  --btn-background-color: white;
 }
 
+#CategorySelector ul li a:active>.category-btn{
+  --btn-background-color: white;
+}
 
 #CategorySelector .category-btn {
   height: 45px;
-  padding: 2px;
-  background-color: var(--btn-background-color);
+  padding: var(--btn-border-width);
   background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), 
-                    linear-gradient(var(--btn-background-color), var(--btn-background-color));
+                    linear-gradient(30deg, var(--btn-border-start-color), var(--btn-border-end-color));
   background-origin: border-box;
   background-clip: content-box, border-box;
   display: flex;
@@ -196,29 +262,30 @@ ul li .icon.music::before{
 
 
 #CategorySelector .col.active .category-btn {
-  background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), 
-                    linear-gradient(30deg, var(--bs-red), var(--bs-blue));
+  --time-animation: 1000ms;
+  --btn-border-start-color: var(--bs-red);
+  --btn-border-end-color: var(--bs-blue);
 }
 
 
 #CategorySelector .col.active .category-btn-all {
-  background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), 
-                    linear-gradient(90deg, var(--bs-gray-400), var(--bs-gray-400));
+  --btn-border-start-color: var(--gray-border-color);
+  --btn-border-end-color: var(--gray-border-color);
 }
 
 #CategorySelector .col.active .category-btn #ImageVideoIcon {
-  -webkit-animation:800ms pulsate 1 alternate ease-in-out;
-  -moz-animation:800ms pulsate 1 alternate ease-in-out;
-  -ms-animation:800ms pulsate 1 alternate ease-in-out;
-  -o-animation:800ms pulsate 1 alternate ease-in-out;
-  animation: 800ms pulsate 1 alternate ease-in-out;
+  -webkit-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  -moz-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  -ms-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  -o-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  animation: var(--time-animation) pulsate 1 alternate ease-in-out;
 }
 #CategorySelector .col.active .category-btn #MusicIcon {
-  -webkit-animation:800ms pulsate 1 alternate ease-in-out;
-  -moz-animation:800ms pulsate 1 alternate ease-in-out;
-  -ms-animation:800ms pulsate 1 alternate ease-in-out;
-  -o-animation:800ms pulsate 1 alternate ease-in-out;
-  animation: 800ms pulsate 1 alternate ease-in-out;
+  -webkit-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  -moz-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  -ms-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  -o-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
+  animation: var(--time-animation) pulsate 1 alternate ease-in-out;
 }
 @keyframes pulsate {
   /* 0% { transform: scale(1); }
@@ -277,7 +344,9 @@ ul li .icon.music::before{
 
 #FolderContent ul li {
   position: relative;
-  /* padding-left: 30px; */
+}
+#FolderContent ul li a:active{
+  color: black;
 }
 #FolderContent ul li a.item-icon-name { 
   padding-top: 8px;
@@ -345,6 +414,51 @@ ul li .icon.music::before{
   min-height: 60px;
 }
 
+#ImageVideoContainer span.icon{
+  display: inline-flex;
+}
+
+#ImageVideoContainer span.icon::before{
+  content: '';
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+#ImageVideoContainer .col .container{
+  width: 100%;
+  padding-top: 100%; /* 1:1 Aspect Ratio */
+  position: relative; /* If you want text inside of it */
+}
+#ImageVideoContainer .col .container a{
+  text-decoration: none;
+  color: black;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+}
+#ImageVideoContainer .col .container a .firstName {
+  padding: 0;
+  text-align: center;
+}
+
+#ImageVideoContainer .col .border{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+}
+
 #ImageVideoContainer .image-preview{
   max-width: 100%;
 }
@@ -369,6 +483,7 @@ ul li .icon.music::before{
   display: block;
   width: auto;
   margin: 1rem auto;
+  border: 1px solid var(--gray-border-color);
 }
 
 .dropdown-menu-macos {
@@ -444,9 +559,18 @@ ul li .icon.music::before{
 
 /* For mobile phones: */
 @media only screen and (max-width: 480px) {
-
+  section {
+    margin: 0 1rem;
+  }
   #TopBreadcrumb ul li {
     min-width: max(75px, calc(25vw - 1rem));
-    max-width: calc(100vw - 3rem);
+    max-width: calc(50vw - 3rem);
+  }
+
+  #ImageVideoContainer .container{
+    font-size: 0.8rem;
+  }
+  #ImageVideoContainer .container .firstName{
+
   }
 }
