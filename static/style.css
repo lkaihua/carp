@@ -118,6 +118,24 @@ ul li span.icon::before{
   --btn-background-color: var(--bs-gray-200);
 }
 
+#TopBreadcrumb .btn-container{
+  /* height: 32px; */
+  overflow-y: hidden;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start; 
+  align-items: center;
+}
+
+#TopBreadcrumb .btn-container .icon{
+  margin-right: 3px;
+}
+
 #TopBreadcrumb ul li.row-trailing-item{
   /* Let the trailing item to fulfill all the space until the row end */
   flex-grow: 1;
@@ -128,20 +146,13 @@ ul li span.icon::before{
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   border-radius: 0.5rem;
+
 }
 
 #TopBreadcrumb ul li a:active{
   color: black;
 }
 
-#TopBreadcrumb ul li a>span{
-  padding-left: calc(0.5rem - 2px);
-  padding-right: calc(0.5rem - 2px);
-  /* border-radius: 0!important; */
-  border-radius: 0.5rem;
-  overflow-x: hidden;
-    text-overflow: ellipsis;
-}
 
 #TopBreadcrumb li span.name {
   overflow-x: hidden;
@@ -187,7 +198,6 @@ ul li span.icon::before{
 }
 
 #CategorySelector ul{
-  margin: 0 0.5rem;
   justify-content: center;
 }
 
