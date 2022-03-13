@@ -7,6 +7,7 @@
 - [x] To highlight certain category of files in current folder
 
 ### Nice to have
+- [ ] To hightlight the last selected file or visited folder. 
 - [ ] To have a config yaml.
 - [ ] To highlight the previous folder after navigation to upper folder. 
 - [ ] To generate thumbnails when entering a gallery folder 
