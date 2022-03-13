@@ -25,8 +25,8 @@
         <ul class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow'>
             {{ range $index, $value := . }}
             <li>
-                <a class="dropdown-item btn" href="{{ $value.UrlString }}">
-                    <span class="d-flex gap-2 align-items-center">
+                <a class="dropdown-item btn d-block text-decoration-none" href="{{ $value.UrlString }}">
+                    <span class="btn-container" class="d-flex align-items-center">
                         <span class='icon
                             {{- if eq $index 0 }} home {{- else if $value.IsCurrent }} folder-open {{ else }} folder {{ end -}}
                         '></span>
@@ -46,7 +46,7 @@
     <section id="CategorySelector">
         {{ $activeCategory := .ActiveCategory }}
         {{ with .Categories }}      
-        <ul class="row row-cols-3 row-cols-s-3 row-cols-m-4 row-cols-lg-6 row-cols-xl-8 list-unstyled list">
+        <ul class="row row-cols-3 row-cols-s-3 row-cols-m-4 row-cols-lg-6 row-cols-xl-8 list-unstyled list mx-1 my-3">
             {{ range . }}
             {{/* <li class="col mb-4"> */}}
             <li class="col {{ if eq .Value $activeCategory -}} active {{- end }}" >
