@@ -46,7 +46,20 @@ type DirEntry struct {
 	UrlString string
 	IsFolder  bool
 	Name      string // Full string of hanlder
+	Size      int64
+	ModTime   time.Time
 }
+
+/*
+	type FileInfo interface {
+		Name() string       // base name of the file
+		Size() int64        // length in bytes for regular files; system-dependent for others
+		Mode() FileMode     // file mode bits
+		ModTime() time.Time // modification time
+		IsDir() bool        // abbreviation for Mode().IsDir()
+		Sys() interface{}   // underlying data source (can return nil)
+	}
+*/
 
 func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
 	data := []mytemplate.DisplayEntry{}
@@ -64,6 +77,9 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
 		urlString := d.UrlString
+		// modTime := d.ModTime
+		// size := d.Size
+		// fmt.Println(name, "-", modTime, "-", size)
 		var firstName, lastName, entryType string
 
 		if d.IsFolder {
@@ -98,6 +114,8 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
 			LastName:  lastName,
 			EntryType: entryType,
 			UrlString: urlString,
+			// ModTime:   modTime,
+			// Size:      size,
 		})
 
 	}
@@ -203,7 +221,8 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 		http.Error(w, "Error reading directory", http.StatusInternalServerError)
 		return
 	}
-	sort.Slice(dirs, func(i, j int) bool { return dirs[i].Name() < dirs[j].Name() })
+	// sort.Slice(dirs, func(i, j int) bool { return dirs[i].Name() < dirs[j].Name() })
+	sort.Slice(dirs, func(i, j int) bool { return dirs[i].ModTime().Unix() > dirs[j].ModTime().Unix() })
 
 	dirData := []DirEntry{}
 
@@ -219,6 +238,8 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 			Name:      name,
 			UrlString: urlString,
 			IsFolder:  d.IsDir(),
+			Size:      d.Size(),
+			ModTime:   d.ModTime(),
 		})
 
 	}

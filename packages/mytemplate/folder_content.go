@@ -32,6 +32,7 @@ type DisplayEntry struct {
 	UrlString string
 	FirstName string
 	LastName  string // File extension string if it's a file, or "/" if it's a folder
+	// ModTime
 }
 
 func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry) {

@@ -18,6 +18,8 @@
     2. https://github.com/xfrr/goffmpeg to extract first frame of video
     3. Show a progress of above progress
 - [ ] In preview modal, click on the video and show control. 
+- [ ] Add a file size sorting option. For now files are sorted with newest modification time to oldest. 
+- [ ] Display file info in preview modal, such as Modification Time and File Size.
 
 ### Work log
 
