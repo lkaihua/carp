@@ -8,7 +8,7 @@ var DefaultAudios = []string{"mp3"}
 
 func isExtension(name string, exts *[]string) bool {
 	for _, ext := range *exts {
-		if strings.HasSuffix(name, "."+ext) {
+		if strings.HasSuffix(strings.ToLower(name), "."+ext) {
 			return true
 		}
 	}

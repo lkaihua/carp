@@ -107,7 +107,6 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
 
 			urlString += "?file=" + entryType
 		}
-
 		data = append(data, mytemplate.DisplayEntry{
 			Name:      name,
 			FirstName: firstName,
