@@ -39,6 +39,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 		filepath.Join("./templates", Default.TemplateName()),
 		filepath.Join("./templates", ImageVideo.TemplateName()),
 		filepath.Join("./templates", Music.TemplateName()),
+		filepath.Join("./templates", "preview_modal"+template_gohtml),
 	}
 	parsedTemplate, _ := template.ParseFiles(templates...)
 

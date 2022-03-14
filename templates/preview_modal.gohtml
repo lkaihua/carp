@@ -1,0 +1,91 @@
+{{ define "preview_modal" }}
+
+<!-- Modal -->
+<div class="modal fade" id="PreviewModal" tabindex="-1" aria-labelledby="PreviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="PreviewModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="preview-content-container hidden"><img src="" id="ModalPreviewImage"/></div>
+
+        <div class="preview-content-container hidden">
+          <video poster="" id="ModalPreviewVideo" preload="metadata" controls autoplay>
+            <source src="" type="video/mp4">
+            <p class="vjs-no-js">
+              To view this video please enable JavaScript, and consider upgrading to a 
+              web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+            </p>
+          </video>
+        </div>
+      
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-secondary btn-lg" id="ModalButtonOpenFile" target="_blank">Raw File</a>
+        <button type="button" class="btn btn-primary btn-lg" data-bs-dismiss="modal" id="ModalButtonClosePreview">Close Preview</button>
+        {{/* <button type="button" class="btn btn-primary">Save changes</button> */}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const previewModal = document.getElementById('PreviewModal')
+
+previewModal.addEventListener('hide.bs.modal', function (event) {
+  previewModal.querySelectorAll('.preview-content-container').forEach(c => c.classList.add('hidden'));
+  document.querySelector('#ModalPreviewVideo').pause()
+})
+previewModal.addEventListener('show.bs.modal', function (event) {
+  // Button that triggered the modal
+  const button = event.relatedTarget
+  // Extract info from data-bs-* attributes
+  const urlString = button.getAttribute('data-bs-url-string')
+  const name = button.getAttribute('data-bs-name')
+  const lastName = button.getAttribute('data-bs-lastName')
+  const entryType = button.getAttribute('data-bs-entry-type')
+  // If necessary, you could initiate an AJAX request here
+  // and then do the updating in a callback.
+  //
+  // Update the modal's content.
+
+  const modalTitle = previewModal.querySelector('.modal-title')
+  modalTitle.textContent = name
+
+  
+  switch(entryType) {
+    case 'image':
+      const modalPreviewImage = previewModal.querySelector('#ModalPreviewImage')
+      modalPreviewImage.src = urlString
+      modalPreviewImage.parentNode.classList.remove('hidden')
+      break;
+    case 'video':
+      const videoHashForThumbnail = '#t=0.1';
+      let videoSourceType = 'video/'
+      switch (lastName) {
+          case 'mov':
+            videoSourceType += 'mp4'
+            break;
+          default:
+            videoSourceType += lastName
+      }
+
+      const modalPreviewVideo = previewModal.querySelector('#ModalPreviewVideo')
+
+      modalPreviewVideo.querySelector('source').setAttribute('src', urlString + videoHashForThumbnail)
+      modalPreviewVideo.querySelector('source').setAttribute('type', videoSourceType)
+      modalPreviewVideo.load()
+      modalPreviewVideo.parentNode.classList.remove('hidden')
+      break;
+    default:
+      break;
+  }
+
+  const modalButtonOpenFile = document.getElementById('ModalButtonOpenFile')
+  modalButtonOpenFile.href = urlString
+})
+</script>
+{{ end }}

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/static/style.css?static=1">
     <script src="/static/scripts/lazyload.js?static=1"></script>
     <script src="/static/scripts/index_list.js?static=1"></script>
+    <script src="/static/scripts/bootstrap.min.js?static=1"></script>
 </head>
 <body class="event-dom-content-not-loaded event-body-not-loaded">
     <section id="Header"></section>
@@ -22,7 +23,7 @@
     
     <section id="TopBreadcrumb">
         {{ with .Breadcrumb }}
-        <ul class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow'>
+        <ol class='dropdown-menu dropdown-menu-macos mx-0 border-1 shadow'>
             {{ range $index, $value := . }}
             <li>
                 <a class="dropdown-item btn d-block text-decoration-none" href="{{ $value.UrlString }}">
@@ -37,7 +38,7 @@
             {{ else }}
             <li> Ops! Nothing here. </li>
             {{ end }}
-        </ul>
+        </ol>
         <script> window.addTopBreadcrumbTralingItems && addTopBreadcrumbTralingItems(); </script>
         {{ end }}
     </section>

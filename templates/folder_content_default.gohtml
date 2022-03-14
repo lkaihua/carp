@@ -1,5 +1,5 @@
 {{define "folder_content_default"}}
-<section id="FolderContent">
+<section id="FolderContent" class="folder_content_default">
 {{ with . }}
 <ul class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
     {{ range . }}
@@ -17,17 +17,32 @@
         <button type="button" class="btn btn-more"></button>
         {{ end }}
         
+        <!-- Button trigger modal starts -->
         {{ if eq .EntryType "image" }}
-        <button type="button" class="btn btn-preview border rounded">
+        <button type="button" class="btn border rounded btn-preview btn-preview-image" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+            data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
+        >
             <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
         </button>
+        {{ else if eq .EntryType "video" }}
+        <button type="button" class="btn border rounded btn-preview btn-preview-video" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+            data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
+        >
+            <span class="video-preview rounded border-1 flex-center"><span class="icon video-play"></span></span>
+        </button>
         {{ end }}
+        <!-- Button trigger modal ends -->
+
+
     </li>
     {{ else }}
     <li> Ops! Nothing here. </li>
     {{ end }}
 </ul>
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
+
+{{ template "preview_modal" }}
+
 {{ else }}
 <div id="FolderEmptyPlaceholder" class="mb-4 border rounded-3 d-flex align-items-center justify-content-center p-3 py-6">
     <h4>The folder is empty.</h4>

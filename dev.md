@@ -20,31 +20,17 @@
 
 ### Work log
 
-##### 2022-02-15
+#### 2022-03-14
 
-- Extract fs.go from Go's offical `http` in order to customize file / dir display.
+- Add the preview modal for images and videos in the default view and in the image video view.
 
-#### 2022-03-01
+| Image Video view  | Preview modal for image | Preview modal for video |
+| ------------- | ------------- | ------------- |
+| ![docs/images/2022-03-14-image-video.png](docs/images/2022-03-14-image-video.png)  | ![docs/images/2022-03-14-image-video-preview-modal.png](docs/images/2022-03-14-image-video-preview-modal.png) | ![docs/images/2022-03-14-video-preview-mobile.png](docs/images/2022-03-14-video-preview-mobile.png)  | 
 
-- Add detection for folder, image, video files.
+Preview modal for Video (Desktop)
+![docs/images/2022-03-14-video-preview-desktop.png](docs/images/2022-03-14-video-preview-desktop.png)
 
-#### 2022-03-03
-
-- Add serving static assets style/js/icons.
-- Integrate Bootstrap css and icons.
-
-#### 2022-03-08
-
-- Add lazyload for images in vanilla JS, only load images in the current and the next viewport. 
-- Add a url query `entryType` to highlight file types in current folder.
-[ ] Plans to keep query between page jumps.
-
-#### 2022-03-09
-
-- Find an elegant approach to make sure Breadcrumb folder pills have a stable width between page navigations. The trailing item in each row will fulfill the spaces until the row end. 
-- Add the filter bar, now there are "All", "Image & Video", "Music" three filters for users to click. 
-
-![docs/images/2022-03-09-breadcrumb.png](docs/images/2022-03-09-breadcrumb.png)
 
 #### 2022-03-13
 
@@ -54,3 +40,34 @@
   - Use background image css trink to have a multi-color gradient visual effect.
 
 ![docs/images/2022-03-13-imagevideo.png](docs/images/2022-03-13-imagevideo.png)
+
+#### 2022-03-09
+
+- Find an elegant approach to make sure Breadcrumb folder pills have a stable width between page navigations. The trailing item in each row will fulfill the spaces until the row end. 
+- Add the filter bar, now there are "All", "Image & Video", "Music" three filters for users to click. 
+
+![docs/images/2022-03-09-breadcrumb.png](docs/images/2022-03-09-breadcrumb.png)
+
+
+#### 2022-03-08
+
+- Add lazyload for images in vanilla JS, only load images in the current and the next viewport. 
+- Add a url query `entryType` to highlight file types in current folder.
+[ ] Plans to keep query between page jumps.
+
+#### 2022-03-03
+
+- Add serving static assets style/js/icons.
+- Integrate Bootstrap css and icons.
+
+#### 2022-03-01
+
+- Add detection for folder, image, video files.
+
+##### 2022-02-15
+
+- Extract fs.go from Go's offical `http` in order to customize file / dir display.
+
+
+
+

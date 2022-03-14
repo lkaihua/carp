@@ -24,7 +24,7 @@ section {
 .hidden {
   display: none !important;
 }
-.text-max-lines-2{
+.text-max-lines-2 {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -33,13 +33,38 @@ section {
   -webkit-box-orient: vertical;
 }
 
-ul li .icon {
+.dropdown-menu {
+  position: static;
+  display: block;
+  width: auto;
+  margin: 1rem auto;
+  border: 1px solid var(--gray-border-color);
+}
+
+.dropdown-menu-macos {
+  /* display: grid; */
+  /* gap: .25rem; */
+  padding: .5rem;
+  border-radius: .5rem;
+}
+
+.flex-center {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+
+li .icon {
   width: 20px;
   height: 20px;
   display: inline-block;
 }
 
-ul li span.icon::before{
+li span.icon::before{
   content: '';
   width: 20px;
   height: 20px;
@@ -64,6 +89,10 @@ ul li span.icon::before{
 .icon.video::before{
   background-image: url('/static/icons/file-earmark-play.svg?static=1');
 }
+.icon.video-play::before{
+  background-image: url('/static/icons/play-btn.svg?static=1');
+}
+
 .icon.file::before{
   background-image: url('/static/icons/file-earmark.svg?static=1');
 }
@@ -94,7 +123,7 @@ ul li span.icon::before{
 }
 
 
-#TopBreadcrumb ul{
+#TopBreadcrumb ol{
   display: flex;
   gap: 0.25rem;
   padding: 0.5rem;
@@ -106,7 +135,7 @@ ul li span.icon::before{
   /* align-items: stretch; */
 }
 
-#TopBreadcrumb ul li {
+#TopBreadcrumb ol li {
   /* flex-grow: 1;
   flex-shrink: 1; */
   border-radius: 0.5rem;
@@ -136,20 +165,20 @@ ul li span.icon::before{
   margin-right: 3px;
 }
 
-#TopBreadcrumb ul li.row-trailing-item{
+#TopBreadcrumb ol li.row-trailing-item{
   /* Let the trailing item to fulfill all the space until the row end */
   flex-grow: 1;
   max-width: 75vw;
 }
 
-#TopBreadcrumb ul li a{
+#TopBreadcrumb ol li a{
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   border-radius: 0.5rem;
 
 }
 
-#TopBreadcrumb ul li a:active{
+#TopBreadcrumb ol li a:active{
   color: black;
 }
 
@@ -159,15 +188,15 @@ ul li span.icon::before{
   text-overflow: ellipsis;
 }
 
-#TopBreadcrumb ul li:first-child {
+#TopBreadcrumb ol li:first-child {
 }
 
-#TopBreadcrumb ul li:first-child a{
+#TopBreadcrumb ol li:first-child a{
   /* padding-left: 1rem; */
 }
 
 
-#TopBreadcrumb ul li:last-child{
+#TopBreadcrumb ol li:last-child{
   /* padding-left: 1rem;
   padding-right: 1rem; */
   /* background-color: transparent; */
@@ -175,7 +204,7 @@ ul li span.icon::before{
   /* The current folder can take up a separate new row */
   max-width: calc(100vw - 3rem);
 }
-#TopBreadcrumb ul li:last-child a{
+#TopBreadcrumb ol li:last-child a{
   --btn-background-color: white;
   padding: 2px;
   /* border-bottom: 2px solid var(--bs-primary); */
@@ -189,7 +218,7 @@ ul li span.icon::before{
   /* background-color: var(--btn-background-color); */
  }
 
- #TopBreadcrumb ul li:last-child a>span{
+ #TopBreadcrumb ol li:last-child a>span{
    margin: 2px calc(0.5rem - 2px) ;
  }
 
@@ -359,6 +388,7 @@ ul li span.icon::before{
   color: black;
 }
 #FolderContent ul li a.item-icon-name { 
+  border-radius: 0.5rem;
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 8px;
@@ -414,10 +444,37 @@ ul li span.icon::before{
 }
 
 #FolderContent .btn-preview {
-  margin-left: 2rem;
   cursor: zoom-in;
 }
 
+#FolderContent.folder_content_default .btn-preview {
+  margin-left: 2rem;
+  
+}
+
+#FolderContent .btn-preview-video {
+  flex-direction: column;
+  cursor: pointer;
+}
+#FolderContent .video-preview {
+  width: 200px;
+  height: 100px;
+  background-color: var(--bs-gray-200);
+  
+}
+#FolderContent .video-preview .icon {
+  width: 30px;
+  height: 30px;
+}
+#FolderContent .video-preview .video-play::before{
+  width: 30px;
+  height: 30px;
+}
+#FolderContent .btn-preview-video .firstName{
+  max-width: 100%;
+}
+
+/* for default list */
 #FolderContent .btn-preview img.image-preview{
   max-width: 50vw;
   max-height: 80px;
@@ -438,27 +495,37 @@ ul li span.icon::before{
   background-size: cover;
 }
 
+/* Aspect Ratio https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
 #ImageVideoContainer .col .container{
   width: 100%;
   padding-top: 100%; /* 1:1 Aspect Ratio */
   position: relative; /* If you want text inside of it */
 }
-#ImageVideoContainer .col .container a{
-  text-decoration: none;
-  color: black;
+#ImageVideoContainer .col .container .btn{
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: center;
+  justify-content: space-evenly;
 }
-#ImageVideoContainer .col .container a .firstName {
+#ImageVideoContainer .col .container .btn .video-preview {
+  /* flex-direction: column; */
+  height: 65px;
+}
+#ImageVideoContainer .col .container .btn .firstName {
   padding: 0;
   text-align: center;
+  font-size: 0.8rem;
 }
+/* #ImageVideoContainer .col .container .btn .lastName {
+  padding: 0;
+  text-align: right;
+  font-size: 0.75rem;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+#ImageVideoContainer .col .container .btn .lastName::before{
+  display: none;
+} */
 
 #ImageVideoContainer .col .border{
   position: absolute;
@@ -469,101 +536,64 @@ ul li span.icon::before{
   overflow: hidden;
 }
 
-#ImageVideoContainer .image-preview{
+#FolderContent #ImageVideoContainer .btn-preview img.image-preview{
   max-width: 100%;
+  max-height: 50vh;
 }
 
-
-
-.b-example-divider {
-  height: 3rem;
-  background-color: rgba(0, 0, 0, .1);
-  border: solid rgba(0, 0, 0, .15);
-  border-width: 1px 0;
-  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+#PreviewModal {
+  --preview-model-bg-color: black;
+  --preview-model-text-color: var(--bs-gray-400);
 }
 
-.bi {
-  vertical-align: -.125em;
-  fill: currentColor;
+#PreviewModal .modal-header {
+  background-color: var(--preview-model-bg-color);
+  color: var(--preview-model-text-color);
+  border-bottom: none;
+}
+#PreviewModal .modal-header .btn-close{
+  background-color: var(--preview-model-text-color);
+}
+#PreviewModal .modal-header #PreviewModalLabel{
+  text-overflow: ellipsis;
+  overflow: hidden;;
 }
 
-.dropdown-menu {
-  position: static;
-  display: block;
-  width: auto;
-  margin: 1rem auto;
-  border: 1px solid var(--gray-border-color);
-}
-
-.dropdown-menu-macos {
-  /* display: grid; */
-  /* gap: .25rem; */
-  padding: .5rem;
-  border-radius: .5rem;
-}
-.dropdown-menu-macos .dropdown-item {
-  border-radius: .25rem;
-}
-
-.dropdown-item-danger {
-  color: var(--bs-red);
-}
-.dropdown-item-danger:hover,
-.dropdown-item-danger:focus {
-  color: #fff;
-  background-color: var(--bs-red);
-}
-.dropdown-item-danger.active {
-  background-color: var(--bs-red);
-}
-
-.btn-hover-light {
-  text-align: left;
-  background-color: var(--bs-white);
-  border-radius: .25rem;
-}
-.btn-hover-light:hover,
-.btn-hover-light:focus {
-  color: var(--bs-blue);
-  background-color: var(--bs-light);
-}
-
-.cal-month,
-.cal-days,
-.cal-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  align-items: center;
-}
-.cal-month-name {
-  grid-column-start: 2;
-  grid-column-end: 7;
-  text-align: center;
-}
-.cal-weekday,
-.cal-btn {
+#PreviewModal .modal-body{
+  padding: 1rem 0;
+  background-color: var(--preview-model-bg-color);
   display: flex;
-  flex-shrink: 0;
-  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
   justify-content: center;
-  height: 3rem;
-  padding: 0;
+  align-items: center;
 }
-.cal-btn:not([disabled]) {
-  font-weight: 500;
-}
-.cal-btn:hover,
-.cal-btn:focus {
-  background-color: rgba(0, 0, 0, .05);
-}
-.cal-btn[disabled] {
-  opacity: .5;
+#PreviewModal .modal-footer{
+  background-color: var(--preview-model-bg-color);
+  border-top-color: var(--bs-gray);
 }
 
-.form-control-dark {
-  background-color: rgba(255, 255, 255, .05);
-  border-color: rgba(255, 255, 255, .15);
+#ModalPreviewImage {
+  max-width: 100%;
+  min-width: 25%;
+  max-height: calc(100vh - 200px)
+  /* border: 1px solid var(--gray-border-color); */
+}
+
+#ModalPreviewVideo {
+  max-width: 100%;
+  min-width: 90%;
+  max-height: calc(100vh - 200px)
+}
+
+#ModalButtonOpenFile{
+  padding-left: 2rem;
+  padding-right: 2rem;
+  flex-grow: 1;
+}
+#ModalButtonClosePreview {
+  flex-grow: 5;
 }
 
 
@@ -572,7 +602,7 @@ ul li span.icon::before{
   section {
     margin: 0 1rem;
   }
-  #TopBreadcrumb ul li {
+  #TopBreadcrumb ol li {
     min-width: max(75px, calc(25vw - 1rem));
     max-width: calc(50vw - 3rem);
   }
