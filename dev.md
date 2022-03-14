@@ -17,6 +17,7 @@
     1. To resize image to a thumbnail
     2. https://github.com/xfrr/goffmpeg to extract first frame of video
     3. Show a progress of above progress
+- [ ] In preview modal, click on the video and show control. 
 
 ### Work log
 

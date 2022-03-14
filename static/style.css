@@ -571,7 +571,7 @@ li span.icon::before{
 }
 #PreviewModal .modal-footer{
   background-color: var(--preview-model-bg-color);
-  border-top-color: var(--bs-gray);
+  border-top-color: var(--preview-model-bg-color);
 }
 
 #ModalPreviewImage {
