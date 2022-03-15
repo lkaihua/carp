@@ -1,20 +1,20 @@
 {{ define "preview_modal" }}
 
 <!-- Modal -->
-<div class="modal fade" id="PreviewModal" tabindex="-1" aria-labelledby="PreviewModalLabel" aria-hidden="true">
+<div class="modal" id="PreviewModal" tabindex="-1" aria-labelledby="PreviewModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="PreviewModalLabel"></h5>
+        <h5 class="modal-title text-max-lines-2 text-secondary" id="PreviewModalLabel"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body flex-center">
         
-        <div class="preview-content-container hidden"><img src="" id="ModalPreviewImage"/></div>
+        <div class="preview-content-container image-container hidden image-grid-transparent-bg flex-center"><img src="" id="ModalPreviewImage"/></div>
 
-        <div class="preview-content-container hidden">
-          <video poster="" id="ModalPreviewVideo" preload="metadata" controls autoplay playsinline>
-            <source src="" type="video/mp4">
+        <div class="preview-content-container video-container hidden flex-center">
+          <video width="100%" poster="" id="ModalPreviewVideo" preload="metadata" controls autoplay loop playsinline>
+            <source src="" type="">
             <p class="vjs-no-js">
               To view this video please enable JavaScript, and consider upgrading to a 
               web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -24,8 +24,10 @@
       
       </div>
       <div class="modal-footer">
-        <a class="btn btn-secondary btn-lg" id="ModalButtonOpenFile" target="_blank">Raw File</a>
-        <button type="button" class="btn btn-primary btn-lg" data-bs-dismiss="modal" id="ModalButtonClosePreview">Close Preview</button>
+        {{/* <a class="btn btn-secondary btn-lg" id="ModalButtonOpenFile" target="_blank">Raw File</a> */}}
+        <button type="button" class="btn btn-outline-secondary carousel-control-prev-icon" data-bs-dismiss="modal" id="ModalButtonPrev"></button>
+        <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal" id="ModalButtonClosePreview">Close</button>
+        <button type="button" class="btn btn-outline-secondary carousel-control-next-icon" data-bs-dismiss="modal" id="ModalButtonNext"></button>
         {{/* <button type="button" class="btn btn-primary">Save changes</button> */}}
       </div>
     </div>
@@ -34,6 +36,7 @@
 
 <script>
 const previewModal = document.getElementById('PreviewModal')
+const previewTriggerButtons = Array.from(document.querySelectorAll('.btn-preview'))
 
 previewModal.addEventListener('hide.bs.modal', function (event) {
   previewModal.querySelectorAll('.preview-content-container').forEach(c => c.classList.add('hidden'));
@@ -45,8 +48,17 @@ previewModal.addEventListener('show.bs.modal', function (event) {
   // Extract info from data-bs-* attributes
   const urlString = button.getAttribute('data-bs-url-string')
   const name = button.getAttribute('data-bs-name')
-  const lastName = button.getAttribute('data-bs-lastName')
+  const lastName = button.getAttribute('data-bs-lastName').toLowerCase()
   const entryType = button.getAttribute('data-bs-entry-type')
+
+  // Find prev and next button
+  const buttonIndex = previewTriggerButtons.indexOf(button)
+  const [prevButton, nextButton] = [previewTriggerButtons[buttonIndex-1], previewTriggerButtons[buttonIndex+1]]
+  {{/* console.debug(previewTriggerButtons, button, buttonIndex)
+  console.debug(previewTriggerButtons[buttonIndex-1], previewTriggerButtons[buttonIndex+1]) */}}
+  document.getElementById('ModalButtonPrev').onclick = () => { prevButton && prevButton.click(); }
+  document.getElementById('ModalButtonNext').onclick = () => { nextButton && nextButton.click() }
+
   // If necessary, you could initiate an AJAX request here
   // and then do the updating in a callback.
   //
@@ -64,28 +76,31 @@ previewModal.addEventListener('show.bs.modal', function (event) {
       break;
     case 'video':
       const videoHashForThumbnail = '#t=0.1';
-      let videoSourceType = 'video/'
+      {{/* let videoSourceType = 'video/'
       switch (lastName) {
           case 'mov':
             videoSourceType += 'mp4'
             break;
           default:
             videoSourceType += lastName
-      }
+      } */}}
 
       const modalPreviewVideo = previewModal.querySelector('#ModalPreviewVideo')
+      {{/* const maxHeight = */}}
 
       modalPreviewVideo.querySelector('source').setAttribute('src', urlString + videoHashForThumbnail)
-      modalPreviewVideo.querySelector('source').setAttribute('type', videoSourceType)
-      modalPreviewVideo.load()
+      {{/* modalPreviewVideo.querySelector('source').setAttribute('type', videoSourceType) */}}
       modalPreviewVideo.parentNode.classList.remove('hidden')
+      modalPreviewVideo.load()
+
       break;
     default:
       break;
   }
 
-  const modalButtonOpenFile = document.getElementById('ModalButtonOpenFile')
-  modalButtonOpenFile.href = urlString
+  // todo. open raw
+  {{/* const modalButtonOpenFile = document.getElementById('ModalButtonOpenFile')
+  modalButtonOpenFile.href = urlString */}}
 })
 </script>
 {{ end }}

@@ -23,6 +23,14 @@
 
 ### Work log
 
+#### 2022-03-15
+
+- Fix video play `.mov` issue. Fix the `video` overflow issue, and improve preview modal UI.
+
+- Now the preview modal has `Prev` and `Next` navigation buttons. 
+
+- Add a chekced-grid background for illustrating image file transparency.
+
 #### 2022-03-14
 
 - Add the preview modal for images and videos in the default view and in the image video view.
