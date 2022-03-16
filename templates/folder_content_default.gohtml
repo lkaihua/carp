@@ -1,7 +1,7 @@
 {{define "folder_content_default"}}
 <section id="FolderContent" class="folder_content_default">
 {{ with . }}
-<ul class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+<ul class="item-list mx-0 border-1 ">
     {{ range . }}
     <li>
         <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}"
@@ -33,7 +33,7 @@
         {{ end }}
         <!-- Button trigger modal ends -->
 
-
+        <hr/>
     </li>
     {{ else }}
     <li> Ops! Nothing here. </li>

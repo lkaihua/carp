@@ -1,6 +1,5 @@
 {{define "folder_content_image_and_video"}}
 <section id="FolderContent" class="folder_content_image_and_video">
-<h4>Image & Video</h4>
 {{ with . }}
 <div id="ImageVideoContainer">
 <div class="row row-cols-3 row-cols-lg-5 g-2 g-lg-3">
@@ -42,7 +41,7 @@
 
 <hr/>
 <h4>Other Files</h4>
-<ul id="OtherList" class="dropdown-menu dropdown-menu-macos mx-0 border-1 ">
+<ul id="OtherList" class="item-list mx-0 border-1 ">
     {{ range . }}
         {{ if ne .EntryType "image" }}
         <li>
