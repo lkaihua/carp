@@ -1,5 +1,0 @@
-package mytemplate
-
-func IndexList() {
-
-}

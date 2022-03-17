@@ -1,9 +1,0 @@
-{{define "body"}}
-<h1>Folder list for {{ .Dir }}</h1>
-{{ with .List }}
-    {{ range . }}
-
-    <li>{{ if .IsFolder }}+{{ else }}-{{ end }} {{ .Name }} </li>
-    {{ end }}
-{{end }}
-{{end}}

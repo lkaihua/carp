@@ -23,6 +23,12 @@
 
 ### Work log
 
+#### 2022-03-16
+
+- Refactor template modules. 
+
+- Update category selector and default list view UI. 
+
 #### 2022-03-15
 
 - Fix video play `.mov` issue. Fix the `video` overflow issue, and improve preview modal UI.

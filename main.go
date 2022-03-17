@@ -3,29 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"net/url"
-	"path/filepath"
 	"strings"
 
 	"github.com/lkaihua/carp-web-gallery/packages/myhttp"
 	"github.com/lkaihua/carp-web-gallery/packages/mypath"
 	"github.com/lkaihua/carp-web-gallery/packages/mytemplate"
 )
-
-type Category struct {
-	Value       string
-	DisplayText string
-}
-type IndexView struct {
-	Title          string
-	Dir            string
-	Breadcrumb     []mypath.BreadcrumbLevel
-	Categories     []Category
-	ActiveCategory string
-}
 
 var rootDir string
 var staticDir string = "./static/"
@@ -99,30 +85,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	*/
 
-	templates := []string{
-		filepath.Join("templates", "index_list.gohtml"),
-	}
-	parsedTemplate, err := template.ParseFiles(templates...)
-
-	if err != nil {
-		// Log the detailed error
-		log.Println(err.Error())
-		// Return a generic "Internal Server Error" message
-		http.Error(w, http.StatusText(500), 500)
-		return
-	}
-
 	breadcrumb := mypath.Breadcrumb(r.URL.Path)
 	// save point: 2022-03-05
 	// next step: each breadcrumb should have one its Name and Path
 
-	categories := []Category{
+	categories := []mytemplate.Category{
 		{Value: "all", DisplayText: "All"},
 		{Value: "image-video", DisplayText: "Image & Video"},
 		{Value: "music", DisplayText: "Music"},
 	}
 
-	d := IndexView{
+	indexView := mytemplate.IndexView{
 		Title:          "Carp - " + r.URL.Path,
 		Dir:            rootDir,
 		Breadcrumb:     breadcrumb,
@@ -130,17 +103,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		ActiveCategory: activeCategory,
 	}
 	// Html Header
-	mytemplate.IndexList()
-	err = parsedTemplate.ExecuteTemplate(w, "index_list", &d)
-
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, http.StatusText(500), 500)
-	}
+	mytemplate.Index(w, &indexView)
 
 	// Html Body
 	myhttp.ServeFile(w, r, rootDir+r.URL.Path)
 
 	// Html Footer
-	parsedTemplate.ExecuteTemplate(w, "index_list_footer", nil)
+	mytemplate.Footer(w)
 }

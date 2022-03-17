@@ -28,7 +28,7 @@ import (
 	"github.com/lkaihua/carp-web-gallery/packages/utils"
 )
 
-// ======= Section 1 ======
+// ========== 1 ===========
 // Fix dependent function and const
 
 func logf(r *http.Request, format string, args ...interface{}) {
@@ -39,10 +39,10 @@ const sniffLen = 512
 
 // ========================
 
-// ======= Section 2 ======
+// ========== 2 ===========
 // New functions to output HTML with templates
 
-type DirEntry struct {
+type dirEntry struct {
 	UrlString string
 	IsFolder  bool
 	Name      string // Full string of hanlder
@@ -51,6 +51,8 @@ type DirEntry struct {
 }
 
 /*
+ * For reference, FileInfo interface provides following metadata
+ *
 	type FileInfo interface {
 		Name() string       // base name of the file
 		Size() int64        // length in bytes for regular files; system-dependent for others
@@ -61,7 +63,7 @@ type DirEntry struct {
 	}
 */
 
-func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
+func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 	data := []mytemplate.DisplayEntry{}
 
 	htmlReplacer := strings.NewReplacer(
@@ -124,7 +126,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []DirEntry) {
 
 // ========================
 
-// ======= Section 3 ======
+// ========== 3 ===========
 // Go's offical HTTP file system request handler
 // ========================
 
@@ -223,7 +225,7 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 	// sort.Slice(dirs, func(i, j int) bool { return dirs[i].Name() < dirs[j].Name() })
 	sort.Slice(dirs, func(i, j int) bool { return dirs[i].ModTime().Unix() > dirs[j].ModTime().Unix() })
 
-	dirData := []DirEntry{}
+	dirData := []dirEntry{}
 
 	for _, d := range dirs {
 		name := d.Name()
@@ -233,7 +235,7 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 		url := url.URL{Path: name}
 		urlString := url.String()
 
-		dirData = append(dirData, DirEntry{
+		dirData = append(dirData, dirEntry{
 			Name:      name,
 			UrlString: urlString,
 			IsFolder:  d.IsDir(),
@@ -243,7 +245,9 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 
 	}
 
-	// fmt.Printf("%d, %d, %v", len(dirData), cap(dirData), dirData)
+	/*
+	 * Format dir info into HTML
+	 */
 	formatDirHtml(w, r, dirData)
 
 	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
