@@ -1,30 +1,60 @@
 {{define "folder_content_music"}}
 <section id="FolderContent" class="folder_content_music">
 {{ with . }}
-<ul class="item-list mx-0 border-1 ">
-    {{ range . }}
-    <li>
-        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
-            <span class="icon {{ .EntryType }}"></span>
-            <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-            <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
-        </a>
-        
-        {{ if ne .EntryType "folder" }}
-        <button type="button" class="btn btn-more"></button>
-        {{ end }}
-        
-        {{ if eq .EntryType "image" }}
-        <button type="button" class="btn btn-preview border rounded">
-            <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
-        </button>
-        {{ end }}
+
+
+<ul id="MusicPlayer" class="row row-cols-1 row-cols-s-1 row-cols-m-4 row-cols-lg-2 list-unstyled list mx-1 my-3">
+    <li class="col p-0">
+        <div class=" rounded-pill rounded">
+            <audio id="MusicPlayerAudio" class=" rounded-pill rounded" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+                <source type="audio/mp3" src="">
+                Sorry, your browser does not support HTML5 audio.
+            </audio>
+        </div>
     </li>
+</ul>
+
+
+<ul class="item-list mx-0 border-1 " id="playlist">
+    {{ range . }}
+        {{ if eq .EntryType "music" }}
+        <li>
+            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
+                <span class="icon {{ .EntryType }}"></span>
+                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+            </a>
+        </li>
+        {{ end }}
     {{ else }}
     <li> Ops! Nothing here. </li>
     {{ end }}
 </ul>
+
+<hr/>
+<h4>Other Files</h4>
+<ul id="OtherList" class="item-list mx-0 border-1 ">
+    {{ range . }}
+        {{ if ne .EntryType "music" }}
+        <li>
+            <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
+                <span class="icon {{ .EntryType }}"></span>
+                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+            </a>
+            
+            {{ if ne .EntryType "folder" }}
+            <button type="button" class="btn btn-more"></button>
+            {{ end }}
+        </li>
+        {{ end }}
+    {{ end }}
+</ul>
+
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
+<script src="/static/scripts/music-player.js?static=1"></script>
+
+
 {{ else }}
 <div id="FolderEmptyPlaceholder" class="mb-4 border rounded-3 d-flex align-items-center justify-content-center p-3 py-6">
     <h4>The folder is empty.</h4>

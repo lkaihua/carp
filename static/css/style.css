@@ -1,5 +1,8 @@
 :root{
   --gray-border-color:#d8d8d8;
+  --btn-background-color: white;
+  --btn-border-start-color: var(--bs-red);
+  --btn-border-end-color: var(--bs-blue);
 }
 
 .event-body-not-loaded *{
@@ -672,6 +675,31 @@ ul.item-list, ol.item-list {
 }
 #ModalButtonNext{
   opacity: 0.8;
+}
+
+#MusicPlayer{
+  justify-content: center;
+}
+#MusicPlayerAudio{
+  width: 100%;
+  border: 2px solid white;
+}
+
+#MusicPlayer li div.rounded-pill{
+  /* border: 2px solid var(--bs-gray-600); */
+
+  padding: 2px;
+  overflow: hidden;
+  background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), 
+                    linear-gradient(30deg, var(--btn-border-start-color), var(--btn-border-end-color));
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 
 

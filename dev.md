@@ -7,6 +7,9 @@
 - [x] To highlight certain category of files in current folder
 
 ### Nice to have
+- [ ] A mp3 player
+  - [ ] Loop play.
+  - [ ] Skip to next song when Media source could not be decoded. And stop playing when all songs are not playable.
 - [ ] To hightlight the last selected file or visited folder. 
 - [ ] To have a config yaml.
 - [ ] To highlight the previous folder after navigation to upper folder. 
@@ -28,6 +31,11 @@
 - Refactor template modules. 
 
 - Update category selector and default list view UI. 
+
+- Init the music player view.
+
+![docs/images/2022-03-16-music-player.png](docs/images/2022-03-16-music-player.png)
+
 
 #### 2022-03-15
 

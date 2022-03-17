@@ -106,6 +106,9 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			if utils.IsVideo(name) {
 				entryType = "video"
 			}
+			if utils.IsMusic(name) {
+				entryType = "music"
+			}
 
 			urlString += "?file=" + entryType
 		}
