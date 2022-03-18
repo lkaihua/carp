@@ -1,16 +1,17 @@
 ### MVP
 
-- [X] To navigate folders and open files
+- [x] To navigate folders and open files
 - [x] To have a breadcrumb navigation bar
 - [x] To abbreviate very long folder/file name smartly
 - [x] To dynamically load images to preview 
 - [x] To highlight certain category of files in current folder
 
 ### Nice to have
-- [ ] A mp3 player
-  - [ ] Loop play.
-  - [ ] Skip to next song when Media source could not be decoded. And stop playing when all songs are not playable.
-- [ ] To hightlight the last selected file or visited folder. 
+- [x] A mp3 player
+  - [x] Loop play.
+  - [x] Skip to next song when Media source could not be decoded. - [ ] Stop playing when all songs are not playable.
+  - [x] Highlight the current playing track.
+- [ ] To highlight the last selected file or visited folder. 
 - [ ] To have a config yaml.
 - [ ] To highlight the previous folder after navigation to upper folder. 
 - [ ] To generate thumbnails when entering a gallery folder 
@@ -20,11 +21,21 @@
     1. To resize image to a thumbnail
     2. https://github.com/xfrr/goffmpeg to extract first frame of video
     3. Show a progress of above progress
-- [ ] In preview modal, click on the video and show control. 
+- [x] In preview modal, click on the video and show control. 
 - [ ] Add a file size sorting option. For now files are sorted with newest modification time to oldest. 
 - [ ] Display file info in preview modal, such as Modification Time and File Size.
 
 ### Work log
+
+#### 2022-03-17
+
+- Update the Preview Modal.
+
+- Finish view of music player. Playing track is highlighted in the list. Adjust the player to bottom fix. The look and feel of `Audio` differs in different platform so that design is to keep it simple and native.
+
+| Android Music Player  | iOS Music Player |
+| ------------- | ------------- |
+| ![docs/images/2022-03-17-music-player-android.png](docs/images/2022-03-17-music-player-android.png) | ![docs/images/2022-03-17-music-player-ios.png](docs/images/2022-03-17-music-player-ios.png)  |
 
 #### 2022-03-16
 

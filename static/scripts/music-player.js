@@ -1,44 +1,52 @@
-var audio;
-var playlist;
-var tracks;
-var current;
-
 init();
 function init(){
-    var $ = (path) => document.querySelector(path);
-    current = 0;
-    audio = $('#MusicPlayerAudio');
-    playlist = $('#playlist');
-    tracks = playlist.querySelectorAll('li a');
-    len = tracks.length;
-    audio.volume = .50;
-    // const songs = Array.from(playlist.querySelectorAll('a'))
-    tracks.forEach((link, i) => link.addEventListener("click", function(e){
-        e.preventDefault();
-        // console.log(a)
-        //current = link.parent().index();
-        current = i
-        run(link, audio);
-    }));
+    const $ = (path) => document.querySelector(path);
+    const audio = $('#MusicPlayerAudio');
+    const playlist = $('#Playlist');
+    const playerCurrentTrack = $('#PlayerCurrentTrack');
+    var tracks = playlist.querySelectorAll('li a');
+    const len = tracks.length;
+    let prev = -1;
+    let current = -1;
+    
+    const run = (link, player) => {
+        // user can click the song already playing
+        if (link.getAttribute("data-playing") == "true"){
+            audio.play();
+            return;
+        }
+        
+        link.setAttribute("data-playing", "true")
+        player.src = link.href;
+        prev >= 0 && tracks[prev] && tracks[prev].setAttribute("data-playing", "false")
+        playerCurrentTrack.textContent = link.getAttribute("data-song-name")
+        audio.load();
+        audio.play();
+    }
+
     const playNext = function(e){
+        prev = current;
         current++;
         if(current == len){
             current = 0;
         }
-        run(tracks[current],audio);
+        run(tracks[current], audio);
     }
+
+    audio.volume = .50;
+    tracks.forEach((link, i) => link.addEventListener("click", function(e){
+        e.preventDefault();
+        prev = current;
+        current = i
+        run(link, audio);
+    }));
+    
     audio.addEventListener('ended',playNext);
+
     audio.addEventListener('error',function(e){
-        console.log("This song is not playable")
+        // console.log("This song is not playable")
+        current >= 0 && tracks[current] && tracks[current].setAttribute("data-error", "true")
         playNext(e)
     })
-    run(tracks[0], audio)
-}
 
-function run(link, player){
-        player.src = link.href;
-        // par = link.parent();
-        // par.addClass('active').siblings().removeClass('active');
-        audio.load();
-        audio.play();
 }

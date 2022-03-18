@@ -2,24 +2,25 @@
 <section id="FolderContent" class="folder_content_music">
 {{ with . }}
 
-
+{{/* 
 <ul id="MusicPlayer" class="row row-cols-1 row-cols-s-1 row-cols-m-4 row-cols-lg-2 list-unstyled list mx-1 my-3">
     <li class="col p-0">
-        <div class=" rounded-pill rounded">
-            <audio id="MusicPlayerAudio" class=" rounded-pill rounded" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+        <div class=" rounded-pill rounded flex-center">
+            <audio id="MusicPlayerAudio" class=" rounded-pill rounded flex-center " preload="auto" tabindex="0" controls="" type="audio/mpeg">
                 <source type="audio/mp3" src="">
                 Sorry, your browser does not support HTML5 audio.
             </audio>
         </div>
     </li>
-</ul>
+</ul> */}}
 
-
-<ul class="item-list mx-0 border-1 " id="playlist">
+<ul class="item-list mx-0 border-1 " id="Playlist">
     {{ range . }}
         {{ if eq .EntryType "music" }}
         <li>
-            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
+            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" 
+                data-playing="false" data-error="false" data-song-name="{{ .FirstName }}" href="{{ .UrlString }}" 
+            >
                 <span class="icon {{ .EntryType }}"></span>
                 <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
                 <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
@@ -37,7 +38,7 @@
     {{ range . }}
         {{ if ne .EntryType "music" }}
         <li>
-            <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
+            <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}"">
                 <span class="icon {{ .EntryType }}"></span>
                 <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
                 <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
@@ -50,6 +51,22 @@
         {{ end }}
     {{ end }}
 </ul>
+
+<div id="MusicPlayerBar">
+    <ul class="row row-cols-1 row-cols-s-1 row-cols-m-4 row-cols-lg-2 list-unstyled list mx-0 my-0">
+        <li class="col p-0">
+            <div id="MusicPlayer" class="shadow rounded-2">
+                <figure class="d-flex">
+                    <figcaption id="PlayerCurrentTrack" class="text-max-lines-2 mx-1 my-2"></figcaption>
+                    <audio id="MusicPlayerAudio" class="rounded-2 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+                        <source type="audio/mp3" src="">
+                        Sorry, your browser does not support HTML5 audio.
+                    </audio>
+                </figure>    
+            </div>
+        </li>
+    </ul>
+</div>
 
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
 <script src="/static/scripts/music-player.js?static=1"></script>

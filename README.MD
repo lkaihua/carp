@@ -5,7 +5,7 @@ Carp Web Gallery
 Turning a folder into a gallery website to share your videos, songs and images in the local netwrok.
 
 
-- Browser videos and audios in HTML5 page.
+- Browser your local photos, videos and songs in a webpage.
 - Mobile and desktop friendly.
 - Password protected.
 
