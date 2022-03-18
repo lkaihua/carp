@@ -9,7 +9,8 @@
 ### Nice to have
 - [x] A mp3 player
   - [x] Loop play.
-  - [x] Skip to next song when Media source could not be decoded. - [ ] Stop playing when all songs are not playable.
+  - [x] Skip to next song when Media source could not be decoded. 
+  - [ ] Stop playing when all songs are not playable.
   - [x] Highlight the current playing track.
 - [ ] To highlight the last selected file or visited folder. 
 - [ ] To have a config yaml.
@@ -31,7 +32,7 @@
 
 - Update the Preview Modal.
 
-- Finish view of music player. Playing track is highlighted in the list. Adjust the player to bottom fix. The look and feel of `Audio` differs in different platform so that design is to keep it simple and native.
+- Finish view of music player. Playing track is highlighted in the list. Adjust the player position to bottom fix.
 
 | Android Music Player  | iOS Music Player |
 | ------------- | ------------- |
@@ -74,8 +75,6 @@ Preview modal for Video (Desktop)
 - Updated category selector. 
   - Add Js script to remove class name from body when onload finishes, so the animation/transition will be smooth, and serves as a indicator for fully interacitve page.
   - Use background image css trink to have a multi-color gradient visual effect.
-
-![docs/images/2022-03-13-imagevideo.png](docs/images/2022-03-13-imagevideo.png)
 
 #### 2022-03-09
 
