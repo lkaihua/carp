@@ -27,19 +27,20 @@
 
 ### Work log
 
-#### 2022-03-17
+#### 2022-03-20
 
 - Integrate css3 vinyl record player.
 - Automatically select the best category based on file types in current folder, for instance if most of the files are `mp3`, the view will be in `Music` category rather than `All`
-- The player position is changed to top and sticky.
+- The player is sticky to the bottom in `Music` view, and when the player list is empty the player is not sticky and stays above the `Other Files` section.
   
-  ![docs/images/2022-03-20-music-player-android.png](docs/images/2022-03-20-music-player-android.png)
+  ![docs/images/2022-03-20-music-player.png](docs/images/2022-03-20-music-player.png)
 
 #### 2022-03-17
 
 - Update the Preview Modal.
 - Finish view of music player. Playing track is highlighted in the list. Change the player position to bottom fix.
 
+  ![docs/images/2022-03-17-music-player-ios.png](docs/images/2022-03-17-music-player-ios.png)
 #### 2022-03-16
 
 - Refactor template modules. 

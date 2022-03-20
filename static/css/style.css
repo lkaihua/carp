@@ -77,7 +77,8 @@ section {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: -0.1px;
+  /* top: -0.1px; */
+  bottom: -1px;
   z-index: 999;
 }
 
@@ -209,13 +210,13 @@ ul.item-list, ol.item-list {
   background-color: var(--bs-gray-200);
   min-width: 100px;
   max-width: min(300px, calc(50vw - 1.75rem));
-  height: 32px;
+  /* height: 32px; */
   --btn-background-color: var(--bs-gray-200);
   user-select: none;
 }
 
 #TopBreadcrumb .btn-container{
-  /* height: 32px; */
+  height: 32px;
   overflow-y: hidden;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -281,7 +282,7 @@ ul.item-list, ol.item-list {
                     linear-gradient(30deg, var(--bs-red), var(--bs-blue));
   background-origin: border-box;
   background-clip: content-box, border-box;
-
+  font-weight: bold;
   /* background-color: var(--btn-background-color); */
  }
 
@@ -776,11 +777,7 @@ ul.item-list, ol.item-list {
 #MusicPlayerAudio{
   width: 100%;
   margin-top: 0.25rem;
-  /* height: 40px; */
-  /* border: 2px solid red; */
-  /* height: 100%; */
 }
-
 
 #Footer{
   margin-bottom: 10rem;
@@ -812,11 +809,26 @@ ul.item-list, ol.item-list {
 }
 
 
+/**
+ * Reset native <audio> tag style
+ */
+
+ /* reset Chrome panel background from siliver to theme light*/
+audio::-webkit-media-controls-panel{
+  background-color: var(--bs-light);
+}
+#MusicPlayerAudio{
+  /* border: 2px solid var(--bs-gray-400); */
+  /* background-color: white; */
+  /* border-radius: 50%; */
+  height: 35px;
+  overflow: hidden;
+  vertical-align: middle;
+  text-align: center;
+}
+
+
+/* iOS does not allow any modification of control bar */
 @supports (-webkit-touch-callout: none) {
   /* CSS specific to iOS devices */ 
-
-  #MusicPlayer li div.rounded-pill{
-    border-radius: 0.5rem !important;
-    --btn-background-color: black;
-  }
 }

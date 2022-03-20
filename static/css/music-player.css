@@ -20,6 +20,7 @@
     display: inline-block;
 }
 
+
 .board{
     width: var(--player-board-width);
     height: var(--player-board-height);

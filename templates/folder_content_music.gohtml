@@ -2,6 +2,25 @@
 <section id="FolderContent" class="folder_content_music">
 {{ with . }}
 
+<ul class="item-list mx-0 border-1 " id="Playlist">
+    {{ range . }}
+        {{ if eq .EntryType "music" }}
+        <li>
+            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" 
+                data-playing="false" data-error="false" data-song-name="{{ .FirstName }}" href="{{ .UrlString }}" 
+            >
+                <span class="icon {{ .EntryType }}"></span>
+                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+            </a>
+            <hr>
+        </li>
+        {{ end }}
+    {{ else }}
+    <li> Ops! Nothing here. </li>
+    {{ end }}
+</ul>
+
 <div id="MusicPlayerBar" class="sticky">
     <ul class="row row-cols-1 row-cols-s-1 row-cols-m-2 row-cols-lg-2 list-unstyled list mx-0 my-0">
 
@@ -70,24 +89,6 @@
     </svg>
 </div>
 
-<ul class="item-list mx-0 border-1 " id="Playlist">
-    {{ range . }}
-        {{ if eq .EntryType "music" }}
-        <li>
-            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" 
-                data-playing="false" data-error="false" data-song-name="{{ .FirstName }}" href="{{ .UrlString }}" 
-            >
-                <span class="icon {{ .EntryType }}"></span>
-                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
-            </a>
-        </li>
-        {{ end }}
-    {{ else }}
-    <li> Ops! Nothing here. </li>
-    {{ end }}
-</ul>
-
 <hr/>
 <h4>Other Files</h4>
 <ul id="OtherList" class="item-list mx-0 border-1 ">
@@ -103,6 +104,7 @@
             {{ if ne .EntryType "folder" }}
             <button type="button" class="btn btn-more"></button>
             {{ end }}
+            <hr/>
         </li>
         {{ end }}
     {{ end }}
