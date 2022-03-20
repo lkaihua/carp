@@ -1,12 +1,10 @@
 {{ define "category_selector"}}
 
 <section id="CategorySelector">
-    {{ $activeCategory := .ActiveCategory }}
     {{ with .Categories }}      
-    <ul class="row row-cols-3 row-cols-s-3 row-cols-m-4 row-cols-lg-6 row-cols-xl-8 list-unstyled list mx-1 my-3">
+    <ul class="row row-cols-3 row-cols-s-3 row-cols-m-6 row-cols-lg-6 list-unstyled list mx-1 my-3">
         {{ range . }}
-        {{/* <li class="col mb-4"> */}}
-        <li class="col {{ if eq .Value $activeCategory -}} active {{- end }}" >
+        <li class="col" >
             <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">
                 <span class="mb-1 rounded-pill rounded category-btn category-btn-{{- .Value}}">
                 

@@ -20,7 +20,10 @@
                 <button type="button" class="btn border rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                     data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
                 >   
-                    {{/* <img data-src="{{ .FirstName }}_th.jpg?file=image" class="image-preview lazyload" /> */}}
+                    <picture>
+                        <source class="image-preview lazyload"  data-srcset="{{ .FirstName }}_th.jpg?file=image" />
+                        <img src="" alt="" />
+                    </picture>
                     <span class="video-preview rounded border-1 flex-center">
                         <span class="icon video-play"></span>
                         {{/* <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span> */}}
@@ -60,6 +63,7 @@
 </ul>
 
 <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
+<script>document.querySelectorAll("#CategorySelector .col")[1].classList.add("active");</script>
 
 {{ template "preview_modal" }}
 

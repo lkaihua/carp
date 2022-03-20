@@ -112,7 +112,10 @@
                         self.observer.unobserve(entry.target);
                         let src = entry.target.getAttribute(self.settings.src);
                         let srcset = entry.target.getAttribute(self.settings.srcset);
-                        if ("img" === entry.target.tagName.toLowerCase()) {
+
+                        /* Add `source` along with `img` */
+                        const tagName = entry.target.tagName.toLowerCase()
+                        if (["img","source"].includes(tagName)) {
                             if (src) {
                                 entry.target.src = src;
                             }
@@ -168,15 +171,15 @@
         return new LazyLoad(images, options);
     };
 
-    if (root.jQuery) {
-        const $ = root.jQuery;
-        $.fn.lazyload = function (options) {
-            options = options || {};
-            options.attribute = options.attribute || "data-src";
-            new LazyLoad($.makeArray(this), options);
-            return this;
-        };
-    }
+    // if (root.jQuery) {
+    //     const $ = root.jQuery;
+    //     $.fn.lazyload = function (options) {
+    //         options = options || {};
+    //         options.attribute = options.attribute || "data-src";
+    //         new LazyLoad($.makeArray(this), options);
+    //         return this;
+    //     };
+    // }
 
     return LazyLoad;
 });

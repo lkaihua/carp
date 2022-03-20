@@ -49,7 +49,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	activeCategory := "all"
+	// activeCategory := "all"
 
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if _, ok := queries["static"]; ok {
@@ -60,9 +60,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 			serveFile(w, r)
 			return
 		}
-		if value, ok := queries["category"]; ok {
-			activeCategory = value[0]
-		}
+		// if value, ok := queries["category"]; ok {
+		// 	activeCategory = value[0]
+		// }
 	}
 
 	/*
@@ -96,11 +96,10 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	indexView := mytemplate.IndexView{
-		Title:          "Carp - " + r.URL.Path,
-		Dir:            rootDir,
-		Breadcrumb:     breadcrumb,
-		Categories:     categories,
-		ActiveCategory: activeCategory,
+		Title:      "Carp - " + r.URL.Path,
+		Dir:        rootDir,
+		Breadcrumb: breadcrumb,
+		Categories: categories,
 	}
 	// Html Header
 	mytemplate.Index(w, &indexView)

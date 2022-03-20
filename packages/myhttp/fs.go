@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/lkaihua/carp-web-gallery/packages/mytemplate"
+	"github.com/lkaihua/carp-web-gallery/packages/types"
 	"github.com/lkaihua/carp-web-gallery/packages/utils"
 )
 
@@ -82,15 +83,16 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		// modTime := d.ModTime
 		// size := d.Size
 		// fmt.Println(name, "-", modTime, "-", size)
-		var firstName, lastName, entryType string
+		var firstName, lastName string
+		var entryType types.EntryType
 
 		if d.IsFolder {
 			lastName = "/"
 			firstName = name
-			entryType = "folder"
+			entryType = types.EntryTypeFolder
 			urlString += "/"
 		} else {
-			// It's legal for a file without any extention
+			// It's legal file without any extention
 			if lastDotIndex := strings.LastIndex(name, "."); lastDotIndex == -1 {
 				lastName = ""
 				firstName = name
@@ -99,19 +101,22 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 				firstName = name[:lastDotIndex]
 			}
 
-			entryType = "default"
 			if utils.IsImage(name) {
-				entryType = "image"
-			}
-			if utils.IsVideo(name) {
-				entryType = "video"
-			}
-			if utils.IsMusic(name) {
-				entryType = "music"
+				entryType = types.EntryTypeImage
+			} else if utils.IsVideo(name) {
+				entryType = types.EntryTypeVideo
+			} else if utils.IsMusic(name) {
+				entryType = types.EntryTypeMusic
+			} else {
+				entryType = types.EntryTypeDefault
 			}
 
-			urlString += "?file=" + entryType
+			urlString += "?file=" + entryType.String()
 		}
+
+		// Find thumbnail
+		// if ()
+
 		data = append(data, mytemplate.DisplayEntry{
 			Name:      name,
 			FirstName: firstName,
@@ -225,8 +230,8 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 		http.Error(w, "Error reading directory", http.StatusInternalServerError)
 		return
 	}
-	// sort.Slice(dirs, func(i, j int) bool { return dirs[i].Name() < dirs[j].Name() })
-	sort.Slice(dirs, func(i, j int) bool { return dirs[i].ModTime().Unix() > dirs[j].ModTime().Unix() })
+	sort.Slice(dirs, func(i, j int) bool { return dirs[i].Name() < dirs[j].Name() })
+	// sort.Slice(dirs, func(i, j int) bool { return dirs[i].ModTime().Unix() > dirs[j].ModTime().Unix() })
 
 	dirData := []dirEntry{}
 

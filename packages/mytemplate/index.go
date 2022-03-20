@@ -14,11 +14,11 @@ type Category struct {
 	DisplayText string
 }
 type IndexView struct {
-	Title          string
-	Dir            string
-	Breadcrumb     []mypath.BreadcrumbLevel
-	Categories     []Category
-	ActiveCategory string
+	Title      string
+	Dir        string
+	Breadcrumb []mypath.BreadcrumbLevel
+	Categories []Category
+	// ActiveCategory string
 }
 
 func Index(w http.ResponseWriter, indexView *IndexView) {
@@ -26,7 +26,7 @@ func Index(w http.ResponseWriter, indexView *IndexView) {
 		filepath.Join("templates", "index.gohtml"),
 		filepath.Join("templates", "top_breadcrumb.gohtml"),
 		filepath.Join("templates", "category_selector.gohtml"),
-		filepath.Join("templates", "footer.gohtml"),
+		// filepath.Join("templates", "footer.gohtml"),
 	}
 	parsedTemplate, err := template.ParseFiles(templates...)
 	if err != nil {

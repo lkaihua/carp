@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"path/filepath"
 	"text/template"
+
+	"github.com/lkaihua/carp-web-gallery/packages/types"
 )
 
 const template_prefix string = "folder_content_"
@@ -28,7 +30,7 @@ func (v ViewCategory) TemplateName() string {
 
 type DisplayEntry struct {
 	Name      string
-	EntryType string
+	EntryType types.EntryType
 	UrlString string
 	FirstName string
 	LastName  string // File extension string if it's a file, or "/" if it's a folder
@@ -48,7 +50,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if q, ok := queries["category"]; ok {
 			switch q[0] {
-			case Music.String():
+			case "music":
 				template_name = Music.String()
 			case "image-video":
 				template_name = ImageVideo.String()
@@ -57,8 +59,27 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 			default:
 				template_name = Default.String()
 			}
+		} else {
+			// let's decide the category based on the file percentage when no category is given
+			countMap := make(map[types.EntryType]int)
+			for _, v := range *data {
+				countMap[v.EntryType] += 1
+			}
+			countMusic := countMap[types.EntryTypeMusic]
+			countImageVideo := countMap[types.EntryTypeImage] + countMap[types.EntryTypeVideo]
+			countAll := len(*data)
+			if countAll > 0 {
+				if countImageVideo >= countAll/2 {
+					template_name = ImageVideo.String()
+				} else if countMusic >= countAll/2 {
+					template_name = Music.String()
+				} else {
+					template_name = Default.String()
+				}
+			}
 		}
 	}
+
 	template_name = template_prefix + template_name
 	fmt.Println("[FolderContent] template is:", template_name)
 

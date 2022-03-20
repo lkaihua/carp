@@ -1,0 +1,222 @@
+#VinylRecorderPlayer {
+    --scale-percent: 0.25;
+
+    --player-width: 500px;
+    --player-height: 350px;
+    
+    --player-board-width: 425px;
+    --player-board-height: 330px;
+
+    /* --board-background-color: #9b7c5b;
+    --board-border-color: #e6b786; */
+    --board-background-color: white;
+    --board-border-color: #ddd;
+
+    width: calc(var(--player-width) * var(--scale-percent));
+    height: calc(var(--player-height) * var(--scale-percent));
+    min-width: calc(var(--player-board-width) * var(--scale-percent));
+    min-height: calc(var(--player-board-height) * var(--scale-percent));
+
+    display: inline-block;
+}
+
+.board{
+    width: var(--player-board-width);
+    height: var(--player-board-height);
+    background: var(--board-background-color);
+    border-radius: 15px;
+    border: 5px solid var(--board-border-color);
+    cursor: pointer;
+    position: relative;
+}
+
+#VinylRecorderPlayer .board{
+    transform: scale(var(--scale-percent));
+    transform-origin: left top;
+    margin-right: calc(var(--player-board-width) * (var(--scale-percent) - 1));
+    margin-bottom: calc(var(--player-board-height) * (var(--scale-percent) - 1));
+}
+
+
+.wrapper{
+    position: absolute;
+    z-index: 0;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    margin-left: -40px;
+    margin-top: -15px;
+}
+
+.board .vinyl {
+    --time-animation: 2000ms;
+    -webkit-animation: var(--time-animation) spin infinite normal linear;
+    -moz-animation: var(--time-animation) spin infinite normal linear;
+    -ms-animation: var(--time-animation) spin infinite normal linear;
+    -o-animation: var(--time-animation) spin infinite normal linear;
+    animation: var(--time-animation) spin infinite normal linear;
+  }
+  .board[data-paused] .vinyl {
+    animation-play-state: paused !important;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .board[data-tonearm-on] .tonearm {
+    transform: rotate(305deg);
+  }
+  
+  .vinyl {
+    /*   background: black; */
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    z-index: 10;
+    width: 300px;
+    height: 300px;
+    margin-left: 75px;
+    margin-top: 25px;
+    transform-origin: 50% 50%;
+    transition: transform 10s linear;
+    transform-style: preserve-3D;
+  }
+  .vinyl-inner1 {
+    position: absolute;
+    display: block;
+    z-index: 20;
+    width: 100px;
+    height: 100px;
+    margin: 100px;
+    border-radius: 50%;
+    /*   background: #313337; */
+    top: 0;
+    left: 0;
+  }
+  .vinyl-inner2 {
+    position: absolute;
+    display: block;
+    z-index: 30;
+    width: 80px;
+    height: 80px;
+    margin: 10px;
+    border-radius: 50%;
+    background: #371d21;
+  }
+  .vinyl-inner3 {
+    position: absolute;
+    display: block;
+    z-index: 40;
+    width: 20px;
+    height: 20px;
+    margin: 30px;
+    border-radius: 50%;
+    background: black;
+  }
+  .vinyl-inner4 {
+    position: absolute;
+    display: block;
+    z-index: 50;
+    width: 10px;
+    height: 10px;
+    margin: 5px;
+    border-radius: 50%;
+    background: white;
+  }
+  .speaker-left {
+    position: absolute;
+    display: block;
+    z-index: 30;
+    width: 40px;
+    height: 40px;
+    margin-top: 260px;
+    margin-left: 50px;
+    border-radius: 50%;
+    background: black;
+    border: 3px solid #6f6e6c;
+  }
+  .speaker-right {
+    position: absolute;
+    display: block;
+    z-index: 30;
+    width: 40px;
+    height: 40px;
+    margin-top: 260px;
+    margin-left: 355px;
+    border-radius: 50%;
+    background: black;
+    border: 3px solid #6f6e6c;
+  }
+  .tonearm {
+    position: absolute;
+    display: block;
+    height: 10px;
+    width: 160px;
+    border-bottom: 5px solid #6f6e6c;
+    transform: rotate(270deg);
+    margin-top: 75px;
+    margin-left: 255px;
+    z-index: 60;
+    transform-origin: right bottom;
+    transition: transform 0.3s;
+    transition-timing-function: ease-in-out;
+  }
+  .tonearmblock {
+    display: block;
+    position: absolute;
+    width: 40px;
+    height: 15px;
+    z-index: 70;
+    background: #6f6e6c;
+    margin-left: -22px;
+    /* margin-top: 5px */
+  }
+  .tonearmrest {
+    display: block;
+    position: absolute;
+    width: 34px;
+    height: 50px;
+    border-radius: 40px;
+    z-index: 40;
+    background: #848380;
+    margin-left: 395px;
+    margin-top: 55px;
+  }
+  .tonearmrest2 {
+    z-index: 55;
+    position: absolute;
+    display: block;
+    margin-left: 8px;
+    margin-top: 20px;
+    width: 18px;
+    height: 18px;
+    background: #6f6e6c;
+    border-radius: 20rem;
+  }
+  .adjuster {
+    display: block;
+    position: absolute;
+    width: 95px;
+    height: 75px;
+    z-index: 5;
+    border-radius: 5px;
+    background: #bcb9ae;
+    margin-left: 350px;
+    margin-top: 40px;
+  }
+  
+  #VinylSvg {
+    width: 300px;
+    height: 300px;
+    display: none;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+  }
+  
