@@ -461,6 +461,10 @@ ul.item-list, ol.item-list {
 
 #FolderContent ul li {
   position: relative;
+  border-bottom: 1px solid var(--bs-gray-300);
+}
+#FolderContent ul li:last-child {
+  border-bottom: none;
 }
 
 #FolderContent ul li a:active{
@@ -734,22 +738,11 @@ ul.item-list, ol.item-list {
 }
 
 #MusicPlayerBar{
-  /* position: fixed; */
-  /* left: var(--section-margin-x); */
-  /* right: var(--section-margin-x); */
-  /* bottom: 10px; */
-  /* z-index: 999; */
-  /* max-width: var(--body-max-width); */
-  /* transition: width 1s;
-  transition-timing-function: ease-in-out; */
+  padding-bottom: 1.5rem;
 }
 
 #MusicPlayerBar[stuck] ul{
-  /* max-width: 100%; */
-  /* margin: 0 -2rem; */
-  /* width: 200px;
-  height: 200px; */
-  background-color: var(--bs-dark);
+  /* background-color: var(--bs-dark); */
 }
 
 #MusicPlayerBar ul{

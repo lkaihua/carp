@@ -13,7 +13,6 @@
                 <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
                 <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
             </a>
-            <hr>
         </li>
         {{ end }}
     {{ else }}
@@ -54,7 +53,7 @@
                 <!-- Record Player ends -->
                 <figure class="d-flex">
                     <figcaption id="PlayerCurrentTrack" class="text-max-lines-2">
-                        Click the Vinyl Record to play.
+                        Click <img src="/static/icons/vinyl-fill.svg?static=1" width="24"/> to play/pause.
                     </figcaption>
                 </figure>    
             </div>
@@ -104,7 +103,6 @@
             {{ if ne .EntryType "folder" }}
             <button type="button" class="btn btn-more"></button>
             {{ end }}
-            <hr/>
         </li>
         {{ end }}
     {{ end }}
