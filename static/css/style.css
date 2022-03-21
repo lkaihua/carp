@@ -191,8 +191,9 @@ ul.item-list, ol.item-list {
 }
 
 #TopBreadcrumb ol{
+  --breadcrumb-gap: 0.25rem;
   display: flex;
-  gap: 0.25rem;
+  gap: var(--breadcrumb-gap);
   padding: 0.5rem;
   border-radius: 0.5rem;
   flex-direction: row;
@@ -209,7 +210,8 @@ ul.item-list, ol.item-list {
   /* border-radius: 0; */
   background-color: var(--bs-gray-200);
   min-width: 100px;
-  max-width: min(300px, calc(50vw - 1.75rem));
+  /* At max width 2 pills are displayed in one row */
+  max-width: min(300px, calc(50% - var(--breadcrumb-gap) / 2));
   /* height: 32px; */
   --btn-background-color: var(--bs-gray-200);
   user-select: none;
@@ -235,8 +237,9 @@ ul.item-list, ol.item-list {
 
 #TopBreadcrumb ol li.row-trailing-item{
   /* Let the trailing item to fulfill all the space until the row end */
-  flex-grow: 1;
-  max-width: 75vw;
+  flex: 1 1 auto;
+  /* max-width: 100%; */
+  /* max-width: 75vw; */
 }
 
 #TopBreadcrumb ol li a{
@@ -813,11 +816,11 @@ ul.item-list, ol.item-list {
 
   #TopBreadcrumb ol li {
     min-width: max(100px, calc(25vw - 1rem));
-    max-width: calc(50vw - 3rem);
+    /* max-width: calc(50vw - 3rem); */
   }
 
   #TopBreadcrumb ol li.row-trailing-item{
-    max-width: calc(100vw - 3rem);
+    /* max-width: 100%; */
   }
 
   #CategorySelector li a .name {
