@@ -47,7 +47,7 @@ section {
   -webkit-box-orient: vertical;
   word-wrap: break-word;
 }
-.text-max-lines-2 {
+.text-max-lines-3 {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -653,12 +653,36 @@ ul.item-list, ol.item-list {
   flex-direction: column;
 }
 #PreviewModal .modal-footer{
-  position: relative;
+  /* position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0; */
+  /* height: 100px; */
   background-color: var(--preview-model-bg-color);
   border-top-color: var(--preview-model-bg-color);
 }
+
+#PreviewModal .modal-footer .button-container{
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  gap: 1rem;
+  margin-bottom: 1rem
+}
+
+
 #PreviewModal .modal-footer .btn{
   flex: 1 1 auto;
+  position: relative;
+  padding: 5px;
+  transition: background-color 0.25s ease-out;
+}
+#PreviewModal .modal-footer .btn[data-active]{
+  background-color: none;
+}
+
+#PreviewModal .modal-footer .btn[data-active="true"]{
+  background-color: var(--bs-secondary);
 }
 
 #PreviewModal .modal-body .preview-content-container.image-container{
@@ -793,6 +817,11 @@ ul.item-list, ol.item-list {
     min-width: max(100px, calc(25vw - 1rem));
     max-width: calc(50vw - 3rem);
   }
+
+  #TopBreadcrumb ol li.row-trailing-item{
+    max-width: calc(100vw - 3rem);
+  }
+
   #CategorySelector li a .name {
     font-size: 0.9rem;
   }

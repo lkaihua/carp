@@ -46,7 +46,7 @@
 <h4>Other Files</h4>
 <ul id="OtherList" class="item-list mx-0 border-1 ">
     {{ range . }}
-        {{ if ne .EntryType "image" }}
+        {{ if and (ne .EntryType "image") (ne .EntryType "video") }}
         <li>
             <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
                 <span class="icon {{ .EntryType }}"></span>

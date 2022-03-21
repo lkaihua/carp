@@ -17,9 +17,9 @@
         <div class="preview-content-container video-container hidden flex-center">
           <video width="100%" poster="" id="ModalPreviewVideo" preload="metadata" controls autoplay loop playsinline>
             <source src="" type="">
-            <p class="vjs-no-js">
+            <p>
               To view this video please enable JavaScript, and consider upgrading to a 
-              web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+              web browser that supports HTML5 video
             </p>
           </video>
         </div>
@@ -28,25 +28,28 @@
       
       </div>
       <div class="modal-footer">
-        <button class="carousel-control-prev" type="button" data-bs-dismiss="modal" id="ModalButtonPrev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
+        <div class="button-container">
+          <button class="carousel-control-prev btn" type="button" data-bs-dismiss="modal" id="ModalButtonPrev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
 
-        <button class="carousel-control-next" type="button" data-bs-dismiss="modal" id="ModalButtonNext">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+          <button class="carousel-control-next btn" type="button" data-bs-dismiss="modal" id="ModalButtonNext">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
 
-        {{/* <a class="btn btn-secondary btn-lg" id="ModalButtonOpenFile" target="_blank">Raw File</a> */}}
-        <button type="button" class="btn btn-outline-secondary " data-bs-dismiss="modal" id="ModalButtonClosePreview">Close</button>
+          <button type="button" class="btn btn-secondary text-dark" data-bs-dismiss="modal" id="ModalButtonClosePreview">OK</button>
+          {{/* <button type="button" class="btn btn-outline-secondary " id="ModalButtonPlay">...</button> */}}
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const previewModal = document.getElementById('PreviewModal')
+
+const previewModal = document.querySelector('#PreviewModal')
 const previewTriggerButtons = Array.from(document.querySelectorAll('.btn-preview'))
 
 previewModal.addEventListener('hide.bs.modal', function (event) {
@@ -68,8 +71,29 @@ previewModal.addEventListener('show.bs.modal', function (event) {
   const [prevButton, nextButton] = [previewTriggerButtons[buttonIndex-1], previewTriggerButtons[buttonIndex+1]]
   {{/* console.debug(previewTriggerButtons, button, buttonIndex)
   console.debug(previewTriggerButtons[buttonIndex-1], previewTriggerButtons[buttonIndex+1]) */}}
-  document.getElementById('ModalButtonPrev').onclick = () => { prevButton && prevButton.click(); }
-  document.getElementById('ModalButtonNext').onclick = () => { nextButton && nextButton.click() }
+
+  const modalPreviewVideo = previewModal.querySelector('#ModalPreviewVideo')
+  const modalPrevButton = document.querySelector('#ModalButtonPrev')
+  const modalNextButton = document.querySelector('#ModalButtonNext')
+  
+  modalPrevButton.onclick = (e) => {
+    console.debug("prev")
+    prevButton && prevButton.click();
+    modalPrevButton.setAttribute("data-active", "true")
+    setTimeout(()=> {
+        modalPrevButton.setAttribute("data-active", "false")
+    }, 250)
+    e.preventDefault();
+  }
+  modalNextButton.onclick = (e) => {
+    console.debug("next")
+    nextButton && nextButton.click();
+    modalNextButton.setAttribute("data-active", "true")
+    setTimeout(()=> {
+        modalNextButton.setAttribute("data-active", "false")
+    }, 250)
+    e.preventDefault();
+  }
 
   // If necessary, you could initiate an AJAX request here
   // and then do the updating in a callback.
@@ -97,7 +121,7 @@ previewModal.addEventListener('show.bs.modal', function (event) {
             videoSourceType += lastName
       } */}}
 
-      const modalPreviewVideo = previewModal.querySelector('#ModalPreviewVideo')
+      
       {{/* const maxHeight = */}}
 
       modalPreviewVideo.querySelector('source').setAttribute('src', urlString + videoHashForThumbnail)
@@ -110,9 +134,7 @@ previewModal.addEventListener('show.bs.modal', function (event) {
       break;
   }
 
-  // todo. open raw
-  {{/* const modalButtonOpenFile = document.getElementById('ModalButtonOpenFile')
-  modalButtonOpenFile.href = urlString */}}
+ 
 })
 </script>
 {{ end }}

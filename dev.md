@@ -27,6 +27,10 @@
 
 ### Work log
 
+#### 2022-03-21
+
+- Finalize image and video preview modal. Refactor navigation buttons so the button has an elegant blink effect when clicked. Rfactor the `video` layout.
+
 #### 2022-03-20
 
 - Integrate css3 vinyl record player.
