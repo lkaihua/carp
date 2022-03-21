@@ -675,9 +675,7 @@ ul.item-list, ol.item-list {
   flex: 1 1 auto;
   position: relative;
   padding: 5px;
-  transition: background-color 0.25s ease-out;
-}
-#PreviewModal .modal-footer .btn[data-active]{
+  transition: background-color 0.25s linear;
   background-color: none;
 }
 
