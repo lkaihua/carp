@@ -1,0 +1,83 @@
+{{define "folder_content_image_and_video"}}
+<script>document.querySelectorAll("#CategorySelector .col")[1].classList.add("active");</script>
+
+<section id="FolderContent" class="folder_content_image_and_video">
+{{ if gt .CountAll 0 }}
+    <div id="ImageVideoContainer">
+        {{ if eq .CountImageVideo 0 }}
+            <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+                <h4>No video or image here.</h4>
+            </div>
+        {{ else }}
+            <div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-2 g-lg-3">
+                {{ range .DisplayEntries }}
+                    {{ if eq .EntryType "image" }}
+                        <div class="col">
+                            <div class="container"><div class="bg-light">
+                                <button type="button" class="btn border rounded btn-preview btn-preview-image flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                                    data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
+                                >
+                                    <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
+                                </button>
+                            </div></div>
+                        </div>
+                    {{ else if eq .EntryType "video" }}
+                        <div class="col">
+                            <div class="container"><div class="bg-light">
+                                <button type="button" class="btn border rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                                    data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
+                                >   
+                                    <picture>
+                                        <source class="image-preview lazyload"  data-srcset="{{ .FirstName }}_th.jpg?file=image" />
+                                        <img src="" alt="" />
+                                    </picture>
+                                    <span class="video-preview rounded border-1 flex-center">
+                                        <span class="icon video-play"></span>
+                                        {{/* <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span> */}}
+                                    </span>
+                                    <span class='firstName text-center text-max-lines-2 {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                                </button>
+                            </div></div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            </div>    
+        {{ end }}
+    </div>
+
+    
+
+    {{ if lt .CountImageVideo .CountAll }}
+        <h4 class="mt-4 mb-2">Other Files</h4>
+        <ul id="OtherList" class="item-list mx-0 border-1 ">
+            {{ range .DisplayEntries }}
+                {{ if and (ne .EntryType "image") (ne .EntryType "video") }}
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}">
+                            <span class="icon {{ .EntryType }}"></span>
+                            <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                            <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                        </a>
+                        
+                        {{ if ne .EntryType "folder" }}
+                            <button type="button" class="btn btn-more"></button>
+                        {{ end }}
+                    </li>
+                {{ end }}
+            {{ end }}
+        </ul>
+    {{ end }}
+
+    <script>window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"});</script>
+    
+    {{ template "preview_modal" }}
+
+{{ else }}
+    <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+        <h4>The folder is empty.</h4>
+    </div>
+{{ end }}
+</section>
+
+
+{{ end }}

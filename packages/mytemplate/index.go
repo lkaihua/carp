@@ -23,10 +23,10 @@ type IndexView struct {
 
 func Index(w http.ResponseWriter, indexView *IndexView) {
 	templates := []string{
-		filepath.Join("templates", "index.gohtml"),
-		filepath.Join("templates", "top_breadcrumb.gohtml"),
-		filepath.Join("templates", "category_selector.gohtml"),
-		// filepath.Join("templates", "footer.gohtml"),
+		filepath.Join("templates", "index.html"),
+		filepath.Join("templates", "top_breadcrumb.html"),
+		filepath.Join("templates", "category_selector.html"),
+		// filepath.Join("templates", "footer.html"),
 	}
 	parsedTemplate, err := template.ParseFiles(templates...)
 	if err != nil {
@@ -46,7 +46,7 @@ func Index(w http.ResponseWriter, indexView *IndexView) {
 
 func Footer(w http.ResponseWriter) {
 	templates := []string{
-		filepath.Join("templates", "footer.gohtml"),
+		filepath.Join("templates", "footer.html"),
 	}
 	parsedTemplate, err := template.ParseFiles(templates...)
 	if err != nil {

@@ -2,7 +2,7 @@
     const $ = (path) => document.querySelector(path);
     const board = $(".board");
     const audio = $('#MusicPlayerAudio');
-    const playlist = $('#Playlist');
+    const playlist = $('#MusicPlaylist');
     const playerCurrentTrack = $('#PlayerCurrentTrack');
     const tracks = playlist.querySelectorAll('li a');
     const len = tracks.length;
