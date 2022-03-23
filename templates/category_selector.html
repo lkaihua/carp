@@ -2,7 +2,7 @@
 
 <section id="CategorySelector">
     {{ with .Categories }}      
-    <ul class="row row-cols-3 row-cols-s-3 row-cols-m-6 row-cols-lg-6 list-unstyled list mx-1 my-3">
+    <ul class="row row-cols-3 row-cols-s-3 row-cols-m-6 row-cols-lg-6 list-unstyled list mx-1 my-1">
         {{ range . }}
         <li class="col" >
             <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">

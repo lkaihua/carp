@@ -2,23 +2,23 @@
 
 <section id="TopBreadcrumb">
 {{ with .Breadcrumb }}
-<ol class='item-list mx-0 border-1 shadow'>
-    {{ range $index, $value := . }}
-    <li>
-        <a class="dropdown-item btn d-block text-decoration-none" href="{{ $value.UrlString }}">
-            <span class="btn-container" class="d-flex align-items-center">
-                <span class='icon
-                    {{- if eq $index 0 }} home {{- else if $value.IsCurrent }} folder-open {{ else }} folder {{ end -}}
-                '></span>
-                <span class="name">{{ .Name }}</span>
-            </span>
-        </a>
-    </li>
-    {{ else }}
-    <li> Ops! Nothing here. </li>
-    {{ end }}
-</ol>
-<script> window.initTopBreadcrumbTralingItems && initTopBreadcrumbTralingItems(); </script>
+    <ol class='item-list mx-0 border-1 mb-3'>
+        {{ range $index, $value := . }}
+        <li>
+            <a class="dropdown-item btn d-block text-decoration-none" href="{{ $value.UrlString }}">
+                <span class="btn-container" class="d-flex align-items-center">
+                    <span class='icon
+                        {{- if eq $index 0 }} home {{- else if $value.IsCurrent }} folder-open {{ else }} folder {{ end -}}
+                    '></span>
+                    <span class="name">{{ .Name }}</span>
+                </span>
+            </a>
+        </li>
+        {{ else }}
+        <li> Ops! Nothing here. </li>
+        {{ end }}
+    </ol>
+    <script> window.initTopBreadcrumbTralingItems && initTopBreadcrumbTralingItems(); </script>
 {{ end }}
 </section>
 

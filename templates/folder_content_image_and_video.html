@@ -2,18 +2,20 @@
 <script>document.querySelectorAll("#CategorySelector .col")[1].classList.add("active");</script>
 
 <section id="FolderContent" class="folder_content_image_and_video">
+    <div>
+        <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+    </div>
+
 {{ if gt .CountAll 0 }}
-    <div id="ImageVideoContainer">
+    <div id="ImageVideoContainer" class="my-2">
         {{ if eq .CountImageVideo 0 }}
             <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
                 <h4>No video or image here.</h4>
             </div>
         {{ else }}
-            {{ if lt .CountImageVideo 4 }}
-            <div class="row row-cols-{{- .CountImageVideo }} g-2 g-lg-3">
-            {{ else }}
-            <div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-2 g-lg-3">
-            {{ end }}
+            <div class="row 
+                {{- if lt .CountImageVideo 4 }} row-cols-{{- .CountImageVideo }} 
+                {{ else }} row-cols-3 row-cols-md-4 row-cols-lg-5{{- end }} g-2 g-lg-3">
                 {{ range .DisplayEntries }}
                     {{ if eq .EntryType "image" }}
                         <div class="col">
@@ -77,7 +79,7 @@
     {{ template "preview_modal" }}
 
 {{ else }}
-    <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+    <div class="empty-folder-placeholder my-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
         <h4>The folder is empty.</h4>
     </div>
 {{ end }}

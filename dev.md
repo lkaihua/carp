@@ -27,6 +27,13 @@
 
 ### Work log
 
+
+#### 2022-03-23
+
+- Add a navigation button to upper folder, on the shoulder of file list and above footer. 
+- Improve vinyl record player's template and UI.
+- Unify the look & feel across different views. 
+
 #### 2022-03-21
 
 - Finalize image and video preview modal. Refactor navigation buttons so the button has an elegant blink effect when clicked. Rfactor the `video` layout.

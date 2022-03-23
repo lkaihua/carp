@@ -82,13 +82,13 @@ section {
   z-index: 999;
 }
 
-li .icon {
+span.icon {
   width: 20px;
   height: 20px;
   display: inline-block;
 }
 
-li span.icon::before{
+span.icon::before{
   content: '';
   width: 20px;
   height: 20px;
@@ -126,13 +126,15 @@ li span.icon::before{
 .icon.music::before{
   background-image: url('/static/icons/file-earmark-music.svg?static=1');
 }
-
+.icon.arrow-up::before{
+  background-image: url('/static/icons/arrow-90deg-up.svg?static=1');
+}
 
 ul.item-list, ol.item-list {
   width: auto;
   min-width: 10rem;
   padding: 0;
-  margin: 1rem auto;
+  margin: 0.5rem auto;
   font-size: 1rem;
   color: #212529;
   text-align: left;
@@ -190,6 +192,23 @@ ul.item-list, ol.item-list {
   overflow: hidden;
 }
 
+.navigation-back{
+  border: 1px solid var(--gray-border-color);
+  border-radius: 0.5rem;
+  width: 42px;
+  height: 40px;
+  display: inline-flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.navigation-button{
+
+}
+
+
 #TopBreadcrumb ol{
   --breadcrumb-gap: 0.25rem;
   display: flex;
@@ -246,13 +265,12 @@ ul.item-list, ol.item-list {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   border-radius: 0.5rem;
-
 }
 
 #TopBreadcrumb ol li a:active{
   color: black;
+  background: var(--bs-light);
 }
-
 
 #TopBreadcrumb li span.name {
   overflow-x: hidden;
@@ -302,7 +320,7 @@ ul.item-list, ol.item-list {
 }
 
 #CategorySelector .row{
-  --bs-gutter-x: 0;
+  --bs-gutter-x: 0.5rem;
 }
 
 #CategorySelector .col{
@@ -314,7 +332,7 @@ ul.item-list, ol.item-list {
   overflow: hidden;
 }
 
-#CategorySelector .col::before{
+/* #CategorySelector .col::before{
   content: "";
   background: var(--bs-gray-200);
   display:inline-block;
@@ -336,7 +354,7 @@ ul.item-list, ol.item-list {
 #CategorySelector .col:nth-child(3)::before{
   top: 0;
   left: 0;
-}
+} */
 
 #CategorySelector .col.active {
   --btn-background-color: white;
@@ -386,6 +404,7 @@ ul.item-list, ol.item-list {
 #CategorySelector .col.active .category-btn-all {
   --btn-border-start-color: var(--gray-border-color);
   --btn-border-end-color: var(--gray-border-color);
+  --btn-border-width: 1px;
 }
 
 #CategorySelector .col.active .category-btn #ImageVideoIcon {
@@ -454,7 +473,6 @@ ul.item-list, ol.item-list {
 
 #CategorySelector li.col a:focus{
   outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
 #FolderContent ul {}
@@ -734,6 +752,13 @@ ul.item-list, ol.item-list {
   opacity: 0.8;
 }
 
+#MusicPlaylist{
+  border-bottom: 0;
+  border-bottom-width: 0px;
+  border-radius: 0.5rem 0.5rem 0 0;
+  margin-bottom: -10px;
+  padding-bottom: 10px;
+}
 
 #MusicPlaylist li a[data-playing="true"]{
   background-color: var(--bs-blue);
@@ -805,8 +830,12 @@ ul.item-list, ol.item-list {
 }
 
 #Footer{
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 10rem;
+}
+
+#Footer .description{
+  margin: 1rem 0;
 }
 
 /* For mobile phones: */

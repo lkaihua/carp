@@ -2,8 +2,12 @@
 <script>document.querySelectorAll("#CategorySelector .col")[0].classList.add("active");</script>
 
 <section id="FolderContent" class="folder_content_default">
+    <div>
+        <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+    </div>
+
     {{ with .DisplayEntries }}
-    <ul class="item-list mx-0 border-1 ">
+    <ul class="item-list mx-0 border-1 my-2">
         {{ range . }}
         <li>
             <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}"
@@ -44,7 +48,7 @@
     {{ template "preview_modal" }}
 
     {{ else }}
-    <div  class="empty-folder-placeholder mb-4 border rounded-3   align-items-center justify-content-center p-3 py-6">
+    <div class="empty-folder-placeholder my-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
         <h4>The folder is empty.</h4>
     </div>
     {{ end }}
