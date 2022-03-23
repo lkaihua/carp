@@ -1,11 +1,12 @@
 #VinylRecorderPlayer {
     --scale-percent: 0.25;
+    /* --scale-percent: 1; */
 
-    --player-width: 450px;
+    --player-width: 420px;
     --player-height: 350px;
     
-    --player-board-width: 425px;
-    --player-board-height: 330px;
+    --player-board-width: 400px;
+    --player-board-height: 330px; 
 
     /* --board-background-color: #9b7c5b;
     --board-border-color: #e6b786; */
@@ -70,7 +71,7 @@
   }
   
   .board[data-tonearm-on] .tonearm {
-    transform: rotate(305deg);
+    transform: rotate(290deg);
   }
   
   .vinyl {
@@ -148,7 +149,7 @@
     width: 40px;
     height: 40px;
     margin-top: 260px;
-    margin-left: 355px;
+    margin-left: 365px;
     border-radius: 50%;
     background: black;
     border: 3px solid #6f6e6c;
@@ -157,11 +158,12 @@
     position: absolute;
     display: block;
     height: 10px;
-    width: 160px;
-    border-bottom: 5px solid #6f6e6c;
+    width: 150px;
+    /* border-bottom: 8px solid #6f6e6c; */
+    background: #262626;
     transform: rotate(270deg);
-    margin-top: 75px;
-    margin-left: 255px;
+    margin-top: 60px;
+    margin-left: 240px;
     z-index: 60;
     transform-origin: right bottom;
     transition: transform 0.3s;
@@ -175,46 +177,51 @@
     z-index: 70;
     background: #6f6e6c;
     margin-left: -22px;
-    /* margin-top: 5px */
+    transform: rotate(200deg);
+    --color-1: #131313;
+    --color-2: #474242;
+    --color-3: #000;
+    --color-4: #474242;
+    background: conic-gradient(var(--color-1), var(--color-2),var(--color-3),var(--color-4), var(--color-1), var(--color-2),var(--color-3),var(--color-4), var(--color-1), var(--color-2),var(--color-3),var(--color-4), var(--color-1), var(--color-2),var(--color-3),var(--color-4));
+    border-radius: 10px;
   }
   .tonearmrest {
     display: block;
     position: absolute;
-    width: 34px;
+    width: 40px;
     height: 50px;
     border-radius: 40px;
     z-index: 40;
     background: #848380;
-    margin-left: 395px;
-    margin-top: 55px;
+    margin-left: 365px;
+    margin-top: 45px;
   }
   .tonearmrest2 {
     z-index: 55;
     position: absolute;
     display: block;
-    margin-left: 8px;
-    margin-top: 20px;
-    width: 18px;
-    height: 18px;
-    background: #6f6e6c;
+    margin-left: 10px;
+    margin-top: 15px;
+    width: 20px;
+    height: 20px;
+    background: #262626;
     border-radius: 20rem;
   }
   .adjuster {
     display: block;
     position: absolute;
     width: 95px;
-    height: 75px;
+    height: 80px;
     z-index: 5;
     border-radius: 5px;
     background: #bcb9ae;
-    margin-left: 350px;
-    margin-top: 40px;
+    margin-left: 325px;
+    margin-top: 30px;
   }
   
   #VinylSvg {
     width: 300px;
     height: 300px;
-    display: none;
     position: absolute;
     z-index: 10;
     top: 0;

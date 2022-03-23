@@ -44,6 +44,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 		filepath.Join("./templates", Music.TemplateName()),
 		filepath.Join("./templates", "preview_modal"+template_gohtml),
 		filepath.Join("./templates", "music_player"+template_gohtml),
+		filepath.Join("./templates", "insert_svg"+template_gohtml),
 	}
 	parsedTemplate, _ := template.ParseFiles(templates...)
 
@@ -71,9 +72,9 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 		} else {
 			// Decide the category based on the file percentage
 			if countAll > 0 {
-				if countImageVideo >= countAll/2 {
+				if countImageVideo > 0 && countImageVideo >= countAll/2 {
 					template_name = ImageVideo.String()
-				} else if countMusic >= countAll/2 {
+				} else if countMusic > 0 && countMusic >= countAll/2 {
 					template_name = Music.String()
 				} else {
 					template_name = Default.String()

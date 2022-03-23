@@ -6,7 +6,6 @@
     {{ if eq .CountMusic 0 }}
         <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
             <h4>No music files here.</h4>
-            {{ template "music_player" }}
         </div>
     {{ else }}
         <ul id="MusicPlaylist" class="item-list mx-0 border-1 ">
@@ -35,7 +34,7 @@
             {{ range .DisplayEntries }}
                 {{ if ne .EntryType "music" }}
                     <li>
-                        <a class="dropdown-item d-flex align-items-center item-icon-name" href="{{ .UrlString }}"">
+                        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}"">
                             <span class="icon {{ .EntryType }}"></span>
                             <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
                             <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>

@@ -4,6 +4,11 @@
     const audio = $('#MusicPlayerAudio');
     const playlist = $('#MusicPlaylist');
     const playerCurrentTrack = $('#PlayerCurrentTrack');
+
+    if (!playlist) {
+        return;
+    }
+
     const tracks = playlist.querySelectorAll('li a');
     const len = tracks.length;
     
