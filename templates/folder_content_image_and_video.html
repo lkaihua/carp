@@ -14,8 +14,8 @@
             </div>
         {{ else }}
             <div class="row 
-                {{- if lt .CountImageVideo 4 }} row-cols-{{- .CountImageVideo }} 
-                {{ else }} row-cols-3 row-cols-md-4 row-cols-lg-5{{- end }} g-2 g-lg-3">
+                {{- if lt .CountImageVideo 3 }} row-cols-2 {{ else }} row-cols-3 {{ end -}}
+                row-cols-md-4 row-cols-lg-5 g-2 g-lg-3">
                 {{ range .DisplayEntries }}
                     {{ if eq .EntryType "image" }}
                         <div class="col">
