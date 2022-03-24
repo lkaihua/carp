@@ -4,6 +4,7 @@
     const audio = $('#MusicPlayerAudio');
     const playlist = $('#MusicPlaylist');
     const playerCurrentTrack = $('#PlayerCurrentTrack');
+    const playerStatus = $('#PlayerStatus');
 
     if (!playlist) {
         return;
@@ -57,9 +58,6 @@
     /**
      * init VinylRecordPlayer
      */ 
-    $(".vinyl").insertBefore($("#VinylSvg"), $(".vinyl-inner1"));
-    $("#VinylSvg").style.display = "block";
-
     board.addEventListener("click", (e) => {
         // if no item, play the first one
         if (current < 0) {
@@ -114,12 +112,17 @@
     });
     audio.addEventListener("play", (e) => {
         // console.debug('Event play');
+        playerStatus.textContent = "Playing"
+        if (!audio.src) {
+            runNextTrack()
+        }
         isPaused = false;
         vinylSpinChange();
         vinylArmChange()
     });
     audio.addEventListener("pause", (e) => {
         // console.debug('Event pause');
+        playerStatus.textContent = "On Pause"
         isPaused = true;
         vinylArmChange();
         vinylSpinChange();
@@ -127,6 +130,7 @@
     audio.addEventListener('ended', runNextTrack);
     audio.addEventListener('error', (e) => {
         // console.debug("This song is not playable")
+        playerStatus.textContent = "Unable to load this file"
         current >= 0 && tracks[current] && tracks[current].setAttribute("data-error", "true")
         runNextTrack()
     })

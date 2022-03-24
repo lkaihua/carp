@@ -1,9 +1,9 @@
-{{ define "music_player" }}
+{{ define "music_player"}}
 
 <div id="MusicPlayerBar" class="sticky">
     <ul class="row row-cols-1 row-cols-s-1 row-cols-m-2 row-cols-lg-2 list-unstyled list mx-0 my-0">
-        <li class="col p-2 rounded-2 shadow">
-            <div id="MusicPlayer" class="mb-1">
+        <li class="col p-3 rounded-2 shadow">
+            <div id="MusicPlayer" class="mb-3">
                 <!-- Record Player starts -->
                 <div id="VinylRecorderPlayer">
                     <div class="board" data-paused>
@@ -31,13 +31,14 @@
                     </div>
                 </div>
                 <!-- Record Player ends -->
-                <figure class="d-flex">
-                    <figcaption id="PlayerCurrentTrack" class="text-max-lines-2">
-                        Click <img src="/static/icons/vinyl-fill.svg?static=1" width="24"/> to play/pause.
-                    </figcaption>
-                </figure>    
+                <div id="PlayerInfo" class="d-flex px-2 py-1">
+                    <span id="PlayerStatus" class="text-secondary">Ready</span>
+                    <span id="PlayerCurrentTrack" class="text-dark text-max-lines-2">
+                        {{ . }} music in the playlist
+                    </span>
+                </div>    
             </div>
-            <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+            <audio id="MusicPlayerAudio" class="rounded-3 flex-center mt-2" preload="auto" tabindex="0" controls="" type="audio/mpeg">
                 <source type="audio/mp3" src="">
                 Sorry, your browser does not support HTML5 audio.
             </audio>
