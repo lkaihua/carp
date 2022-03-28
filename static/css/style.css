@@ -64,6 +64,18 @@ section {
   justify-content: center;
   align-items: center;
 }
+
+.pos-relative{
+  position: relative;
+}
+.pos-absolute-max{ 
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; 
+  height: 100%;
+}
+
 .rounded-0 {
   border-radius: 0 !important;
 }
@@ -80,6 +92,13 @@ section {
   /* top: -0.1px; */
   bottom: -1px;
   z-index: 999;
+}
+
+span.lazyload {
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 span.icon {
@@ -114,7 +133,7 @@ span.icon::before{
   background-image: url('/static/icons/file-earmark-play.svg?static=1');
 }
 .icon.video-play::before{
-  background-image: url('/static/icons/play-btn.svg?static=1');
+  background-image: url('/static/icons/play-fill.svg?static=1');
 }
 
 .icon.file::before{
@@ -228,7 +247,7 @@ ul.item-list, ol.item-list {
   border-radius: 0.5rem;
   /* border-radius: 0; */
   background-color: var(--bs-gray-200);
-  min-width: 100px;
+  min-width: 50px;
   /* At max width 2 pills are displayed in one row */
   max-width: min(300px, calc(50% - var(--breadcrumb-gap) / 2));
   /* height: 32px; */
@@ -278,9 +297,6 @@ ul.item-list, ol.item-list {
 }
 
 #TopBreadcrumb ol li:first-child {
-}
-
-#TopBreadcrumb ol li:first-child a{
 }
 
 #TopBreadcrumb ol li:last-child.row-trailing-item{
@@ -382,8 +398,8 @@ ul.item-list, ol.item-list {
   position: relative;
 }
 #CategorySelector .category-btn span img{
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   background-color: var(--btn-background-color);
 }
 
@@ -415,15 +431,16 @@ ul.item-list, ol.item-list {
   -o-animation:var(--time-animation) pulsate 1 alternate ease-in-out;
   animation: var(--time-animation) pulsate 1 alternate ease-in-out;
 }
+
 @keyframes pulsate {
   0% { }
-  50% { width: 45px; }
+  50% { width: 36px; }
   100% { }
 }
 
 #CategorySelector #ImageVideoIcon {
-  width: 36px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 #CategorySelector #ImageVideoIcon img.image-icon{
   position: absolute;
@@ -434,14 +451,14 @@ ul.item-list, ol.item-list {
 }
 #CategorySelector #ImageVideoIcon img.video-icon{
   position: absolute;
-  top: 0;
-  right: 0px;
+  top: 2px;
+  right: -4px;
   z-index: 1;
 }
 
 #CategorySelector #MusicIcon {
-  width: 36px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
 }
 #CategorySelector #MusicIcon img.file-music-icon{
   position: absolute;
@@ -486,7 +503,7 @@ ul.item-list, ol.item-list {
 #FolderContent ul li a.item-icon-name { 
 }
 
-#FolderContent ul li span.icon{
+#FolderContent ul li a.item-icon-name>span.icon{
   margin-right: 5px;
 }
 
@@ -555,6 +572,7 @@ ul.item-list, ol.item-list {
 
 #FolderContent .btn-preview {
   cursor: zoom-in;
+  padding: 0;
 }
 
 #FolderContent.folder_content_default .btn-preview {
@@ -565,20 +583,34 @@ ul.item-list, ol.item-list {
 
 #FolderContent .btn-preview-video{ 
   flex-direction: column;
+  background-color: #fdfdfd;
+  background-image: radial-gradient(circle, #ddd 1px, rgba(0,0,0,0) 1px);
+  background-size: 1rem 1rem;
   cursor: pointer;
 }
-#FolderContent .video-preview {
-  width: 200px;
-  height: 100px;
-  background-color: var(--bs-gray-200);
+
+#FolderContent.folder_content_default .btn-preview-video .video-play{
+  
 }
-#FolderContent .video-preview .icon {
-  width: 30px;
-  height: 30px;
+
+
+#FolderContent.folder_content_default .video-preview {
+  max-width: 300px;
+  max-height: 80px;
+  min-width: 120px;
+  min-height: 60px;
+}
+#FolderContent .video-preview .video-play {
+  width: 40px;
+  height: 40px;
+
 }
 #FolderContent .video-preview .video-play::before{
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff99;
+  background-position: 1px 0px;
+  border-radius: 0.5rem;
 }
 #FolderContent .btn-preview-video .firstName{
   max-width: 100%;
@@ -588,7 +620,7 @@ ul.item-list, ol.item-list {
 #FolderContent .btn-preview img.image-preview{
   max-width: 50vw;
   max-height: 80px;
-  min-height: 60px;
+  min-height: 40px;
 }
 
 #ImageVideoContainer span.icon{
@@ -605,6 +637,10 @@ ul.item-list, ol.item-list {
   background-size: cover;
 }
 
+#ImageVideoContainer span.video-play::before{
+
+}
+
 /* Aspect Ratio https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
 #ImageVideoContainer .col .container{
   width: 100%;
@@ -617,16 +653,34 @@ ul.item-list, ol.item-list {
   justify-content: space-evenly;
 }
 #ImageVideoContainer .col .container .btn .video-preview {
-  /* flex-direction: column; */
-  height: auto;
-  width: auto;
+  flex-direction: column;
+  /* height: auto;
+  width: auto; */
   background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 #ImageVideoContainer .col .container .btn .firstName {
   /* padding: 0; */
   /* text-align: center; */
   /* font-size: 0.8rem; */
 }
+#ImageVideoContainer .col .container .btn .blur-bg {
+  background-size: cover;
+  filter: blur(20px);
+  top: -5%;
+  left: -5%;
+  width: 110%;
+  height: 110%;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+#ImageVideoContainer .col .container .btn .image-container {
+  z-index: 2;
+}
+
 /* #ImageVideoContainer .col .container .btn .lastName {
   padding: 0;
   text-align: right;
@@ -650,8 +704,12 @@ ul.item-list, ol.item-list {
 
 #ImageVideoContainer .btn-preview img.image-preview{
   max-width: 100%;
-  max-height: 50vh;
+  max-height: 100%;
 }
+
+
+
+
 
 #PreviewModal {
   --preview-model-bg-color: black;
@@ -700,8 +758,13 @@ ul.item-list, ol.item-list {
   flex: 1 1 auto;
   position: relative;
   padding: 5px;
-  transition: background-color 0.25s linear;
+  transition: background-color 0.20s cubic-bezier(1,0,0,1);
   background-color: none;
+}
+
+#PreviewModal .modal-footer .btn:hover, 
+#PreviewModal .modal-footer .btn:active{
+  background-color: var(--bs-gray-900);
 }
 
 #PreviewModal .modal-footer .btn[data-active="true"]{
@@ -719,8 +782,10 @@ ul.item-list, ol.item-list {
 
 #ModalPreviewImage {
   max-width: 100%;
-  min-width: 25%;
   max-height: 100%;
+
+  min-width: 50px;
+  min-height: 50px;
 }
 
 #ModalPreviewVideo {

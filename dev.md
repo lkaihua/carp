@@ -5,6 +5,7 @@
 - [x] To abbreviate very long folder/file name smartly
 - [x] To dynamically load images to preview 
 - [x] To highlight certain category of files in current folder
+- [ ] To create thumbnails for images and videos
 
 ### Nice to have
 - [x] A mp3 player
@@ -27,16 +28,23 @@
 
 ### Work log
 
+#### 2022-03-26
+
+- Finaize vinyl recorder player. When the album contains a cover image, e.g. `cover.jpg`, the vinyl recorder will use it automatically.
+- Image & Video view loads the thumbnail image in the list. 
+- Add a blurred background for image preview button.
+- Include SVG directly insert HTML.
+ 
 
 #### 2022-03-23
 
 - Add a navigation button to upper folder, on the shoulder of file list and above footer. 
 - Improve vinyl record player's template and UI.
-- Unify the look & feel across different views. 
+- Unify the look & feel of different category views. 
 
 #### 2022-03-21
 
-- Finalize image and video preview modal. Refactor navigation buttons so the button has an elegant blink effect when clicked. Rfactor the `video` layout.
+- Finalize preview modal. Refactor navigation buttons so the button has an elegant blink effect when clicked. Rfactor the `video` layout.
 
 #### 2022-03-20
 

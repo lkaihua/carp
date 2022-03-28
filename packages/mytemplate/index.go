@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	"text/template"
 
 	"github.com/lkaihua/carp-web-gallery/packages/mypath"
 )
@@ -28,7 +27,7 @@ func Index(w http.ResponseWriter, indexView *IndexView) {
 		filepath.Join("templates", "category_selector.html"),
 		// filepath.Join("templates", "footer.html"),
 	}
-	parsedTemplate, err := template.ParseFiles(templates...)
+	parsedTemplate, err := NewTemplate().ParseFiles(templates...)
 	if err != nil {
 		// Log the detailed error
 		log.Println("[Index] template parse error:" + err.Error())
@@ -48,7 +47,7 @@ func Footer(w http.ResponseWriter) {
 	templates := []string{
 		filepath.Join("templates", "footer.html"),
 	}
-	parsedTemplate, err := template.ParseFiles(templates...)
+	parsedTemplate, err := NewTemplate().ParseFiles(templates...)
 	if err != nil {
 		// Log the detailed error
 		log.Println("[Footer] template parse error:" + err.Error())

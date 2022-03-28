@@ -21,7 +21,7 @@ func Breadcrumb(path string) []BreadcrumbLevel {
 	// "/a//b/" => ["/a/", "/a/b/"]
 
 	levels := strings.Split(path, "/")
-	res := []BreadcrumbLevel{{Name: "/", UrlString: "/"}}
+	res := []BreadcrumbLevel{{Name: " ", UrlString: "/"}}
 
 	// ignore the last level, it's either "" or "{filename}.{extension}"
 	for i := 0; i < len(levels)-1; i++ {
@@ -31,7 +31,7 @@ func Breadcrumb(path string) []BreadcrumbLevel {
 			if i == len(levels)-2 {
 				isCurrent = true
 			}
-			res = append(res, BreadcrumbLevel{Name: levels[i] + "/", UrlString: newStr, IsCurrent: isCurrent})
+			res = append(res, BreadcrumbLevel{Name: levels[i], UrlString: newStr, IsCurrent: isCurrent})
 		}
 	}
 

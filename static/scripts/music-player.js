@@ -17,6 +17,10 @@
     let current = -1;
     let isPaused = true;
 
+    const initPlayController = () => {
+        $("#MusicPlayerController").setAttribute("inited", true)
+    }
+
     const runTrack = (link) => {
         // user can click the song already playing
         if (link.getAttribute("data-playing") == "true"){
@@ -34,7 +38,7 @@
         audio.src = link.href;
         prev >= 0 && tracks[prev] && tracks[prev].setAttribute("data-playing", "false")
         playerCurrentTrack.textContent = link.getAttribute("data-song-name")
-        
+
         audio.load();
         audio.play();
     }
@@ -74,6 +78,15 @@
     });
 
     /**
+     * init Audio Tag
+     */
+    $("#MusicPlayerController").addEventListener("click", (e) => {
+        if (current < 0) { 
+            runNextTrack();
+        }
+    })
+
+    /**
      * The Arm animation
      */
     const vinylArmChange = () => {
@@ -108,6 +121,7 @@
     audio.volume = .50;
     audio.addEventListener("canplaythrough", (e) => {
         // console.debug('Event canplaythrough');
+        // When the song is loaded, move the arm first while the vinyl recond is not rotating
         vinylArmChange()
     });
     audio.addEventListener("play", (e) => {
@@ -119,6 +133,8 @@
         isPaused = false;
         vinylSpinChange();
         vinylArmChange()
+        initPlayController();
+        
     });
     audio.addEventListener("pause", (e) => {
         // console.debug('Event pause');

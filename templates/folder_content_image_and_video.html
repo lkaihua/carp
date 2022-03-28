@@ -15,36 +15,40 @@
         {{ else }}
             <div class="row 
                 {{- if lt .CountImageVideo 3 }} row-cols-2 {{ else }} row-cols-3 {{ end -}}
-                row-cols-md-4 row-cols-lg-5 g-2 g-lg-3">
+                row-cols-md-4 row-cols-lg-5 g-2 g-lg-3"
+            >
                 {{ range .DisplayEntries }}
                     {{ if eq .EntryType "image" }}
-                        <div class="col">
-                            <div class="container"><div class="bg-light">
-                                <button type="button" class="btn border rounded btn-preview btn-preview-image flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                                    data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
-                                >
-                                    <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
-                                </button>
-                            </div></div>
-                        </div>
+                        <div class="col"><div class="container"><div class="bg-light">
+                            <button type="button" class="btn border rounded btn-preview btn-preview-image flex-center {{ if .IsCover }}btn-preview-cover{{ end }}" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                                data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
+                                data-is-cover="{{.IsCover}}"
+                            >   
+                                {{ $previewImageUrl := .UrlString }}
+                                {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
+                                <span class="pos-absolute-max blur-bg image-preview lazyload" data-src="{{$previewImageUrl}}" ></span>
+                                <span class="pos-absolute-max image-container flex-center">
+                                    <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
+                                </span>
+                            </button>
+                        </div></div></div>
                     {{ else if eq .EntryType "video" }}
-                        <div class="col">
-                            <div class="container"><div class="bg-light">
-                                <button type="button" class="btn border rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                                    data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
-                                >   
-                                    <picture>
-                                        <source class="image-preview lazyload"  data-srcset="{{ .FirstName }}_th.jpg?file=image" />
-                                        <img src="" alt="" />
-                                    </picture>
+                        <div class="col"><div class="container"><div class="bg-light">
+                            <button type="button" class="btn border rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                                data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
+                            >   
+                                {{ if .HasThumbnail }}
+                                    <span class="video-preview rounded border-1 flex-center image-preview lazyload pos-absolute-max" data-src="{{.HasThumbnail}}">   
+                                        <span class="icon video-play"></span>
+                                    </span>
+                                {{ else }}
                                     <span class="video-preview rounded border-1 flex-center">
                                         <span class="icon video-play"></span>
-                                        {{/* <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span> */}}
+                                        <span class='firstName text-center text-max-lines-2 {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
                                     </span>
-                                    <span class='firstName text-center text-max-lines-2 {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                                </button>
-                            </div></div>
-                        </div>
+                                {{ end }}
+                            </button>
+                        </div></div></div>
                     {{ end }}
                 {{ end }}
             </div>    

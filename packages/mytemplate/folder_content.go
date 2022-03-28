@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
-	"text/template"
 
 	"github.com/lkaihua/carp-web-gallery/packages/types"
 )
@@ -35,26 +34,44 @@ type DisplayEntry struct {
 	FirstName string
 	LastName  string // File extension string if it's a file, or "/" if it's a folder
 	// ModTime
+	IsCover      bool
+	IsThumbnail  bool
+	HasThumbnail string
 }
 
 func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry) {
+
 	templates := []string{
 		filepath.Join("./templates", Default.TemplateName()),
 		filepath.Join("./templates", ImageVideo.TemplateName()),
 		filepath.Join("./templates", Music.TemplateName()),
 		filepath.Join("./templates", "preview_modal"+template_gohtml),
 		filepath.Join("./templates", "music_player"+template_gohtml),
-		filepath.Join("./templates", "insert_svg"+template_gohtml),
 	}
-	parsedTemplate, _ := template.ParseFiles(templates...)
+	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
 
 	countAll := len(*data)
 	countMap := make(map[types.EntryType]int)
+	hasCover := ""
+	currentImageUrl := ""
 	for _, v := range *data {
 		countMap[v.EntryType] += 1
+		if v.IsCover {
+			hasCover = v.UrlString
+		}
+		if v.EntryType == types.EntryTypeImage {
+			currentImageUrl = v.UrlString
+		}
 	}
-	countImageVideo := countMap[types.EntryTypeImage] + countMap[types.EntryTypeVideo]
+	countImage := countMap[types.EntryTypeImage]
+	countVideo := countMap[types.EntryTypeVideo]
+	countImageVideo := countImage + countVideo
 	countMusic := countMap[types.EntryTypeMusic]
+
+	if countImage == 1 {
+		// If only one image, use it as the cover for image&video and album
+		hasCover = currentImageUrl
+	}
 
 	template_name := Default.String()
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
@@ -89,11 +106,13 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 	err := parsedTemplate.ExecuteTemplate(w, template_name, struct {
 		DisplayEntries                        []DisplayEntry
 		CountAll, CountImageVideo, CountMusic int
+		HasCover                              string
 	}{
 		DisplayEntries:  *data,
 		CountAll:        countAll,
 		CountImageVideo: countImageVideo,
 		CountMusic:      countMusic,
+		HasCover:        hasCover,
 	})
 
 	if err != nil {

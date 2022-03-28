@@ -27,14 +27,23 @@
             {{ if eq .EntryType "image" }}
             <button type="button" class="btn border rounded btn-preview btn-preview-image" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                 data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
-            >
-                <img data-src="{{ .UrlString }}" class="image-preview lazyload" />
+            >   
+                {{ $previewImageUrl := .UrlString }}
+                {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
+                <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
             </button>
             {{ else if eq .EntryType "video" }}
             <button type="button" class="btn border rounded btn-preview btn-preview-video" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                 data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
-            >
-                <span class="video-preview rounded border-1 flex-center"><span class="icon video-play"></span></span>
+            >   
+                <span class="pos-relative video-preview rounded border-1 flex-center">
+                    {{ if .HasThumbnail }}
+                    <img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />
+                    {{ end }}
+                    <span class="pos-absolute-max flex-center">
+                        <span class="icon video-play"></span>
+                    </span>
+                </span>
             </button>
             {{ end }}
             <!-- Button trigger modal ends -->

@@ -30,7 +30,7 @@
                     {{ end }}
                 {{ end }}
             </ul>
-            {{ template "music_player" .CountMusic}}
+            {{ template "music_player" .}}
         {{ end }}
     </div>
 
@@ -40,7 +40,7 @@
             {{ range .DisplayEntries }}
                 {{ if ne .EntryType "music" }}
                     <li>
-                        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}"">
+                        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
                             <span class="icon {{ .EntryType }}"></span>
                             <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
                             <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>

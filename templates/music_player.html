@@ -3,45 +3,41 @@
 <div id="MusicPlayerBar" class="sticky">
     <ul class="row row-cols-1 row-cols-s-1 row-cols-m-2 row-cols-lg-2 list-unstyled list mx-0 my-0">
         <li class="col p-3 rounded-2 shadow">
-            <div id="MusicPlayer" class="mb-3">
+            <div id="MusicPlayerContainer" class="m-2">
                 <!-- Record Player starts -->
                 <div id="VinylRecorderPlayer">
                     <div class="board" data-paused>
                         <div class="wrapper">
                             <div class="vinyl">
-                                {{ template "insert_svg" "VinylSvg"}}
-                                <div class="vinyl-inner1">
-                                    <div class="vinyl-inner2">
-                                        <div class="vinyl-inner3">
-                                            <div class="vinyl-inner4"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                {{ includeHTML "./static/icons/vinyl.svg" }}
+                                {{ if ne .HasCover ""}}
+                                    <div class="vinyl-inner"><img src="{{.HasCover}}" width=120 height=120 /></div>
+                                {{ end }}
                             </div>
                             <div class="speaker-left"></div>
                             <div class="speaker-right"></div>
                             <div class="tonearm">
-                                <div class="tonearmblock"></div>
+                                {{ includeHTML "./static/icons/tonearm.svg" }}
                             </div>
                             <div class="adjuster"></div>
-                            <div class="tonearmrest">
-                                <div class="tonearmrest2"></div>
-                            </div>
+                            <div class="tonearmrest"></div>
                         </div>
                     </div>
                 </div>
                 <!-- Record Player ends -->
-                <div id="PlayerInfo" class="d-flex px-2 py-1">
+                <div id="PlayerInfo" class="d-flex px-2 py-2">
                     <span id="PlayerStatus" class="text-secondary">Ready</span>
                     <span id="PlayerCurrentTrack" class="text-dark text-max-lines-2">
-                        {{ . }} music in the playlist
+                        {{ .CountMusic }} music in the playlist
                     </span>
                 </div>    
             </div>
-            <audio id="MusicPlayerAudio" class="rounded-3 flex-center mt-2" preload="auto" tabindex="0" controls="" type="audio/mpeg">
-                <source type="audio/mp3" src="">
-                Sorry, your browser does not support HTML5 audio.
-            </audio>
+            <div id="MusicPlayerController">
+                <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+                    <source type="audio/mp3" src="">
+                    Sorry, your browser does not support HTML5 audio.
+                </audio>
+            </div>
         </li>
     </ul>
 </div>

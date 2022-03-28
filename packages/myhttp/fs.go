@@ -77,6 +77,8 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		"'", "&#39;",
 	)
 
+	thumbnailMap := make(map[string]string)
+
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
 		urlString := d.UrlString
@@ -85,6 +87,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		// fmt.Println(name, "-", modTime, "-", size)
 		var firstName, lastName string
 		var entryType types.EntryType
+		var isCover, isThumbnail bool
 
 		if d.IsFolder {
 			lastName = "/"
@@ -112,21 +115,42 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			}
 
 			urlString += "?file=" + entryType.String()
+
+			if entryType == types.EntryTypeImage {
+				if firstName == "cover" {
+					isCover = true
+				}
+				if strings.HasSuffix(firstName, "_th") {
+					isThumbnail = true
+					thumbnailMap[strings.TrimSuffix(firstName, "_th")] = urlString
+				}
+			}
 		}
 
-		// Find thumbnail
-		// if ()
-
 		data = append(data, mytemplate.DisplayEntry{
-			Name:      name,
-			FirstName: firstName,
-			LastName:  lastName,
-			EntryType: entryType,
-			UrlString: urlString,
+			Name:        name,
+			FirstName:   firstName,
+			LastName:    lastName,
+			EntryType:   entryType,
+			UrlString:   urlString,
+			IsCover:     isCover,
+			IsThumbnail: isThumbnail,
 			// ModTime:   modTime,
 			// Size:      size,
 		})
 
+	}
+
+	// loop again for the image to find its thumbnail
+	if len(thumbnailMap) > 0 {
+		for index, displayEntry := range data {
+			if displayEntry.EntryType == types.EntryTypeImage || displayEntry.EntryType == types.EntryTypeVideo {
+				v, ok := thumbnailMap[displayEntry.FirstName]
+				if ok {
+					data[index].HasThumbnail = v
+				}
+			}
+		}
 	}
 
 	mytemplate.FolderContent(w, r, &data)
