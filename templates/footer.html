@@ -17,6 +17,7 @@
   window.addEventListener("load", function(event) { 
     // console.debug('Page fully loaded');
     document.body.classList.remove("event-body-not-loaded");
+    window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"})
   });
 })();
 </script>

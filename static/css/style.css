@@ -753,7 +753,6 @@ ul.item-list, ol.item-list {
   margin-bottom: 1rem
 }
 
-
 #PreviewModal .modal-footer .btn{
   flex: 1 1 auto;
   position: relative;
@@ -762,16 +761,16 @@ ul.item-list, ol.item-list {
   background-color: none;
 }
 
-#PreviewModal .modal-footer .btn:hover, 
-#PreviewModal .modal-footer .btn:active{
+#PreviewModal .modal-footer .btn.carousel-control:hover, 
+#PreviewModal .modal-footer .btn.carousel-control:active{
   background-color: var(--bs-gray-900);
 }
-
-#PreviewModal .modal-footer .btn[data-active="true"]{
+#PreviewModal .modal-footer .btn.carousel-control[data-active="true"]{
   background-color: var(--bs-secondary);
 }
 
 #PreviewModal .modal-body .preview-content-container.image-container{
+  border: 1px solid var(--bs-gray-900);
   overflow: hidden;
 }
 #PreviewModal .modal-body .preview-content-container.video-container{

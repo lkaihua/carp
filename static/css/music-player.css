@@ -128,7 +128,7 @@ audio::-webkit-media-controls-panel{
 }
 
 .board .vinyl {
-  --time-animation: 6000ms;
+  --time-animation: 4000ms;
   -webkit-animation: var(--time-animation) spin infinite normal linear;
   -moz-animation: var(--time-animation) spin infinite normal linear;
   -ms-animation: var(--time-animation) spin infinite normal linear;

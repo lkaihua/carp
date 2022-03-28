@@ -2,14 +2,14 @@
 
 <div id="MusicPlayerBar" class="sticky">
     <ul class="row row-cols-1 row-cols-s-1 row-cols-m-2 row-cols-lg-2 list-unstyled list mx-0 my-0">
-        <li class="col p-3 rounded-2 shadow">
+        <li class="col pb-3 pt-2 rounded-2 shadow">
             <div id="MusicPlayerContainer" class="m-2">
                 <!-- Record Player starts -->
                 <div id="VinylRecorderPlayer">
                     <div class="board" data-paused>
                         <div class="wrapper">
                             <div class="vinyl">
-                                {{ includeHTML "./static/icons/vinyl.svg" }}
+                                {{ includeHTML "./static/images/vinyl.svg" }}
                                 {{ if ne .HasCover ""}}
                                     <div class="vinyl-inner"><img src="{{.HasCover}}" width=120 height=120 /></div>
                                 {{ end }}
@@ -17,7 +17,7 @@
                             <div class="speaker-left"></div>
                             <div class="speaker-right"></div>
                             <div class="tonearm">
-                                {{ includeHTML "./static/icons/tonearm.svg" }}
+                                {{ includeHTML "./static/images/tonearm.svg" }}
                             </div>
                             <div class="adjuster"></div>
                             <div class="tonearmrest"></div>
@@ -42,6 +42,6 @@
     </ul>
 </div>
 
-<script src="/static/scripts/music-player.js?static=1"></script>
+<script>{{ includeJS "./static/scripts/music_player.js" }}</script>
 
 {{ end }}

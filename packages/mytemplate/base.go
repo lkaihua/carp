@@ -15,8 +15,18 @@ func IncludeHTML(path string) template.HTML {
 	return template.HTML(string(b))
 }
 
+func IncludeJS(path string) template.JS {
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		fmt.Println("[IncludeHTML] Error reading JS file", err)
+		return ""
+	}
+	return template.JS(string(b))
+}
+
 var templateFuncMap = template.FuncMap{
 	"includeHTML": IncludeHTML,
+	"includeJS":   IncludeJS,
 }
 
 func NewTemplate() *template.Template {
