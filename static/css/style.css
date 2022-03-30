@@ -247,7 +247,7 @@ ul.item-list, ol.item-list {
   border-radius: 0.5rem;
   /* border-radius: 0; */
   background-color: var(--bs-gray-200);
-  min-width: 50px;
+  min-width: 80px;
   /* At max width 2 pills are displayed in one row */
   max-width: min(300px, calc(50% - var(--breadcrumb-gap) / 2));
   /* height: 32px; */
@@ -826,7 +826,7 @@ ul.item-list, ol.item-list {
   }
 
   #TopBreadcrumb ol li {
-    min-width: max(50px, calc(25vw - 1rem));
+    min-width: max(80px, calc(25vw - 1rem));
     /* max-width: calc(50vw - 3rem); */
   }
 
@@ -846,6 +846,10 @@ ul.item-list, ol.item-list {
   #FolderContent.folder_content_default .video-preview {
     width: 120px;
     height: 60px;
+  }
+
+  #VinylRecorderPlayer {
+    --scale-percent: 0.25 !important;
   }
 }
 

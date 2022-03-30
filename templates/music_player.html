@@ -27,12 +27,14 @@
                 <!-- Record Player ends -->
                 <div id="PlayerInfo" class="d-flex px-2 py-2">
                     <span id="PlayerStatus" class="text-secondary">Ready</span>
-                    <span id="PlayerCurrentTrack" class="text-dark text-max-lines-2">
-                        {{ .CountMusic }} music in the playlist
+                    <span>
+                        <span id="PlayerCurrentTrack" class="text-dark text-max-lines-2">
+                            {{ .CountMusic }} music in the playlist
+                        </span>
                     </span>
                 </div>    
             </div>
-            <div id="MusicPlayerController">
+            <div id="MusicPlayerController" class="m-2">
                 <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
                     <source type="audio/mp3" src="">
                     Sorry, your browser does not support HTML5 audio.

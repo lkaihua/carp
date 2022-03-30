@@ -52,21 +52,29 @@ audio::-webkit-media-controls-panel{
   display: flex;
   flex-wrap: nowrap;
   align-content: center;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 #PlayerInfo {
   flex-direction: column;
   padding: 0.25rem 0.5rem;
+  flex: 1 1 auto;
+  justify-content: space-around;
+}
+
+#PlayerInfo span:first-child {
+  flex: 1 1 33%;
+}
+#PlayerInfo span:nth-child(2) {
+  flex: 1 1 66%;
 }
 
 #PlayerStatus{
   font-size: 0.9rem;
 }
 #PlayerCurrentTrack{
-
 }
 
 #MusicPlayerAudio{
