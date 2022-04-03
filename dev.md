@@ -28,6 +28,11 @@
 
 ### Work log
 
+#### 2022-04-02
+
+- Support music preview modal. Refactor music player, now it supports a playlist or a given play track. Add auto play data attribute for track links.
+- Add a dict function in go template.
+
 #### 2022-03-26
 
 - Finaize vinyl recorder player. When the album contains a cover image, e.g. `cover.jpg`, the vinyl recorder will use it automatically.

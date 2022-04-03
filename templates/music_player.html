@@ -1,8 +1,8 @@
 {{ define "music_player"}}
 
-<div id="MusicPlayerBar" class="sticky">
+<div id="MusicPlayerBar" data-is-sticky="{{.IsSticky}}" class='{{ if eq .IsSticky "true" -}} sticky {{- end }}'>
     <ul class="row row-cols-1 row-cols-s-1 row-cols-m-2 row-cols-lg-2 list-unstyled list mx-0 my-0">
-        <li class="col pb-3 pt-2 rounded-2 shadow">
+        <li class="col py-2 rounded-2 shadow">
             <div id="MusicPlayerContainer" class="m-2">
                 <!-- Record Player starts -->
                 <div id="VinylRecorderPlayer">
@@ -37,13 +37,11 @@
             <div id="MusicPlayerController" class="m-2">
                 <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
                     <source type="audio/mp3" src="">
-                    Sorry, your browser does not support HTML5 audio.
+                    <p>Sorry, your browser does not support HTML5 audio.</p>
                 </audio>
             </div>
         </li>
     </ul>
 </div>
-
-<script>{{ includeJS "./static/scripts/music_player.js" }}</script>
 
 {{ end }}

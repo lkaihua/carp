@@ -10,43 +10,63 @@
     <ul class="item-list mx-0 border-1 my-2">
         {{ range . }}
         <li>
-            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}"
-            href="{{ .UrlString }}"
-            target='{{ if ne .EntryType "folder" }}_blank{{ end }}'
-            >
-                <span class="icon {{ .EntryType }}"></span>
-                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
-            </a>
-            
-            {{ if ne .EntryType "folder" }}
-            <button type="button" class="btn btn-more"></button>
+            {{ if eq .EntryType "folder" }}
+                <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}">
+                    <span class="icon folder"></span>
+                    <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                    <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                </a>
+            {{ else }}
+                <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}"
+                    data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                    data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                >
+                    <span class="icon {{ .EntryType }}"></span>
+                    <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                    <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                </a>
+                <button type="button" class="btn btn-more"></button>
+                <!-- Preview Button starts -->
+                {{ if eq .EntryType "image" }}
+                    <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
+                        data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                        data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                    >   
+                        {{ $previewImageUrl := .UrlString }}
+                        {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
+                        <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
+                    </button>
+                {{ else if eq .EntryType "music" }}
+                    <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
+                        data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                        data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                    >   
+                        <span class="pos-relative video-preview rounded border-1 flex-center">
+                            {{ if .HasThumbnail }}
+                            <img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />
+                            {{ end }}
+                            <span class="pos-absolute-max flex-center">
+                                <span class="icon music-note"></span>
+                            </span>
+                        </span>
+                    </button>
+                {{ else if eq .EntryType "video" }}
+                    <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
+                        data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                        data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                    >   
+                        <span class="pos-relative video-preview rounded border-1 flex-center">
+                            {{ if .HasThumbnail }}
+                            <img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />
+                            {{ end }}
+                            <span class="pos-absolute-max flex-center">
+                                <span class="icon video-play"></span>
+                            </span>
+                        </span>
+                    </button>
+                {{ end }}
+                <!-- Preview Button ends -->
             {{ end }}
-            
-            <!-- Button trigger modal starts -->
-            {{ if eq .EntryType "image" }}
-            <button type="button" class="btn border rounded btn-preview btn-preview-image" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
-            >   
-                {{ $previewImageUrl := .UrlString }}
-                {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
-                <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
-            </button>
-            {{ else if eq .EntryType "video" }}
-            <button type="button" class="btn border rounded btn-preview btn-preview-video" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
-            >   
-                <span class="pos-relative video-preview rounded border-1 flex-center">
-                    {{ if .HasThumbnail }}
-                    <img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />
-                    {{ end }}
-                    <span class="pos-absolute-max flex-center">
-                        <span class="icon video-play"></span>
-                    </span>
-                </span>
-            </button>
-            {{ end }}
-            <!-- Button trigger modal ends -->
         </li>
         {{ else }}
         <li> Ops! Nothing here. </li>

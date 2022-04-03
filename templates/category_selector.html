@@ -1,36 +1,32 @@
 {{ define "category_selector"}}
-
 <section id="CategorySelector">
     {{ with .Categories }}      
-    <ul class="row row-cols-3 row-cols-s-3 row-cols-m-6 row-cols-lg-6 list-unstyled list mx-1 my-1">
-        {{ range . }}
-        <li class="col" >
-            <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">
-                <span class="mb-1 rounded-pill rounded category-btn category-btn-{{- .Value}}">
-                
-                    {{ if eq .Value "all"}}
-                        <span id="AllIcon"><img src='/static/icons/files.svg?static=1' class="all-icon"/></span>
-                    {{ else if eq .Value "image-video" }}
-                        <span id="ImageVideoIcon">
-                            <img src='/static/icons/file-image.svg?static=1' class="image-icon" />
-                            <img src='/static/icons/file-play.svg?static=1' class="video-icon"/>
+        <ul class="row row-cols-3 row-cols-s-3 row-cols-m-6 row-cols-lg-6 list-unstyled list mx-1 my-1">
+            {{ range . }}
+                <li class="col" >
+                    <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">
+                        <span class="mb-1 rounded-pill rounded category-btn category-btn-{{- .Value}}">
+                            {{ if eq .Value "all"}}
+                                <span id="AllIcon"><img src='/static/icons/files.svg?static=1' class="all-icon"/></span>
+                            {{ else if eq .Value "image-video" }}
+                                <span id="ImageVideoIcon">
+                                    <img src='/static/icons/file-image.svg?static=1' class="image-icon" />
+                                    <img src='/static/icons/file-play.svg?static=1' class="video-icon"/>
+                                </span>
+                            {{ else if eq .Value "music" }}
+                                <span id="MusicIcon">
+                                    <img src='/static/icons/file-music.svg?static=1' class="file-music-icon" />
+                                    <img src='/static/icons/music-note-beamed.svg?static=1' class="music-note-icon" />
+                                </span>
+                            {{ end }}
                         </span>
-                    {{ else if eq .Value "music" }}
-                        <span id="MusicIcon">
-                            <img src='/static/icons/file-music.svg?static=1' class="file-music-icon" />
-                            <img src='/static/icons/music-note-beamed.svg?static=1' class="music-note-icon" />
+                        <span class="name pt-0 text-max-lines-1">
+                            {{- .DisplayText -}}
                         </span>
-                    {{ end }}
-
-                    </span>
-                <span class="name pt-0 text-max-lines-1">
-                    {{- .DisplayText -}}
-                </span>
-            </a>
-        </li>
-        {{ end }}
-    </ul>
+                    </a>
+                </li>
+            {{ end }}
+        </ul>
     {{ end }}
 </section>
-
 {{ end }}

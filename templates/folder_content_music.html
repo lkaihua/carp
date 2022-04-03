@@ -18,7 +18,8 @@
                     {{ if eq .EntryType "music" }}
                         <li>
                             <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" 
-                                data-playing="false" data-error="false" data-song-name="{{ .FirstName }}" href="{{ .UrlString }}" 
+                                data-playing="false" data-error="false" data-music-name="{{ .FirstName }}" href="{{ .UrlString }}" 
+                                data-music-url="{{ .UrlString }}"
                             >
                                 <span class="icon {{ .EntryType }}"></span>
                                 <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
@@ -30,7 +31,7 @@
                     {{ end }}
                 {{ end }}
             </ul>
-            {{ template "music_player" .}}
+            {{ template "music_player" dict "CountMusic" .CountMusic    "HasCover" .HasCover    "IsSticky" "true" }}
         {{ end }}
     </div>
 
