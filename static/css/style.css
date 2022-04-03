@@ -522,7 +522,13 @@ ol.item-list {
     outline: 0;
 }
 
-#FolderContent ul {}
+#FolderContent #MusicContainer {
+    min-height: 40vh;
+}
+
+#FolderContent #ImageVideoContainer {
+    min-height: 40vh;
+}
 
 #FolderContent ul li {
     position: relative;
@@ -583,8 +589,7 @@ ol.item-list {
     flex-direction: column;
     /* max-height: 80vw; */
     /* height: 300px; */
-    /* min-width: 300px;
-  max-width: 100%; */
+    min-height: 300px;
     background-color: #fdfdfd;
     background-image: radial-gradient(circle, #ddd 1px, rgba(0, 0, 0, 0) 1px);
     background-size: 1rem 1rem;
