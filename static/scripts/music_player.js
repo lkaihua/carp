@@ -214,7 +214,9 @@
         const observer = new IntersectionObserver(
             ([e]) => e.target.toggleAttribute('stuck', e.intersectionRatio < 1), { threshold: [1] }
         )
-        if (musicPlayerBar && musicPlayerBar.getAttribute("data-is-sticky") == "true") {
+        if (musicPlayerBar &&
+            (musicPlayerBar.getAttribute("data-sticky") == "top" || musicPlayerBar.getAttribute("data-sticky") == "bottom")
+        ) {
             observer.observe(musicPlayerBar)
         }
     }

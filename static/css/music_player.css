@@ -1,276 +1,281 @@
-
 /**
  * Reset native <audio> tag style
  */
 
+
 /* reset Chrome panel background from siliver to theme light*/
-audio::-webkit-media-controls-panel{
-  background-color: var(--bs-light);
-  border: 0;
-}
-#MusicPlayerAudio{
-  max-height: 35px;
-  overflow: hidden;
-  vertical-align: middle;
-  text-align: center;
-  margin: 0 auto;
+
+audio::-webkit-media-controls-panel {
+    background-color: var(--bs-light);
+    border: 0;
 }
 
-#MusicPlaylist{
+#MusicPlayerAudio {
+    max-height: 35px;
+    overflow: hidden;
+    vertical-align: middle;
+    text-align: center;
+    margin: 0 auto;
 }
 
-#MusicPlaylist li a {
+#MusicPlaylist {}
+
+#MusicPlaylist li a {}
+
+#MusicPlaylist li a[data-playing="true"] {
+    background-color: var(--bs-blue);
+    color: white;
 }
 
-#MusicPlaylist li a[data-playing="true"]{
-  background-color: var(--bs-blue);
-  color: white;
-}
-#MusicPlaylist li a[data-error="true"]{
-  color: var(--bs-danger);
+#MusicPlaylist li a[data-error="true"] {
+    color: var(--bs-danger);
 }
 
-#MusicPlayerBar{
-  width: 100%;
+#MusicPlayerBar {
+    width: 100%;
 }
 
-#MusicPlayerBar[stuck] ul li{
-  padding-bottom: 2rem !important;
-  border-radius: 0 !important;
+#MusicPlayerBar[stuck] ul li {
+    /* padding-bottom: 2rem !important; */
+    border-radius: 0 !important;
 }
 
-#MusicPlayerBar ul{
-  justify-content: center;
+#MusicPlayerBar ul {
+    justify-content: center;
 }
 
 #MusicPlayerBar ul li {
-  background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.92);
 }
 
 #MusicPlayerContainer {
-  color: var(--bs-light);
-  display: flex;
-  flex-wrap: nowrap;
-  align-content: center;
-  align-items: stretch;
-  flex-direction: row;
-  justify-content: space-between;
+    color: var(--bs-light);
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+    flex: 1 1 auto;
 }
 
 #PlayerInfo {
-  flex-direction: column;
-  padding: 0.25rem 0.5rem;
-  flex: 1 1 auto;
-  justify-content: space-around;
+    flex-direction: column;
+    padding: 0.25rem 0.5rem;
+    flex: 1 1 auto;
+    overflow: hidden;
+    justify-content: space-between;
 }
 
-#PlayerInfo span:first-child {
-  flex: 1 1 33%;
-}
-#PlayerInfo span:nth-child(2) {
-  flex: 1 1 66%;
-}
-
-#PlayerStatus{
-  font-size: 0.9rem;
-}
-#PlayerCurrentTrack{
+#PlayerStatus {
+    font-size: 0.9rem;
+    height: 17.5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
-#MusicPlayerAudio{
-  width: 100%;
+#PlayerCurrentTrack {
+    height: 35px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
+#MusicPlayerAudio {
+    width: 100%;
+}
 
 #VinylRecorderPlayer {
-  --scale-percent: 0.4;
-  /* --scale-percent: 1; */
-
-  display: inline-block;
-  overflow: hidden;
-
-  --player-width: 400px;
-  --player-height: 350px;
-  
-  --player-board-width: 400px;
-  --player-board-height: 350px; 
-
-  --board-background-color: white;
-
-  width: calc(var(--player-width) * var(--scale-percent));
-  height: calc(var(--player-height) * var(--scale-percent));
-  min-width: calc(var(--player-board-width) * var(--scale-percent));
-  min-height: calc(var(--player-board-height) * var(--scale-percent));
-
+    --scale-percent: 0.4;
+    /* --scale-percent: 1; */
+    display: inline-block;
+    overflow: hidden;
+    --player-width: 400px;
+    --player-height: 350px;
+    --player-board-width: 400px;
+    --player-board-height: 350px;
+    --board-background-color: white;
+    width: calc(var(--player-width) * var(--scale-percent));
+    height: calc(var(--player-height) * var(--scale-percent));
+    min-width: calc(var(--player-board-width) * var(--scale-percent));
+    min-height: calc(var(--player-board-height) * var(--scale-percent));
 }
 
-
-.board{
-  position: relative;
-  width: var(--player-board-width);
-  height: var(--player-board-height);
-  background: var(--board-background-color);
-  border-radius: 15px;
-  cursor: pointer;
-  position: relative;
-  align-self: center;
-	cursor: pointer;
-  background: conic-gradient(#d7d7d7, #c3c3c3, #cccccc, #c6c6c6, #d3d3d3, #d8d8d8, #d5d5d5, #d8d8d8, #d3d3d3, #c5c5c5, #c0c0c0, #bfbfbf, #d0d0d0, #d9d9d9, #d1d1d1, #c5c5c5, #c8c8c8, #d7d7d7, #d5d5d5, #cdcdcd, #c4c4c4, #d9d9d9, #cecece, #c5c5c5, #c5c5c5, #cdcdcd, #d8d8d8, #d9d9d9, #d7d7d7) content-box, linear-gradient(#d4d4d4, #d4d4d4) padding-box, radial-gradient(rgba(120, 120, 120, 0.9), rgba(120, 120, 120, 0) 70%) 50% bottom/80% 0.46875em no-repeat border-box;
+.board {
+    position: relative;
+    width: var(--player-board-width);
+    height: var(--player-board-height);
+    background: var(--board-background-color);
+    border-radius: 15px;
+    cursor: pointer;
+    position: relative;
+    align-self: center;
+    cursor: pointer;
+    background: conic-gradient(#d7d7d7, #c3c3c3, #cccccc, #c6c6c6, #d3d3d3, #d8d8d8, #d5d5d5, #d8d8d8, #d3d3d3, #c5c5c5, #c0c0c0, #bfbfbf, #d0d0d0, #d9d9d9, #d1d1d1, #c5c5c5, #c8c8c8, #d7d7d7, #d5d5d5, #cdcdcd, #c4c4c4, #d9d9d9, #cecece, #c5c5c5, #c5c5c5, #cdcdcd, #d8d8d8, #d9d9d9, #d7d7d7) content-box, linear-gradient(#d4d4d4, #d4d4d4) padding-box, radial-gradient(rgba(120, 120, 120, 0.9), rgba(120, 120, 120, 0) 70%) 50% bottom/80% 0.46875em no-repeat border-box;
 }
 
-#VinylRecorderPlayer .board{
-  transform: scale(var(--scale-percent));
-  transform-origin: left top;
-  margin-right: calc(var(--player-board-width) * (var(--scale-percent) - 1));
-  margin-bottom: calc(var(--player-board-height) * (var(--scale-percent) - 1));
+#VinylRecorderPlayer .board {
+    transform: scale(var(--scale-percent));
+    transform-origin: left top;
+    margin-right: calc(var(--player-board-width) * (var(--scale-percent) - 1));
+    margin-bottom: calc(var(--player-board-height) * (var(--scale-percent) - 1));
 }
 
-.wrapper{
-  position: absolute;
-  z-index: 0;
-  background: transparent;
-  width: 100%;
-  height: 100%;
-  left: -40px;
-  top: 0;
+.wrapper {
+    position: absolute;
+    z-index: 0;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    left: -40px;
+    top: 0;
 }
 
 .board .vinyl {
-  --time-animation: 4000ms;
-  -webkit-animation: var(--time-animation) spin infinite normal linear;
-  -moz-animation: var(--time-animation) spin infinite normal linear;
-  -ms-animation: var(--time-animation) spin infinite normal linear;
-  -o-animation: var(--time-animation) spin infinite normal linear;
-  animation: var(--time-animation) spin infinite normal linear;
+    --time-animation: 4000ms;
+    -webkit-animation: var(--time-animation) spin infinite normal linear;
+    -moz-animation: var(--time-animation) spin infinite normal linear;
+    -ms-animation: var(--time-animation) spin infinite normal linear;
+    -o-animation: var(--time-animation) spin infinite normal linear;
+    animation: var(--time-animation) spin infinite normal linear;
 }
+
 .board[data-paused] .vinyl {
-  animation-play-state: paused !important;
+    animation-play-state: paused !important;
 }
+
 @keyframes spin {
-  0% {
-    transform: rotate(0);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .board[data-tonearm-on] .tonearm {
-  transform: rotate(290deg);
+    transform: rotate(290deg);
 }
 
 .board[data-tonearm-on] .tonearm {
-  transform: rotate(20deg);
+    transform: rotate(20deg);
 }
 
 .vinyl {
-  border-radius: 50%;
-  display: block;
-  position: absolute;
-  z-index: 10;
-  width: 300px;
-  height: 300px;
-  left: 75px;
-  top: 25px;
-  transform-origin: 50% 50%;
-  transition: transform 10s linear;
-  transform-style: preserve-3D;
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    z-index: 10;
+    width: 300px;
+    height: 300px;
+    left: 75px;
+    top: 25px;
+    transform-origin: 50% 50%;
+    transition: transform 10s linear;
+    transform-style: preserve-3D;
 }
+
 .vinyl-inner {
-  position: absolute;
-  display: block;
-  z-index: 20;
-  width: 100px;
-  height: 100px;
-  margin: 100px;
-  border-radius: 50%;
-  top: 0;
-  left: 0;
-  overflow: hidden;
+    position: absolute;
+    display: block;
+    z-index: 20;
+    width: 100px;
+    height: 100px;
+    margin: 100px;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
 }
+
 .speaker-left {
-  position: absolute;
-  display: block;
-  z-index: 30;
-  width: 40px;
-  height: 40px;
-  top: 270px;
-  left: 60px;
-  border-radius: 50%;
-  background: #1e1e1e;
-  border: 5px solid #cccccc;
+    position: absolute;
+    display: block;
+    z-index: 30;
+    width: 40px;
+    height: 40px;
+    top: 270px;
+    left: 60px;
+    border-radius: 50%;
+    background: #1e1e1e;
+    border: 5px solid #cccccc;
 }
+
 .speaker-right {
-  position: absolute;
-  display: block;
-  z-index: 30;
-  width: 40px;
-  height: 40px;
-  top: 270px;
-  left: 380px;
-  border-radius: 50%;
-  background: #1e1e1e;
-  border: 5px solid #cccccc;
+    position: absolute;
+    display: block;
+    z-index: 30;
+    width: 40px;
+    height: 40px;
+    top: 270px;
+    left: 380px;
+    border-radius: 50%;
+    background: #1e1e1e;
+    border: 5px solid #cccccc;
 }
+
 .tonearm {
-  position: absolute;
-  top: -100px;
-  left: 220px;
-  z-index: 90;
-  transform-origin: 50% 50%;
-  transition: transform 0.3s;
-  transition-timing-function: ease-in-out;
+    position: absolute;
+    top: -100px;
+    left: 220px;
+    z-index: 90;
+    transform-origin: 50% 50%;
+    transition: transform 0.3s;
+    transition-timing-function: ease-in-out;
 }
 
 .tonearmrest {
-  display: block;
-  position: absolute;
-  width: 40px;
-  height: 50px;
-  border-radius: 5px;
-  z-index: 40;
-  background: #cccccc;
-  top: 55px;
-  left: 380px;
+    display: block;
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    border-radius: 5px;
+    z-index: 40;
+    background: #cccccc;
+    top: 55px;
+    left: 380px;
 }
 
 .adjuster {
-  display: block;
-  position: absolute;
-  width: 95px;
-  height: 80px;
-  z-index: 5;
-  border-radius: 5px;
-  background: #ababab;
-  left: 335px;
-  top: 40px;
+    display: block;
+    position: absolute;
+    width: 95px;
+    height: 80px;
+    z-index: 5;
+    border-radius: 5px;
+    background: #ababab;
+    left: 335px;
+    top: 40px;
 }
 
 #VinylSvg {
-  width: 300px;
-  height: 300px;
-  position: absolute;
-  z-index: 10;
-  top: 0;
-  left: 0;
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
 }
 
-#MusicPlayerController{
-  position: relative;
+#MusicPlayerController {
+    position: relative;
+    width: 100%;
 }
 
-#MusicPlayerController::before{
-  content: '';
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 100;
+#MusicPlayerController::before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 100;
 }
 
-#MusicPlayerController[inited]::before{
-  display: none;
+#MusicPlayerController[inited]::before {
+    display: none;
 }

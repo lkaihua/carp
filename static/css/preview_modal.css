@@ -1,0 +1,148 @@
+#PreviewModal {
+    --preview-model-bg-color: black;
+    --preview-model-text-color: var(--bs-gray-400);
+}
+
+#PreviewModal .modal-header {
+    background-color: var(--preview-model-bg-color);
+    color: var(--preview-model-text-color);
+    border-bottom: none;
+}
+
+#PreviewModal .btn-close {
+    background-color: var(--preview-model-text-color);
+    padding: 0.5rem 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}
+
+#PreviewModal .modal-header #PreviewModalLabel {
+    max-width: calc(100vw - 4rem);
+    font-size: 1rem;
+}
+
+#PreviewModal .modal-body {
+    /* padding: 1rem 0; */
+    padding: 0;
+    background-color: var(--preview-model-bg-color);
+    flex-direction: column;
+}
+
+#PreviewModal .modal-footer {
+    /* position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0; */
+    /* height: 100px; */
+    background-color: var(--preview-model-bg-color);
+    /* border-top-color: var(--preview-model-bg-color); */
+    border-top: none;
+    justify-content: center;
+}
+
+#PreviewModal .modal-footer .button-container {
+    position: relative;
+    display: flex;
+    /* flex-grow: 1; */
+    gap: 1rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: stretch;
+    align-content: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+#PreviewModal .modal-footer .btn {
+    flex: 1 1 auto;
+    position: relative;
+    padding: 5px;
+    transition: background-color 0.20s cubic-bezier(1, 0, 0, 1);
+    background-color: none;
+}
+
+#PreviewModal .modal-footer .btn.carousel-control {
+    width: 48px;
+    border-radius: 50%;
+}
+
+#PreviewModal .modal-footer .btn.carousel-control span {
+    height: 1.25rem;
+}
+
+#PreviewModal .modal-footer .btn.carousel-control:hover,
+#PreviewModal .modal-footer .btn.carousel-control:active {
+    background-color: var(--bs-gray-900);
+}
+
+#PreviewModal .modal-footer .btn.carousel-control[data-active="true"] {
+    background-color: var(--bs-secondary);
+}
+
+#PreviewModal .modal-body .preview-content-container.image-container {
+    border: 1px solid var(--bs-gray-900);
+    overflow: hidden;
+}
+
+#PreviewModal .modal-body .preview-content-container.video-container {
+    width: 100%;
+    height: 100%;
+    display: relative;
+}
+
+#PreviewModal .modal-body .preview-content-container.music-container {
+    width: 100%;
+}
+
+#ModalPreviewDefault {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    align-items: stretch;
+}
+
+#ModalPreviewMusic {
+    display: flex;
+    flex: 1 1 auto;
+    padding: 0 1rem;
+}
+
+#ModalPreviewImage {
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 50px;
+    min-height: 50px;
+}
+
+#ModalPreviewVideo {
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    z-index: 999;
+    /* To be on top of prev/next buttons */
+}
+
+
+/* 
+#ModalButtonOpenFile{
+  padding-left: 2rem;
+  padding-right: 2rem;
+  flex-grow: 1;
+} */
+
+#ModalButtonClosePreview {
+    /* flex-grow: 1; */
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+}
+
+#ModalButtonPrev {
+    opacity: 0.8;
+}
+
+#ModalButtonNext {
+    opacity: 0.8;
+}

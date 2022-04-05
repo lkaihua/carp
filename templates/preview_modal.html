@@ -7,10 +7,6 @@
             </div>
             <div class="modal-body flex-center">
 
-                <div class="preview-content-container default-container hidden flex-center">
-                    <div id="ModalPreviewDefault"></div>
-                </div>
-
                 <div class="preview-content-container image-container hidden flex-center">
                     <img src="" id="ModalPreviewImage" class="checker-background" />
                 </div>
@@ -20,7 +16,7 @@
                         <span class="visually-hidden">Play</span>
                     </a>
                     <div id="ModalPreviewMusic">
-                        {{ template "music_player" dict "CountMusic" ""    "HasCover" ""    "IsSticky" "false" }}
+                        {{ template "music_player" dict "CountMusic" ""    "HasCover" ""    "Sticky" "none" }}
                     </div>
                 </div>
 
@@ -29,6 +25,17 @@
                         <source src="" type="">
                         <p>To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
                     </video>
+                </div>
+                
+                <div class="preview-content-container default-container  flex-center">
+                   <ul class="list-group" id="ModalPreviewDefault">
+                        <li><label>File type:</label><span class="list-item-content "></span></li>
+                        <li><label>File name:</label><span class="list-item-content "></span></li>
+                        <li><label>File size:</label><span class="list-item-content "></span></li>
+                        <li><label>Modification time:</label><span class="list-item-content "></span></li>
+                        <li><a class="btn btn-primary" href="#" role="button">Open Raw File Link</a></li>
+                        <li><a class="btn btn-primary" href="#" role="button">Preview as text</a></li>
+                    </ul>
                 </div>
 
             </div>

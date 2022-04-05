@@ -20,7 +20,7 @@
                 {{ range .DisplayEntries }}
                     {{ if eq .EntryType "image" }}
                         <div class="col"><div class="container"><div class="bg-light">
-                            <button type="button" class="btn border rounded btn-preview btn-preview-image flex-center {{ if .IsCover }}btn-preview-cover{{ end }}" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                            <button type="button" class="btn rounded btn-preview btn-preview-image flex-center {{ if .IsCover }}btn-preview-cover{{ end }}" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                                 data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
                                 data-is-cover="{{.IsCover}}"
                             >   
@@ -34,7 +34,7 @@
                         </div></div></div>
                     {{ else if eq .EntryType "video" }}
                         <div class="col"><div class="container"><div class="bg-light">
-                            <button type="button" class="btn border rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                            <button type="button" class="btn rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                                 data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
                             >   
                                 {{ if .HasThumbnail }}
@@ -70,7 +70,7 @@
                         </a>
                         
                         {{ if ne .EntryType "folder" }}
-                            <button type="button" class="btn btn-more"></button>
+                            <button type="button" class="btn btn-small btn-more"></button>
                         {{ end }}
                     </li>
                 {{ end }}

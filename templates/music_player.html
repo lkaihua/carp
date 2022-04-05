@@ -1,9 +1,13 @@
 {{ define "music_player"}}
 
-<div id="MusicPlayerBar" data-is-sticky="{{.IsSticky}}" class='{{ if eq .IsSticky "true" -}} sticky {{- end }}'>
+<div id="MusicPlayerBar" data-sticky="{{.Sticky}}" class='
+    {{- if eq .Sticky "top" -}} sticky sticky-top 
+    {{- else if eq .Sticky "bottom" -}} sticky sticky-bottom
+    {{- end -}}
+'>
     <ul class="row row-cols-1 row-cols-s-1 row-cols-m-2 row-cols-lg-2 list-unstyled list mx-0 my-0">
         <li class="col py-2 rounded-2 shadow">
-            <div id="MusicPlayerContainer" class="m-2">
+            <div id="MusicPlayerContainer" class="my-2">
                 <!-- Record Player starts -->
                 <div id="VinylRecorderPlayer">
                     <div class="board" data-paused>
@@ -25,21 +29,21 @@
                     </div>
                 </div>
                 <!-- Record Player ends -->
-                <div id="PlayerInfo" class="d-flex px-2 py-2">
+                <div id="PlayerInfo" class="d-flex ps-2 pe-0 py-0">
                     <span id="PlayerStatus" class="text-secondary">Ready</span>
-                    <span>
-                        <span id="PlayerCurrentTrack" class="text-dark text-max-lines-2">
-                            {{ .CountMusic }} music in the playlist
-                        </span>
+                    <span id="PlayerCurrentTrack" class="text-dark text-max-lines-1">
+                        {{ .CountMusic }} music in the playlist
                     </span>
+
+                    <div id="MusicPlayerController" class="">
+                        <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
+                            <source type="audio/mp3" src="">
+                            <p>Sorry, your browser does not support HTML5 audio.</p>
+                        </audio>
+                    </div>
                 </div>    
             </div>
-            <div id="MusicPlayerController" class="m-2">
-                <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
-                    <source type="audio/mp3" src="">
-                    <p>Sorry, your browser does not support HTML5 audio.</p>
-                </audio>
-            </div>
+            
         </li>
     </ul>
 </div>

@@ -1,22 +1,20 @@
 !(function() {
     const $ = (path) => document.querySelector(path)
     const $a = (path) => document.querySelectorAll(path);
-
     const previewModal = $('#PreviewModal')
-
     previewModal.addEventListener('hide.bs.modal', function(event) {
         previewModal.querySelectorAll('.preview-content-container').forEach(c => c.classList.add('hidden'));
 
         $('#ModalPreviewVideo').pause()
-        $('#ModalPreviewVideo source').setAttribute('src', '')
+        $('#ModalPreviewVideo source').src = ''
 
         $('#ModalPreviewMusic audio').pause()
-        $('#ModalPreviewMusic audio').setAttribute('src', '')
+        $('#ModalPreviewMusic audio').src = ''
 
         $('#ModalPreviewMusicPlayItem').setAttribute('data-playing', 'false')
         $('#ModalPreviewMusicPlayItem').removeAttribute('data-music-url')
 
-        $('#ModalPreviewImage').setAttribute('src', '')
+        $('#ModalPreviewImage').src = ''
 
         $('#ModalPreviewDefault').innerHTML = ''
     })
@@ -65,7 +63,8 @@
         const modalPreviewDefault = $('#ModalPreviewDefault')
         const attrs = [lastName, name, entryType, urlString]
         attrs.forEach(attr => {
-            const newNode = document.createElement('span')
+            const newNode = document.createElement('li')
+            newNode.classList.add("list-group-item")
             newNode.textContent = attr
             modalPreviewDefault.appendChild(newNode)
         })
@@ -90,7 +89,6 @@
                 window.musicPlayerInit && window.musicPlayerInit()
                 previewModal.querySelector(".music-container").classList.remove('hidden')
             case 'default':
-                previewModal.querySelector(".default-container").classList.remove('hidden')
             default:
                 break;
         }
