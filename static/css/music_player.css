@@ -76,12 +76,7 @@ audio::-webkit-media-controls-panel {
     align-items: center;
 }
 
-#PlayerCurrentTrack {
-    height: 35px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
+#PlayerCurrentTrack {}
 
 #MusicPlayerAudio {
     width: 100%;

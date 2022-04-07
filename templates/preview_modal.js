@@ -60,14 +60,17 @@
         const modalTitle = previewModal.querySelector('.modal-title')
         modalTitle.textContent = name
 
-        const modalPreviewDefault = $('#ModalPreviewDefault')
-        const attrs = [lastName, name, entryType, urlString]
-        attrs.forEach(attr => {
-            const newNode = document.createElement('li')
-            newNode.classList.add("list-group-item")
-            newNode.textContent = attr
-            modalPreviewDefault.appendChild(newNode)
-        })
+
+        // TODO: hide the file description toast
+        //
+        // const modalPreviewDefault = $('#ModalPreviewDefault')
+        // const attrs = [lastName, name, entryType, urlString]
+        // attrs.forEach(attr => {
+        //     const newNode = document.createElement('li')
+        //     newNode.classList.add("list-group-item")
+        //     newNode.textContent = attr
+        //     modalPreviewDefault.appendChild(newNode)
+        // })
 
         switch (entryType) {
             case 'image':

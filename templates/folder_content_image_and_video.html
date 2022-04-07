@@ -26,7 +26,7 @@
                             >   
                                 {{ $previewImageUrl := .UrlString }}
                                 {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
-                                <span class="pos-absolute-max blur-bg image-preview lazyload" data-src="{{$previewImageUrl}}" ></span>
+                                <span class="pos-absolute-max blur-bg image-preview"></span>
                                 <span class="pos-absolute-max image-container flex-center">
                                     <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
                                 </span>
