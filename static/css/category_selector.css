@@ -1,5 +1,5 @@
 #CategorySelector {
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 #CategorySelector ul {
@@ -186,7 +186,7 @@
 
 #CategorySelector li.col.active .name {
     /* font-size: 0.8rem; */
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 #CategorySelector li.col a:focus {

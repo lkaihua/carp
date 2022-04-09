@@ -76,7 +76,10 @@ audio::-webkit-media-controls-panel {
     align-items: center;
 }
 
-#PlayerCurrentTrack {}
+#PlayerCurrentTrack {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
 
 #MusicPlayerAudio {
     width: 100%;
@@ -259,18 +262,26 @@ audio::-webkit-media-controls-panel {
     width: 100%;
 }
 
-#MusicPlayerController::before {
-    content: '';
+#MusicPlayerControllerStartAlbum {
     width: 100%;
     height: 100%;
     cursor: pointer;
-    display: inline-block;
     position: absolute;
     top: 0;
     right: 0;
     z-index: 100;
-}
-
-#MusicPlayerController[inited]::before {
-    display: none;
+    background: white;
+    padding: var(--btn-border-width);
+    background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), linear-gradient(30deg, var(--btn-border-start-color), var(--btn-border-end-color));
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    /* transition: transform 0.3s; */
+    transition-timing-function: ease-in-out;
+    transition: opacity 0.4s ease-out;
 }

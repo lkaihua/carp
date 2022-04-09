@@ -1,5 +1,5 @@
 #FolderContent #ImageVideoContainer {
-    min-height: 40vh;
+    /* min-height: 40vh; */
 }
 
 #FolderContent ul.item-list li {
@@ -260,7 +260,7 @@
 }
 
 #MusicContainer {
-    min-height: 40vh;
+    /* min-height: 40vh; */
 }
 
 #MusicContainer #MusicPlaylist.item-list {}

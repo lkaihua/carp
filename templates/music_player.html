@@ -31,11 +31,15 @@
                 <!-- Record Player ends -->
                 <div id="PlayerInfo" class="d-flex ps-2 pe-0 py-0">
                     <span id="PlayerStatus" class="text-secondary">Ready</span>
-                    <span id="PlayerCurrentTrack" class="text-dark text-max-lines-1">
+                    <span id="PlayerCurrentTrack" class="text-dark text-max-lines-2">
                         {{ .CountMusic }} music in the playlist
                     </span>
 
                     <div id="MusicPlayerController" class="">
+                        <div id="MusicPlayerControllerStartAlbum" class="btn text-dark">
+                            <span class="icon video-play"></span>
+                            <span class="text-max-lines-1">Start Playing</span>
+                        </div>
                         <audio id="MusicPlayerAudio" class="rounded-3 flex-center" preload="auto" tabindex="0" controls="" type="audio/mpeg">
                             <source type="audio/mp3" src="">
                             <p>Sorry, your browser does not support HTML5 audio.</p>

@@ -15,7 +15,7 @@
     /* flex-grow: 1;
   flex-shrink: 1; */
     --btn-background-color: var(--bs-gray-200);
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
     /* border-radius: 0; */
     background-color: var( --btn-background-color);
     min-width: 80px;
@@ -52,7 +52,6 @@
 #TopBreadcrumb ol li a {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    border-radius: 0.5rem;
 }
 
 #TopBreadcrumb ol li a:active {
@@ -76,19 +75,15 @@
 
 #TopBreadcrumb ol li:last-child a {
     --btn-background-color: white;
-    padding: 2px;
-    /* border-bottom: 2px solid var(--bs-primary); */
-    /* border inside edge hack for 'border: 2px solid var(--bs-primary);' */
-    /* box-shadow:inset 0px 0px 0px 2px var(--bs-primary);  */
+    padding: 1px;
     background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), linear-gradient(30deg, var(--bs-red), var(--bs-blue));
     background-origin: border-box;
     background-clip: content-box, border-box;
-    font-weight: bold;
-    /* background-color: var(--btn-background-color); */
+    /* font-weight: bold; */
 }
 
 #TopBreadcrumb ol li:last-child a>span {
-    margin: 2px calc(0.5rem - 2px);
+    margin: 3px calc(0.5rem - 2px);
 }
 
 #TopBreadcrumb ol li:first-child.row-trailing-item a {

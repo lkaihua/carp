@@ -24,7 +24,7 @@
         const audio = $('#MusicPlayerAudio')
         const playerCurrentTrack = $('#PlayerCurrentTrack')
         const playerStatus = $('#PlayerStatus')
-        const musicPlayerController = $("#MusicPlayerController")
+        const musicPlayerControllerStartAlbum = $("#MusicPlayerControllerStartAlbum")
 
 
         const runTrack = (link) => {
@@ -39,11 +39,9 @@
 
             // Allow the user to click a track that is currently playing to force a play action
             if (link && link.getAttribute("data-playing") == "true") {
-                try {
-                    if (audio.src) audio.play()
-                } catch (e) {
-                    console.debug('[runTrack] audio play has error', e)
-                }
+                if (audio.src) audio.play().catch(e => {
+                    console.debug('[runTrack] audio play() has error', e)
+                })
                 return
             }
 
@@ -54,13 +52,11 @@
 
             const musicUrl = link.getAttribute("data-music-url")
             if (musicUrl) {
-                try {
-                    audio.src = musicUrl
-                    audio.load()
-                    audio.play()
-                } catch (e) {
-                    console.debug('[runTrack] audio play has error', e)
-                }
+                audio.src = musicUrl
+                audio.load()
+                audio.play().catch(e => {
+                    console.debug('[runTrack] audio play() has error', e)
+                });
             }
         }
 
@@ -89,10 +85,17 @@
         const playerControllerOnClick = (e) => {
             if (current < 0) {
                 runNextTrack();
-                musicPlayerController.removeEventListener("click", playerControllerOnClick)
             }
+            e.preventDefault();
         }
-        musicPlayerController.addEventListener("click", playerControllerOnClick)
+
+        if (musicPlayerControllerStartAlbum) {
+            musicPlayerControllerStartAlbum.addEventListener("click", playerControllerOnClick)
+            musicPlayerControllerStartAlbum.addEventListener('transitionend', () => {
+                musicPlayerControllerStartAlbum.remove()
+            });
+        }
+
 
         /**
          * init VinylRecordPlayer
@@ -165,9 +168,8 @@
             vinylSpinChange()
             tonearmChange()
 
-            // If audio plays successfully for the first time, mark auto start as done and player controller inited.
             autoStartStatus = "done"
-            $("#MusicPlayerController").setAttribute("inited", "true")
+            musicPlayerControllerStartAlbum && musicPlayerControllerStartAlbum.classList.add('fade-out')
         })
 
         audio.addEventListener("pause", (e) => {
