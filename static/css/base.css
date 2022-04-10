@@ -2,6 +2,8 @@ body {}
 
 :root {
     --body-max-width: 1200px;
+    --top-breadcrumb-max-width: 550px;
+    --music-player-max-width: 550px;
     --section-margin-x: 2rem;
     --gray-border-color: #d8d8d8;
     --btn-background-color: white;
@@ -198,6 +200,30 @@ span.icon::before {
     background-image: url('/static/icons/arrow-90deg-up.svg?static=1');
 }
 
+.icon.files::before {
+    background-image: url('/static/icons/files.svg?static=1');
+}
+
+.icon.file-image::before {
+    background-image: url('/static/icons/file-image.svg?static=1');
+}
+
+.icon.file-play::before {
+    background-image: url('/static/icons/file-play.svg?static=1');
+}
+
+.icon.file-music::before {
+    background-image: url('/static/icons/file-music.svg?static=1');
+}
+
+.btn-more::before {
+    background-image: url('/static/icons/three-dots-vertical.svg?static=1');
+}
+
+.btn-x::before {
+    background-image: url('/static/icons/x.svg?static=1');
+}
+
 ul.item-list,
 ol.item-list {
     width: auto;
@@ -210,7 +236,7 @@ ol.item-list {
     list-style: none;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid var(--gray-border-color);
+    /* border: 1px solid var(--gray-border-color); */
     border-radius: 0.5rem;
 }
 
@@ -220,9 +246,10 @@ ol.item-list {
 
 .item-list li a.item-icon-name {
     width: auto;
-    margin: 0.25rem 0.25rem;
     border-radius: 0.25rem;
-    padding: 8px 0.5rem 8px 0.25rem;
+    line-height: 24px;
+    padding: 0.25rem;
+    margin: 0.25rem 0;
     /* Leave trailing space button */
     font-weight: 400;
     color: #212529;
@@ -231,7 +258,7 @@ ol.item-list {
     white-space: nowrap;
     background-color: transparent;
     user-select: none;
-    flex: 1 1;
+    flex: 1 1 auto;
     overflow: hidden;
 }
 
@@ -244,15 +271,20 @@ ol.item-list {
     padding-right: 40px;
 }
 
+.item-list li a.item-icon-name .name {
+    display: flex;
+    flex: 1 1 auto;
+    margin-right: 0.25rem;
+    overflow: hidden;
+}
+
 .firstName {
     overflow-x: hidden;
     text-overflow: ellipsis;
     margin-left: 5px;
 }
 
-.lastName {
-    margin-left: 1px;
-}
+.lastName {}
 
 .lastName::before {
     content: '.';
@@ -309,10 +341,7 @@ ol.item-list {
 @media only screen and (max-width: 480px) {
      :root {
         --section-margin-x: 1rem;
-    }
-    #TopBreadcrumb ol li {
-        /* Three items per row */
-        /* min-width: max(80px, calc(33.33% - 0.5rem)) !important; */
+        font-size: 14px;
     }
     #CategorySelector li a .name {
         font-size: 0.9rem;
@@ -323,16 +352,8 @@ ol.item-list {
     #ImageVideoContainer .container .btn .firstName {
         font-size: 0.7rem;
     }
-    /* #FolderContent.folder_content_default .video-preview {
-        width: 120px;
-        height: 60px;
-    } */
     #VinylRecorderPlayer {
         --scale-percent: 0.25 !important;
-    }
-    #PlayerCurrentTrack {
-        -webkit-line-clamp: 1 !important;
-        line-clamp: 1 !important;
     }
 }
 

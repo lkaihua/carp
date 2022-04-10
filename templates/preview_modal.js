@@ -1,9 +1,9 @@
 !(function() {
     const $ = (path) => document.querySelector(path)
-    const $a = (path) => document.querySelectorAll(path);
+    const $a = (path) => document.querySelectorAll(path)
     const previewModal = $('#PreviewModal')
     previewModal.addEventListener('hide.bs.modal', function(event) {
-        previewModal.querySelectorAll('.preview-content-container').forEach(c => c.classList.add('hidden'));
+        previewModal.querySelectorAll('.preview-content-container').forEach(c => c.classList.add('hidden'))
 
         $('#ModalPreviewVideo').pause()
         $('#ModalPreviewVideo source').src = ''
@@ -20,8 +20,10 @@
     })
 
     previewModal.addEventListener('show.bs.modal', function(event) {
+
         // Button that triggered the modal
         const button = event.relatedTarget
+        console.debug(button)
 
         // Extract info from data-bs-* attributes
         const urlString = button.getAttribute('data-bs-url-string')
@@ -40,20 +42,20 @@
         const modalNextButton = $('#ModalButtonNext')
 
         modalPrevButton.onclick = (e) => {
-            prevButton && prevButton.click();
+            prevButton && prevButton.click()
             modalPrevButton.setAttribute("data-active", "true")
             setTimeout(() => {
                 modalPrevButton.setAttribute("data-active", "false")
             }, 250)
-            e.preventDefault();
+            e.preventDefault()
         }
         modalNextButton.onclick = (e) => {
-            nextButton && nextButton.click();
+            nextButton && nextButton.click()
             modalNextButton.setAttribute("data-active", "true")
             setTimeout(() => {
                 modalNextButton.setAttribute("data-active", "false")
             }, 250)
-            e.preventDefault();
+            e.preventDefault()
         }
 
 
@@ -76,12 +78,12 @@
             case 'image':
                 previewModal.querySelector('#ModalPreviewImage').src = urlString
                 previewModal.querySelector(".image-container").classList.remove('hidden')
-                break;
+                break
             case 'video':
                 modalPreviewVideo.querySelector('source').setAttribute('src', urlString + '#t=0.1')
                 modalPreviewVideo.load()
                 previewModal.querySelector(".video-container").classList.remove('hidden')
-                break;
+                break
             case 'music':
                 const playItem = previewModal.querySelector('#ModalPreviewMusicPlayItem')
                 playItem.setAttribute("data-music-name", name)
@@ -91,9 +93,11 @@
 
                 window.musicPlayerInit && window.musicPlayerInit()
                 previewModal.querySelector(".music-container").classList.remove('hidden')
+                break
+
             case 'default':
             default:
-                break;
+                break
         }
     })
-})();
+})()

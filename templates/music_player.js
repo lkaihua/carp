@@ -18,13 +18,16 @@
         let isPlaying = false
         let autoStartStatus = tracks[0] && tracks[0].getAttribute("data-auto-start") // todo: get the first item with auto start attribute
         let autoStartClock
-        let errorTrackCount = 0
+        let loopCount = 0 // How many times the whole album has been looped
+        let errorCount = 0 // 
+        const loopCountMax = 20
+        const errorCountMax = Math.max(100, 2 * tracks.length)
 
         const board = $(".board")
         const audio = $('#MusicPlayerAudio')
         const playerCurrentTrack = $('#PlayerCurrentTrack')
         const playerStatus = $('#PlayerStatus')
-        const musicPlayerControllerStartAlbum = $("#MusicPlayerControllerStartAlbum")
+        const playerStartAlbum = $("#MusicPlayerControllerStartAlbum")
 
 
         const runTrack = (link) => {
@@ -33,7 +36,7 @@
             }
 
             // When lots of track errors occur, stop running. Maybe the page requires refresh.
-            if (errorTrackCount >= 2 * tracks.length) {
+            if (errorCount > errorCountMax || loopCount > loopCountMax) {
                 return
             }
 
@@ -43,6 +46,10 @@
                     console.debug('[runTrack] audio play() has error', e)
                 })
                 return
+            }
+
+            if (link && link.getAttribute("data-skip") == "true") {
+                return runNextTrack()
             }
 
             // Updating <audio> `src` will eat events. `audio.pause()` won't fire a successful `pause` event. trigger animation manually.
@@ -55,46 +62,59 @@
                 audio.src = musicUrl
                 audio.load()
                 audio.play().catch(e => {
+                    errorCount += 1
                     console.debug('[runTrack] audio play() has error', e)
                 });
             }
         }
 
-        const runNextTrack = function(e) {
+
+        const runNextTrack = () => {
             prev = current
             current++
             if (current == tracks.length) {
                 current = 0
+                loopCount += 1
             }
             runTrack(tracks[current])
+        }
+
+        const runTargetTrack = (i) => {
+            prev = current
+            current = i
+            runTrack(tracks[current])
+        }
+
+        const userAction = {
+            runTargetTrack,
+            runFirstTrack: () => {
+                loopCount = 0
+                errorCount = 0
+                runTargetTrack(0)
+            }
         }
 
         /**
          * Bind click to each track link.
          */
-        tracks.forEach((link, i) => link.addEventListener("click", function(e) {
+        tracks.forEach((link, i) => link.addEventListener("click", e => {
             e.preventDefault()
-            prev = current
-            current = i
-            runTrack(tracks[current])
+            userAction.runTargetTrack(i)
         }))
 
         /**
          * Bind click to player controller. When no track is loaded, play the first track.
          */
-        const playerControllerOnClick = (e) => {
-            if (current < 0) {
-                runNextTrack();
-            }
-            e.preventDefault();
-        }
-
-        if (musicPlayerControllerStartAlbum) {
-            musicPlayerControllerStartAlbum.addEventListener("click", playerControllerOnClick)
-            musicPlayerControllerStartAlbum.addEventListener('transitionend', () => {
-                musicPlayerControllerStartAlbum.remove()
+        if (playerStartAlbum) {
+            playerStartAlbum.addEventListener("click", (e) => {
+                e.preventDefault();
+                userAction.runFirstTrack();
+            })
+            playerStartAlbum.addEventListener('transitionend', () => {
+                playerStartAlbum.remove()
             });
         }
+
 
 
         /**
@@ -102,8 +122,8 @@
          */
         board.addEventListener("click", (e) => {
             // if no item, play the first one
-            if (current < 0) {
-                runNextTrack()
+            if (autoStartStatus != "done") {
+                userAction.runFirstTrack()
             } else {
                 if (isPlaying) {
                     audio.pause()
@@ -157,8 +177,10 @@
                 return runNextTrack()
             }
 
-            prev >= 0 && tracks[prev] && tracks[prev].setAttribute("data-playing", "false")
             if (current >= 0 && tracks[current]) {
+                tracks.forEach(track => {
+                    track.setAttribute("data-playing", "false")
+                })
                 tracks[current].setAttribute("data-playing", "true")
                 playerCurrentTrack.textContent = tracks[current].getAttribute("data-music-name")
             }
@@ -169,7 +191,7 @@
             tonearmChange()
 
             autoStartStatus = "done"
-            musicPlayerControllerStartAlbum && musicPlayerControllerStartAlbum.classList.add('fade-out')
+            playerStartAlbum && playerStartAlbum.classList.add('fade-out')
         })
 
         audio.addEventListener("pause", (e) => {
@@ -187,7 +209,7 @@
             // console.debug('[audio error] audio play has error', e)
             playerStatus.textContent = "Unable to load this file."
             current >= 0 && tracks[current] && tracks[current].setAttribute("data-error", "true")
-            errorTrackCount += 1
+            errorCount += 1
             runNextTrack()
         })
 

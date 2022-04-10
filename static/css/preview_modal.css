@@ -30,15 +30,10 @@
 }
 
 #PreviewModal .modal-footer {
-    /* position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0; */
-    /* height: 100px; */
     background-color: var(--preview-model-bg-color);
-    /* border-top-color: var(--preview-model-bg-color); */
     border-top: none;
     justify-content: center;
+    padding-bottom: 20px;
 }
 
 #PreviewModal .modal-footer .button-container {

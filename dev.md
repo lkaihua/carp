@@ -28,6 +28,14 @@
 
 ### Work log
 
+
+#### 2022-04-10
+
+- Add music playlist skip function. The skipped tracks are remarked with text decoration strike through lines and they won't be played. 
+- Add loop count and error count for music player. 
+- [] To add a unique md5 based on file name + file size + modification time, need this to determine whether we need to generate new thumbnails
+- [] enable localstorage in browser to keep some session level data, for instance playlist skipped tracks. 
+
 #### 2022-04-02
 
 - Support music preview modal. Refactor music player, now it supports a playlist or a given play track. Add auto play data attribute for track links.

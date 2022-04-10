@@ -1,25 +1,27 @@
 {{ define "category_selector"}}
 <section id="CategorySelector">
     {{ with .Categories }}      
-        <ul class="row row-cols-3 row-cols-s-3 row-cols-m-6 row-cols-lg-6 list-unstyled list mx-1 my-1">
+        <ul class="row list-unstyled list my-1">
             {{ range . }}
                 <li class="col" >
                     <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">
-                        <span class="mb-1 rounded-pill rounded category-btn category-btn-{{- .Value}}">
+                        <button class="btn my-1 rounded-pill rounded category-btn category-btn-{{- .Value}}">
                             {{ if eq .Value "all"}}
-                                <span id="AllIcon"><img src='/static/icons/files.svg?static=1' class="all-icon"/></span>
+                                <span id="AllIcon" class="pos-relative">
+                                    <span class="icon files"></span>
+                                </span>
                             {{ else if eq .Value "image-video" }}
-                                <span id="ImageVideoIcon">
-                                    <img src='/static/icons/file-image.svg?static=1' class="image-icon" />
-                                    <img src='/static/icons/file-play.svg?static=1' class="video-icon"/>
+                                <span id="ImageVideoIcon" class="pos-relative">
+                                    <span class="icon file-image image-icon"></span>
+                                    <span class="icon file-play video-icon"></span>
                                 </span>
                             {{ else if eq .Value "music" }}
-                                <span id="MusicIcon">
-                                    <img src='/static/icons/file-music.svg?static=1' class="file-music-icon" />
-                                    <img src='/static/icons/music-note-beamed.svg?static=1' class="music-note-icon" />
+                                <span id="MusicIcon" class="pos-relative">
+                                    <span class="icon file-music file-music-icon"></span>
+                                    <span class="icon music-note music-note-icon"></span>
                                 </span>
                             {{ end }}
-                        </span>
+                        </button>
                         <span class="name pt-0 text-max-lines-1">
                             {{- .DisplayText -}}
                         </span>

@@ -2,7 +2,7 @@
     --breadcrumb-gap: 0.25rem;
     display: flex;
     gap: var(--breadcrumb-gap);
-    padding: 0.5rem;
+    /* padding: 0.5rem; */
     border-radius: 0.5rem;
     flex-direction: row;
     flex-wrap: wrap;
@@ -18,7 +18,7 @@
     border-radius: 0.25rem;
     /* border-radius: 0; */
     background-color: var( --btn-background-color);
-    min-width: 80px;
+    min-width: 60px;
     /* At max width 2 pills are displayed in one row */
     max-width: min(300px, calc(50% - var(--breadcrumb-gap) / 2));
     /* height: 32px; */
@@ -38,8 +38,13 @@
     align-items: center;
 }
 
-#TopBreadcrumb .btn-container .icon {
-    margin-right: 3px;
+#TopBreadcrumb .btn-container .icon {}
+
+#TopBreadcrumb .btn-container .name {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    line-height: 24px;
+    margin-left: 5px;
 }
 
 #TopBreadcrumb ol li.row-trailing-item {
@@ -59,13 +64,12 @@
     background: var(--bs-light);
 }
 
-#TopBreadcrumb li span.name {
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-}
-
 #TopBreadcrumb ol li:first-child .btn-container {
     justify-content: center;
+}
+
+#TopBreadcrumb ol li:first-child .btn-container .name {
+    display: none;
 }
 
 #TopBreadcrumb ol li:last-child.row-trailing-item {

@@ -1,19 +1,21 @@
 #CategorySelector {
     overflow: hidden;
+    justify-content: center;
 }
 
 #CategorySelector ul {
-    justify-content: center;
+    max-width: var(--top-breadcrumb-max-width);
+    margin: 0 auto;
 }
 
 #CategorySelector .row {
     --bs-gutter-x: 0rem;
-    margin: 0 -30px !important;
+    /* margin: 0 -30px !important; */
 }
 
 #CategorySelector .col {
     --btn-background-color: var(--bs-gray-200);
-    --btn-border-width: 2px;
+    --btn-border-width: 1px;
     --btn-border-start-color: var(--btn-background-color);
     --btn-border-end-color: var(--btn-background-color);
     position: relative;
@@ -73,6 +75,7 @@
 }
 
 #CategorySelector .category-btn {
+    width: 100%;
     height: 40px;
     padding: var(--btn-border-width);
     background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), linear-gradient(30deg, var(--btn-border-start-color), var(--btn-border-end-color));
@@ -84,17 +87,6 @@
     align-content: center;
     justify-content: center;
     align-items: center;
-}
-
-#CategorySelector .category-btn span {
-    display: inline-block;
-    position: relative;
-}
-
-#CategorySelector .category-btn span img {
-    width: 20px;
-    height: 20px;
-    background-color: var(--btn-background-color);
 }
 
 #CategorySelector .col.active .category-btn {
@@ -137,12 +129,18 @@
     100% {}
 }
 
+#CategorySelector #AllIcon {
+    width: 20px;
+    height: 20px;
+    padding-top: 1px;
+}
+
 #CategorySelector #ImageVideoIcon {
     width: 28px;
     height: 28px;
 }
 
-#CategorySelector #ImageVideoIcon img.image-icon {
+#CategorySelector #ImageVideoIcon .image-icon {
     position: absolute;
     bottom: 0px;
     left: 0;
@@ -150,7 +148,7 @@
     background: linear-gradient(to right, var(--btn-background-color), var(--btn-background-color) 80%, transparent 80%, transparent 100%);
 }
 
-#CategorySelector #ImageVideoIcon img.video-icon {
+#CategorySelector #ImageVideoIcon .video-icon {
     position: absolute;
     top: 2px;
     right: -4px;
@@ -162,7 +160,7 @@
     height: 28px;
 }
 
-#CategorySelector #MusicIcon img.file-music-icon {
+#CategorySelector #MusicIcon .file-music-icon {
     position: absolute;
     bottom: 0px;
     left: 0;
@@ -170,7 +168,7 @@
     background: linear-gradient(to right, var(--btn-background-color), var(--btn-background-color) 80%, transparent 80%, transparent 100%);
 }
 
-#CategorySelector #MusicIcon img.music-note-icon {
+#CategorySelector #MusicIcon .music-note-icon {
     position: absolute;
     z-index: 1;
     top: 0px;
@@ -190,5 +188,5 @@
 }
 
 #CategorySelector li.col a:focus {
-    outline: 0;
+    /* outline: 0; */
 }

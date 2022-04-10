@@ -7,17 +7,16 @@
     border-bottom: 1px solid var(--gray-border-color);
 }
 
-#FolderContent ul.item-list li:last-child {
+
+/* #FolderContent ul.item-list li:last-child {
     border-bottom: none;
-}
+} */
 
 #FolderContent ul.item-list li a:active {
     color: black;
 }
 
-#FolderContent ul.item-list li a.item-icon-name {
-    position: relative;
-}
+#FolderContent ul.item-list li a.item-icon-name {}
 
 #FolderContent ul.item-list li a.item-entry-type-folder::after {
     content: '';
@@ -34,11 +33,12 @@
 }
 
 #FolderContent ul.item-list li .btn-small {
-    position: absolute;
+    /* position: absolute;
     top: 0.25rem;
-    right: 0.25rem;
-    height: 40px;
+    right: 0.25rem; */
+    height: 32px;
     width: 40px;
+    /* padding: 5px; */
     display: flex;
     align-items: center;
 }
@@ -53,16 +53,12 @@
     background-size: cover;
 }
 
-#FolderContent ul.item-list li .btn-more::before {
-    background-image: url('/static/icons/three-dots-vertical.svg?static=1');
-}
-
 #FolderContent ul.item-list li .btn-x {
-    right: calc(40px + 0.25rem);
+    /* right: calc(40px + 0.25rem); */
 }
 
-#FolderContent ul.item-list li .btn-x::before {
-    background-image: url('/static/icons/x.svg?static=1');
+#FolderContent ul.item-list li .btn-x[data-skip="true"] {
+    background-color: var(--bs-gray-300);
 }
 
 #FolderContent .empty-folder-placeholder {
@@ -81,13 +77,6 @@
     margin: 1rem 0;
 }
 
-#FolderContent .empty-folder-placeholder #MusicPlayerBar {
-    filter: blur(10px);
-    user-select: none;
-    scale: 0.7;
-    opacity: 0.7;
-}
-
 #FolderContent .btn {
     /* padding: 0.25rem; */
 }
@@ -99,8 +88,8 @@
 
 #FolderContent.folder_content_default .btn-preview {
     margin: 0.25rem;
-    /* padding: 0.25rem; */
     overflow: hidden;
+    flex: 0 0 auto;
 }
 
 #FolderContent .btn-preview-video {
@@ -109,8 +98,6 @@
     /* background-image: radial-gradient(circle, #ddd 1px, rgba(0,0,0,0) 1px); */
     background-size: 1rem 1rem;
 }
-
-#FolderContent.folder_content_default .btn-preview-video .video-play {}
 
 #FolderContent.folder_content_default img.image-preview {
     min-width: 30px;
@@ -266,7 +253,7 @@
 #MusicContainer #MusicPlaylist.item-list {}
 
 #MusicContainer #MusicPlaylist.item-list li a.item-icon-name {
-    padding-right: 80px;
+    padding: 0.25rem 0.25rem;
 }
 
 #MusicContainer #MusicPlaylist.item-list li a.item-icon-name>span.music {
@@ -274,3 +261,21 @@
 }
 
 #MusicContainer #MusicPlaylist.item-list li .btn {}
+
+#MusicPlaylist {}
+
+#MusicPlaylist li a {}
+
+#MusicPlaylist li a[data-playing="true"] {
+    background-color: var(--bs-blue);
+    color: white;
+}
+
+#MusicPlaylist li a[data-error="true"] {
+    color: var(--bs-danger);
+}
+
+#MusicPlaylist li a[data-skip="true"] {
+    /* color: var(--bs-secondary); */
+    text-decoration-line: line-through;
+}

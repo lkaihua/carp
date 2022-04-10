@@ -13,23 +13,35 @@
             {{ if eq .EntryType "folder" }}
                 <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}">
                     <span class="icon folder"></span>
-                    <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                    <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                    <span class="name">
+                        <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                        <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                    </span>
                 </a>
             {{ else }}
                 <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}"
                     data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                    data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-firstName="{{.FirstName}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}} default"
+                    data-bs-url-string="{{.UrlString}}"
+                    data-bs-name="{{.Name}}"
+                    data-bs-firstName="{{.FirstName}}"
+                    data-bs-lastName="{{.LastName}}"
+                    data-bs-entry-type="{{.EntryType}} default"
                 >
                     <span class="icon {{ .EntryType }}"></span>
-                    <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                    <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                    <span class="name">
+                        <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{- .FirstName -}}</span>
+                        <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{- .LastName -}}</span>
+                    </span>
                 </a>
                 <!-- Preview Button starts -->
                 {{ if eq .EntryType "image" }}
                     <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                         data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                        data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                        data-bs-url-string="{{.UrlString}}"
+                        data-bs-name="{{.Name}}"
+                        data-bs-firstName="{{.FirstName}}"
+                        data-bs-lastName="{{.LastName}}"
+                        data-bs-entry-type="{{.EntryType}}"
                     >   
                         {{ $previewImageUrl := .UrlString }}
                         {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
@@ -38,7 +50,11 @@
                 {{ else if eq .EntryType "music" }}
                     <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                         data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                        data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                        data-bs-url-string="{{.UrlString}}"
+                        data-bs-name="{{.Name}}"
+                        data-bs-firstName="{{.FirstName}}"
+                        data-bs-lastName="{{.LastName}}"
+                        data-bs-entry-type="{{.EntryType}}"
                     >   
                         <span class="pos-relative music-preview rounded border-1 flex-center">
                             {{ if .HasThumbnail }}
@@ -52,7 +68,11 @@
                 {{ else if eq .EntryType "video" }}
                     <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                         data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                        data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="{{.EntryType}}"
+                        data-bs-url-string="{{.UrlString}}"
+                        data-bs-name="{{.Name}}"
+                        data-bs-firstName="{{.FirstName}}"
+                        data-bs-lastName="{{.LastName}}"
+                        data-bs-entry-type="{{.EntryType}}"
                     >   
                         <span class="pos-relative video-preview rounded border-1 flex-center">
                             {{ if .HasThumbnail }}
