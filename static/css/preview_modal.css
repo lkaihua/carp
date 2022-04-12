@@ -112,6 +112,12 @@
     padding: 0 1rem;
 }
 
+#ModalPreviewImage {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
 #ModalPreviewImage img {
     width: auto;
     height: auto;
