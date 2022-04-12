@@ -1,11 +1,12 @@
 ### MVP
 
-- [x] To navigate folders and open files
-- [x] To have a breadcrumb navigation bar
-- [x] To abbreviate very long folder/file name smartly
-- [x] To dynamically load images to preview 
-- [x] To highlight certain category of files in current folder
-- [ ] To create thumbnails for images and videos
+| Draft  | Items | 
+| ------------- | ------------- | 
+| ![docs/images/2022-02-draft.jpg](docs/images/2022-02-draft.jpg)  | - [x] To navigate folders and open files  <br> - [x] To have a breadcrumb navigation bar <br>- [x] To abbreviate very long folder/file name smartly <br> - [x] To dynamically load images to preview <br> - [x] To highlight certain category of files in current folder <br> - [ ] To create thumbnails for images and videos |
+
+
+
+
 
 ### Nice to have
 - [x] A mp3 player
@@ -33,7 +34,7 @@
 - Introduce a vitual dom scrolling library `clusterize.js` and combine with image `lazyload.js` to preview folders with huge number of images or videos. 
 Not only very few dom nodes within the view port are created, also the images are lazy loaded. Tested on iOS, Android phone and desktop Chrome, performance tests are improved dramatically for the latter two.
 - UI: Improve the skipped track style. Unify the height of primary items for folder, image, music and video.
-- [] Height of virtual list needs refactoring. Think about how the users are able to scroll to `Other files` section underneath.
+- [ ] Height of virtual list needs refactoring. Think about how the users are able to scroll to `Other files` section underneath.
 
 
 | Album Folder - Default View  | Album Folder - Music Player View | 
@@ -44,14 +45,15 @@ Not only very few dom nodes within the view port are created, also the images ar
 #### 2022-04-11
 
 - Add Modification Time and Size. 
-- [] To add a sorting order of entries. 
+- Enable localstorage in browser to keep some session level data, for instance playlist skipped tracks. 
+- [ ] To add a sorting order of entries. 
 
 #### 2022-04-10
 
 - Add music playlist skip function. The skipped tracks are remarked with text decoration strike through lines and they won't be played. 
 - Add loop count and error count for music player. 
-- [] To add a unique md5 based on file name + file size + modification time, need this to determine whether we need to generate new thumbnails
-- [] enable localstorage in browser to keep some session level data, for instance playlist skipped tracks. 
+- [ ] To add a unique md5 based on file name + file size + modification time, need this to determine whether we need to generate new thumbnails
+
 
 #### 2022-04-02
 
@@ -127,7 +129,7 @@ Not only very few dom nodes within the view port are created, also the images ar
 - Find an elegant approach to make sure each breadcrumb pills hold a stable width between folder jumps. The trailing pill in each row fulfills the space to the row end. 
 - Add the category filters, now there are "All", "Image & Video", "Music" three filters for users to click. 
 
-![docs/images/2022-03-09-breadcrumb.png](docs/images/2022-03-09-breadcrumb.png)
+  ![docs/images/2022-03-09-breadcrumb.png](docs/images/2022-03-09-breadcrumb.png)
 
 
 #### 2022-03-08
@@ -144,10 +146,14 @@ Not only very few dom nodes within the view port are created, also the images ar
 
 - Add detection for folder, image, video files.
 
-##### 2022-02-15
+#### 2022-02-15
 
 - Extract fs.go from Go's offical `http` in order to customize file / dir display.
 
+#### 2022-02-01
 
+- Draft UI on commute.
+
+  ![docs/images/2022-02-draft.jpg](docs/images/2022-02-draft.jpg)
 
 
