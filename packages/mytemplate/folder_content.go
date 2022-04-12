@@ -28,15 +28,18 @@ func (v ViewCategory) TemplateName() string {
 }
 
 type DisplayEntry struct {
-	Name      string
-	EntryType types.EntryType
-	UrlString string
-	FirstName string
-	LastName  string // File extension string if it's a file, or "/" if it's a folder
-	// ModTime
-	IsCover      bool
-	IsThumbnail  bool
-	HasThumbnail string
+	Name          string
+	EntryType     types.EntryType
+	UrlString     string
+	FirstName     string
+	LastName      string // File extension string if it's a file, or "/" if it's a folder
+	IsCover       bool
+	IsThumbnail   bool
+	ModTimeString string
+	ModTimeUnix   int64
+	SizeString    string
+	SizeInt       int64
+	HasThumbnail  string
 }
 
 func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry) {
@@ -47,6 +50,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 		filepath.Join("./templates", Music.TemplateName()),
 		filepath.Join("./templates", "preview_modal"+template_gohtml),
 		filepath.Join("./templates", "music_player"+template_gohtml),
+		filepath.Join("./templates", "item_primary_content"+template_gohtml),
 	}
 	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
 

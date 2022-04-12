@@ -1,11 +1,11 @@
 {{ define "category_selector"}}
-<section id="CategorySelector">
+<section id="CategorySelector" class="my-3">
     {{ with .Categories }}      
-        <ul class="row list-unstyled list my-1">
+        <ul class="row list-unstyled list my-1 px-1">
             {{ range . }}
                 <li class="col" >
                     <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">
-                        <button class="btn my-1 rounded-pill rounded category-btn category-btn-{{- .Value}}">
+                        <button class="btn rounded-pill rounded category-btn category-btn-{{- .Value}}">
                             {{ if eq .Value "all"}}
                                 <span id="AllIcon" class="pos-relative">
                                     <span class="icon files"></span>
@@ -22,9 +22,9 @@
                                 </span>
                             {{ end }}
                         </button>
-                        <span class="name pt-0 text-max-lines-1">
+                        {{/* <span class="description pt-0 text-max-lines-1 my-1">
                             {{- .DisplayText -}}
-                        </span>
+                        </span> */}}
                     </a>
                 </li>
             {{ end }}

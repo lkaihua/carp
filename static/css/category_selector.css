@@ -19,7 +19,8 @@
     --btn-border-start-color: var(--btn-background-color);
     --btn-border-end-color: var(--btn-background-color);
     position: relative;
-    height: 64px;
+    /* height: 64px; */
+    height: 40px;
 }
 
 #CategorySelector .col.active {
@@ -96,7 +97,7 @@
     --btn-border-start-color: var(--gray-border-color);
     --btn-border-end-color: var(--gray-border-color);
     /* shadow-sm */
-    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075)!important;
+    /* box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075)!important; */
 }
 
 #CategorySelector .col.active .category-btn-all {
@@ -175,14 +176,15 @@
     right: 0px;
 }
 
-#CategorySelector li.col .name {
+#CategorySelector li.col .description {
     /* font-size: 0.8rem; */
     display: block;
     line-height: 1.25rem;
     font-size: 0.9rem;
+    display: none;
 }
 
-#CategorySelector li.col.active .name {
+#CategorySelector li.col.active .description {
     /* font-size: 0.8rem; */
     /* font-weight: bold; */
 }

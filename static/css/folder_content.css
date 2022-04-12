@@ -1,22 +1,17 @@
-#FolderContent #ImageVideoContainer {
-    /* min-height: 40vh; */
-}
-
 #FolderContent ul.item-list li {
     display: flex;
     border-bottom: 1px solid var(--gray-border-color);
 }
 
-
-/* #FolderContent ul.item-list li:last-child {
-    border-bottom: none;
-} */
-
 #FolderContent ul.item-list li a:active {
     color: black;
 }
 
-#FolderContent ul.item-list li a.item-icon-name {}
+#FolderContent ul.item-list li .item-primary {}
+
+#FolderContent .item-primary .meta {
+    display: flex;
+}
 
 #FolderContent ul.item-list li a.item-entry-type-folder::after {
     content: '';
@@ -28,17 +23,14 @@
     background-size: cover;
     background-image: url('/static/icons/chevron-right.svg?static=1');
     position: absolute;
-    top: 10px;
     right: 10px;
+    top: 50%;
+    margin-top: -10px;
 }
 
 #FolderContent ul.item-list li .btn-small {
-    /* position: absolute;
-    top: 0.25rem;
-    right: 0.25rem; */
     height: 32px;
     width: 40px;
-    /* padding: 5px; */
     display: flex;
     align-items: center;
 }
@@ -53,9 +45,7 @@
     background-size: cover;
 }
 
-#FolderContent ul.item-list li .btn-x {
-    /* right: calc(40px + 0.25rem); */
-}
+#FolderContent ul.item-list li .btn-x {}
 
 #FolderContent ul.item-list li .btn-x[data-skip="true"] {
     background-color: var(--bs-gray-300);
@@ -101,7 +91,7 @@
 
 #FolderContent.folder_content_default img.image-preview {
     min-width: 30px;
-    max-width: min(120px, 30vw);
+    max-width: min(90px, 30vw);
     max-height: 60px;
 }
 
@@ -111,8 +101,8 @@
 }
 
 #FolderContent.folder_content_default .video-preview {
-    max-width: 120px;
-    min-width: 80px;
+    min-width: 60px;
+    max-width: 90px;
     height: 60px;
 }
 
@@ -252,11 +242,19 @@
 
 #MusicContainer #MusicPlaylist.item-list {}
 
-#MusicContainer #MusicPlaylist.item-list li a.item-icon-name {
-    padding: 0.25rem 0.25rem;
+#MusicContainer #MusicPlaylist.item-list li .item-primary {
+    padding: 1px;
+    overflow: visible;
 }
 
-#MusicContainer #MusicPlaylist.item-list li a.item-icon-name>span.music {
+.item-primary .item-primary-body {
+    padding: 0.25rem 0 0.25rem 0.5rem;
+    display: flex;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+#MusicContainer #MusicPlaylist.item-list li .item-primary span.music {
     display: none;
 }
 
@@ -267,15 +265,20 @@
 #MusicPlaylist li a {}
 
 #MusicPlaylist li a[data-playing="true"] {
+    /* color: white; */
     background-color: var(--bs-blue);
-    color: white;
+    background-image: linear-gradient(white, white), linear-gradient(30deg, var(--bs-red), var(--bs-blue));
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    /* padding: 1px; */
 }
 
 #MusicPlaylist li a[data-error="true"] {
     color: var(--bs-danger);
 }
 
-#MusicPlaylist li a[data-skip="true"] {
-    /* color: var(--bs-secondary); */
-    text-decoration-line: line-through;
+#MusicPlaylist li a[data-skip="true"] .item-primary-body {
+    color: var(--bs-secondary);
+    /* text-decoration-line: line-through; */
+    background-image: url(/static/images/stripes.svg?static=1);
 }

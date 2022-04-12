@@ -28,6 +28,17 @@
 
 ### Work log
 
+#### 2022-04-12
+
+- Introduce a vitual dom scrolling library `clusterize.js` and combine with image `lazyload.js` to preview folders with huge number of images or videos. 
+Not only very few dom nodes within the view port are created, also the images are lazy loaded. Tested on iOS, Android phone and desktop Chrome, performance tests are improved dramatically for the latter two.
+- UI: Improve the skipped track style. Unify the height of primary items for folder, image, music and video.
+- [] Height of virtual list needs refactoring. Think about how the users are able to scroll to `Other files` section underneath.
+
+#### 2022-04-11
+
+- Add Modification Time and Size. 
+- [] To add a sorting order of entries. 
 
 #### 2022-04-10
 

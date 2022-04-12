@@ -8,7 +8,7 @@
             <div class="modal-body flex-center">
 
                 <div class="preview-content-container image-container hidden flex-center">
-                    <img src="" id="ModalPreviewImage" class="checker-background" />
+                    <div id="ModalPreviewImage"><!-- <img src="" class="checker-background" /> --></div>
                 </div>
 
                 <div class="preview-content-container music-container hidden flex-center">
@@ -27,8 +27,9 @@
                     </video>
                 </div>
                 
-                <div class="preview-content-container default-container  flex-center">
+                <div class="preview-content-container default-container hidden flex-center">
                    <ul class="list-group" id="ModalPreviewDefault">
+                        <li id="ModalPreviewImageSize" class="text-light"></li>
                         {{/* <li><label>File type:</label><span class="list-item-content "></span></li>
                         <li><label>File name:</label><span class="list-item-content "></span></li>
                         <li><label>File size:</label><span class="list-item-content "></span></li>

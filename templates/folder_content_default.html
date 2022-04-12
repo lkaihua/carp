@@ -11,27 +11,19 @@
         {{ range . }}
         <li>
             {{ if eq .EntryType "folder" }}
-                <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}">
-                    <span class="icon folder"></span>
-                    <span class="name">
-                        <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                        <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
-                    </span>
+                <a class="item-primary dropdown-item item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}">
+                    {{ template "item_primary_content" dict "EntryType" .EntryType "FirstName" .FirstName "LastName" .LastName "ModTimeString" .ModTimeString "SizeString" .SizeString }}
                 </a>
             {{ else }}
-                <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}"
+                <a class="item-primary dropdown-item item-entry-type-{{- .EntryType }}" href="{{ .UrlString }}"
                     data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                     data-bs-url-string="{{.UrlString}}"
                     data-bs-name="{{.Name}}"
                     data-bs-firstName="{{.FirstName}}"
                     data-bs-lastName="{{.LastName}}"
-                    data-bs-entry-type="{{.EntryType}} default"
+                    data-bs-entry-type="{{.EntryType}}"
                 >
-                    <span class="icon {{ .EntryType }}"></span>
-                    <span class="name">
-                        <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{- .FirstName -}}</span>
-                        <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{- .LastName -}}</span>
-                    </span>
+                    {{ template "item_primary_content" dict "EntryType" .EntryType "FirstName" .FirstName "LastName" .LastName "ModTimeString" .ModTimeString "SizeString" .SizeString}}
                 </a>
                 <!-- Preview Button starts -->
                 {{ if eq .EntryType "image" }}
@@ -76,7 +68,7 @@
                     >   
                         <span class="pos-relative video-preview rounded border-1 flex-center">
                             {{ if .HasThumbnail }}
-                            <img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />
+                            <img data-src="{{.HasThumbnail}}" class="video-preview lazyload" />
                             {{ end }}
                             <span class="pos-absolute-max flex-center">
                                 <span class="icon video-play"></span>

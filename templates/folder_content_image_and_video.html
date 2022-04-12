@@ -7,55 +7,91 @@
     </div>
 
 {{ if gt .CountAll 0 }}
-    <div id="ImageVideoContainer" class="my-2">
+    <div id="ImageVideoContainer" class="my-2 clusterize-scroll">
         {{ if eq .CountImageVideo 0 }}
             <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
                 <h4>No image or video files here.</h4>
             </div>
         {{ else }}
-            <div class="row 
-                {{- if lt .CountImageVideo 3 }} row-cols-2 {{ else }} row-cols-3 {{ end -}}
-                row-cols-md-4 row-cols-lg-5 g-0 g-lg-3"
-            >
-                {{ range .DisplayEntries }}
-                    {{ if eq .EntryType "image" }}
-                        <div class="col"><div class="container"><div class="bg-light">
-                            <button type="button" class="btn rounded btn-preview btn-preview-image flex-center {{ if .IsCover }}btn-preview-cover{{ end }}" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                                data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="image"
-                                data-is-cover="{{.IsCover}}"
+            <div id="ImageVideoItems" class="clusterize-content">
+                <p class="nojs">Please enable JavaScript to enable this view</p>
+            </div>
+            {{ range $index, $value := .DisplayEntries }}
+                {{ if eq $value.EntryType "image" }}
+                    <script>
+                        window.ImageVideoRow = window.ImageVideoRow || [];
+                        window.ImageVideoData = window.ImageVideoData || [];
+                        window.ImageVideoRow.push(`
+                            <div class="col"><div class="container"><div class="bg-light">
+                            <button type="button" class="btn rounded btn-preview btn-preview-image flex-center {{ if $value.IsCover }}btn-preview-cover{{ end }}"
+                                data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                                data-bs-url-string="{{$value.UrlString}}"
+                                data-bs-name="{{$value.Name}}"
+                                data-bs-lastName="{{$value.LastName}}"
+                                data-bs-entry-type="image"
+                                data-is-cover="{{$value.IsCover}}"
                             >   
-                                {{ $previewImageUrl := .UrlString }}
-                                {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
-                                <span class="pos-absolute-max blur-bg image-preview"></span>
-                                <span class="pos-absolute-max image-container flex-center">
-                                    <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
+                                {{ $previewImageUrl := $value.UrlString }}
+                                {{ if $value.HasThumbnail }}{{ $previewImageUrl = $value.HasThumbnail }}{{ end }}
+                                <img data-src="{{$previewImageUrl}}" class="image-preview lazyload"/>
+                            </button>
+                            </div></div></div>
+                        `)
+                        if (window.ImageVideoRow.length == 3) {
+                            window.ImageVideoData.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+                            window.ImageVideoRow = []
+                        }
+                    </script>
+                {{ else if eq .EntryType "video" }}
+                    <script>
+                        window.ImageVideoRow = window.ImageVideoRow || [];
+                        window.ImageVideoData = window.ImageVideoData || [];
+                        window.ImageVideoRow.push(`
+                            <div class="col"><div class="container"><div class="bg-light">
+                            <button type="button" class='btn rounded btn-preview btn-preview-video flex-center'
+                                data-bs-toggle="modal" data-bs-target="#PreviewModal"
+                                data-bs-url-string="{{$value.UrlString}}"
+                                data-bs-name="{{$value.Name}}"
+                                data-bs-lastName="{{$value.LastName}}"
+                                data-bs-entry-type="video"
+                            >
+                                <span class="video-preview rounded border-1 flex-center image-preview lazyload pos-absolute-max" data-src="{{ $value.HasThumbnail }}">
+                                    <span class="icon video-play"></span>
+                                </span>
+                                <span class="video-preview rounded border-1 flex-center video-preview-placeholder">
+                                    <span class="icon video-play"></span>
+                                    <span class='firstName text-center text-max-lines-3 {{ if eq $value.FirstName "" -}} hidden {{- end }}'>{{ $value.FirstName }}</span>
                                 </span>
                             </button>
-                        </div></div></div>
-                    {{ else if eq .EntryType "video" }}
-                        <div class="col"><div class="container"><div class="bg-light">
-                            <button type="button" class="btn rounded btn-preview btn-preview-video flex-center" data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                                data-bs-url-string="{{.UrlString}}" data-bs-name="{{.Name}}" data-bs-lastName="{{.LastName}}" data-bs-entry-type="video"
-                            >   
-                                {{ if .HasThumbnail }}
-                                    <span class="video-preview rounded border-1 flex-center image-preview lazyload pos-absolute-max" data-src="{{.HasThumbnail}}">   
-                                        <span class="icon video-play"></span>
-                                    </span>
-                                {{ else }}
-                                    <span class="video-preview rounded border-1 flex-center video-preview-placeholder">
-                                        <span class="icon video-play"></span>
-                                        <span class='firstName text-center text-max-lines-3 {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                                    </span>
-                                {{ end }}
-                            </button>
-                        </div></div></div>
-                    {{ end }}
+                            </div></div></div>`
+                        )
+                        if (window.ImageVideoRow.length == 3) {
+                            window.ImageVideoData.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+                            window.ImageVideoRow = []
+                        }
+                    </script>
                 {{ end }}
-            </div>    
+
+            {{ end }}
+            
         {{ end }}
     </div>
 
-    
+    <script>
+    window.addEventListener("load", function(event) { 
+        if (window.ImageVideoRow && window.ImageVideoRow.length > 0) {
+            window.ImageVideoData.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+        }
+        window.clusterize = new Clusterize({
+            rows: window.ImageVideoData,
+            scrollId: 'ImageVideoContainer',
+            contentId: 'ImageVideoItems',
+            callbacks: {
+                clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
+            }
+        })
+    })
+    </script>
 
     {{ if lt .CountImageVideo .CountAll }}
         <h4 class="mt-4 mb-2">Other Files</h4>
@@ -63,15 +99,9 @@
             {{ range .DisplayEntries }}
                 {{ if and (ne .EntryType "image") (ne .EntryType "video") }}
                     <li>
-                        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
-                            <span class="icon {{ .EntryType }}"></span>
-                            <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                            <span class='lastName {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+                        <a class="item-primary dropdown-item item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
+                            {{ template "item_primary_content" dict "EntryType" .EntryType "FirstName" .FirstName "LastName" .LastName "ModTimeString" .ModTimeString "SizeString" .SizeString}}
                         </a>
-                        
-                        {{ if ne .EntryType "folder" }}
-                            <button type="button" class="btn btn-small btn-more"></button>
-                        {{ end }}
                     </li>
                 {{ end }}
             {{ end }}

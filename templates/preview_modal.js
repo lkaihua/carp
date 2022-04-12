@@ -14,16 +14,15 @@
         $('#ModalPreviewMusicPlayItem').setAttribute('data-playing', 'false')
         $('#ModalPreviewMusicPlayItem').removeAttribute('data-music-url')
 
-        $('#ModalPreviewImage').src = ''
+        $('#ModalPreviewImage').innerHTML = ''
 
-        $('#ModalPreviewDefault').innerHTML = ''
+        // $('#ModalPreviewDefault').innerHTML = ''
     })
 
     previewModal.addEventListener('show.bs.modal', function(event) {
 
         // Button that triggered the modal
         const button = event.relatedTarget
-        console.debug(button)
 
         // Extract info from data-bs-* attributes
         const urlString = button.getAttribute('data-bs-url-string')
@@ -38,6 +37,7 @@
 
         const modalPreviewVideo = $('#ModalPreviewVideo')
         const modalPreviewAudio = $('#ModalPreviewMusic audio')
+        const modalPreviewImage = $('#ModalPreviewImage')
         const modalPrevButton = $('#ModalButtonPrev')
         const modalNextButton = $('#ModalButtonNext')
 
@@ -62,7 +62,6 @@
         const modalTitle = previewModal.querySelector('.modal-title')
         modalTitle.textContent = name
 
-
         // TODO: hide the file description toast
         //
         // const modalPreviewDefault = $('#ModalPreviewDefault')
@@ -76,7 +75,14 @@
 
         switch (entryType) {
             case 'image':
-                previewModal.querySelector('#ModalPreviewImage').src = urlString
+                const img = new Image()
+                img.onload = function() {
+                    $("#ModalPreviewImageSize").textContent = this.naturalWidth + ' x ' + this.naturalHeight;
+                }
+                img.src = urlString
+                img.classList.add("checker-background")
+                modalPreviewImage.appendChild(img)
+
                 previewModal.querySelector(".image-container").classList.remove('hidden')
                 break
             case 'video':

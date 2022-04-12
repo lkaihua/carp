@@ -17,11 +17,11 @@
             {{ template "music_player" dict "CountMusic" .CountMusic    "HasCover" .HasCover    "Sticky" "top" }}
             <h6 class="mt-4 mb-2">Playlist ( {{.CountMusic}} )</h6>
 
-            <ul id="MusicPlaylist" class="item-list mx-0 border-1 ">
+            <ul id="MusicPlaylist" class="item-list mx-0 border-1">
                 {{ range .DisplayEntries }}
                     {{ if eq .EntryType "music" }}
                         <li>
-                            <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" 
+                            <a class="item-primary item-entry-type-{{ .EntryType }}" 
                                 href="{{ .UrlString }}" 
                                 data-playing="false"
                                 data-error="false"
@@ -29,17 +29,16 @@
                                 data-music-name="{{ .FirstName }}" 
                                 data-music-url="{{ .UrlString }}"
                             >
-                                <span class="icon {{ .EntryType }}"></span>
-                                <span class="name">{{ .Name }}</span>
-                                <button type="button" class="btn btn-small btn-x"></button>
-                                <button type="button" class="btn btn-small btn-more"></button>
+                                <span class="item-primary-body">
+                                    <span class="name">{{ .Name }}</span>
+                                    <button type="button" class="btn btn-small btn-x"></button>
+                                    <button type="button" class="btn btn-small btn-more"></button>
+                                </span>
                             </a>
                         </li>
                     {{ end }}
                 {{ end }}
             </ul>
-            
-
         {{ end }}
     </div>
 
@@ -49,17 +48,9 @@
             {{ range .DisplayEntries }}
                 {{ if ne .EntryType "music" }}
                     <li>
-                        <a class="dropdown-item d-flex align-items-center item-icon-name item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
-                            <span class="icon {{ .EntryType }}"></span>
-                            <span class="name">
-                                <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
-                                <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
-                            </span>
+                        <a class="item-primary dropdown-item item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
+                            {{ template "item_primary_content" dict "EntryType" .EntryType "FirstName" .FirstName "LastName" .LastName "ModTimeString" .ModTimeString "SizeString" .SizeString}}
                         </a>
-                        
-                        {{ if ne .EntryType "folder" }}
-                            <button type="button" class="btn btn-small btn-more"></button>
-                        {{ end }}
                     </li>
                 {{ end }}
             {{ end }}

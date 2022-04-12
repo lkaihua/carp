@@ -1,0 +1,26 @@
+{{ define "item_primary_content" }}
+<div class="item-content-col item-content-header">
+    <span class="icon {{ .EntryType }}"></span>
+</div>
+<div class="item-content-col">
+    <span class="item-content-row name">
+        {{ if ne .FirstName "" }}
+        <span class='firstName {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+        {{ end }}
+
+        {{ if ne .LastName "" }}
+        <span class='lastName  {{ if eq .LastName "" -}} hidden {{- end }}'>{{ .LastName }}</span>
+        {{ end }}
+    </span>
+    
+    <span class="item-content-row meta">
+        {{ if ne .ModTimeString "" }}
+        <span class="modTime text-secondary">{{ .ModTimeString }}</span>
+        {{ end }}
+
+        {{ if and (ne .EntryType "folder") (ne .SizeString "") }}
+        <span class="size text-secondary mx-2">{{ .SizeString }}</span>
+        {{ end }}
+    </span>
+</div>
+{{ end }}

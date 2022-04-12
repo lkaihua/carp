@@ -3,6 +3,11 @@
     --preview-model-text-color: var(--bs-gray-400);
 }
 
+#PreviewModal[data-theme="light"] {
+    --preview-model-bg-color: white;
+    --preview-model-text-color: black;
+}
+
 #PreviewModal .modal-header {
     background-color: var(--preview-model-bg-color);
     color: var(--preview-model-text-color);
@@ -33,7 +38,7 @@
     background-color: var(--preview-model-bg-color);
     border-top: none;
     justify-content: center;
-    padding-bottom: 20px;
+    padding-bottom: 25px;
 }
 
 #PreviewModal .modal-footer .button-container {
@@ -58,8 +63,10 @@
 }
 
 #PreviewModal .modal-footer .btn.carousel-control {
-    width: 48px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
+    background-color: var(--preview-model-bg-color);
 }
 
 #PreviewModal .modal-footer .btn.carousel-control span {
@@ -105,11 +112,12 @@
     padding: 0 1rem;
 }
 
-#ModalPreviewImage {
+#ModalPreviewImage img {
+    width: auto;
+    height: auto;
     max-width: 100%;
     max-height: 100%;
-    min-width: 50px;
-    min-height: 50px;
+    min-width: 100px;
 }
 
 #ModalPreviewVideo {

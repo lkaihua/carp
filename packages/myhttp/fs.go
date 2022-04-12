@@ -128,15 +128,17 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		}
 
 		data = append(data, mytemplate.DisplayEntry{
-			Name:        name,
-			FirstName:   firstName,
-			LastName:    lastName,
-			EntryType:   entryType,
-			UrlString:   urlString,
-			IsCover:     isCover,
-			IsThumbnail: isThumbnail,
-			// ModTime:   modTime,
-			// Size:      size,
+			Name:          name,
+			FirstName:     firstName,
+			LastName:      lastName,
+			EntryType:     entryType,
+			UrlString:     urlString,
+			IsCover:       isCover,
+			IsThumbnail:   isThumbnail,
+			ModTimeString: d.ModTime.Format("2006-01-02 15:04"),
+			ModTimeUnix:   d.ModTime.Unix(),
+			SizeString:    utils.ByteCountSI(d.Size),
+			SizeInt:       d.Size,
 		})
 
 	}
