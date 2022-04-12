@@ -1,8 +1,8 @@
 {{define "top_breadcrumb"}}
 
-<section id="TopBreadcrumb">
+<section id="TopBreadcrumb" class="shadow">
 {{ with .Breadcrumb }}
-    <ol class='item-list mx-0 border-1 mb-3'>
+    <ol class='item-list border-1'>
         {{ range $index, $value := . }}
         <li>
             <a class="dropdown-item btn d-block text-decoration-none" href="{{ $value.UrlString }}">

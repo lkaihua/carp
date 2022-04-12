@@ -15,7 +15,7 @@
 
 #CategorySelector .col {
     --btn-background-color: var(--bs-gray-200);
-    --btn-border-width: 1px;
+    --btn-border-width: 0px;
     --btn-border-start-color: var(--btn-background-color);
     --btn-border-end-color: var(--btn-background-color);
     position: relative;

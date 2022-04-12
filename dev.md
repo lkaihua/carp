@@ -35,6 +35,12 @@ Not only very few dom nodes within the view port are created, also the images ar
 - UI: Improve the skipped track style. Unify the height of primary items for folder, image, music and video.
 - [] Height of virtual list needs refactoring. Think about how the users are able to scroll to `Other files` section underneath.
 
+
+| Album Folder - Default View  | Album Folder - Music Player View | 
+| ------------- | ------------- | 
+| ![docs/images/2022-04-12-all.png](docs/images/2022-04-12-all.jpg)  | ![docs/images/2022-04-12-music.png](docs/images/2022-04-12-music.jpg) |
+
+
 #### 2022-04-11
 
 - Add Modification Time and Size. 
