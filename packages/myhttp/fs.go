@@ -146,7 +146,8 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 	// loop again for the image to find its thumbnail
 	if len(thumbnailMap) > 0 {
 		for index, displayEntry := range data {
-			if displayEntry.EntryType == types.EntryTypeImage || displayEntry.EntryType == types.EntryTypeVideo {
+			if displayEntry.EntryType == types.EntryTypeImage ||
+				displayEntry.EntryType == types.EntryTypeVideo {
 				v, ok := thumbnailMap[displayEntry.FirstName]
 				if ok {
 					data[index].HasThumbnail = v

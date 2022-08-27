@@ -11,6 +11,7 @@
 
 #FolderContent .item-primary .meta {
     display: flex;
+    gap: 10px;
 }
 
 #FolderContent ul.item-list li a.item-entry-type-folder::after {

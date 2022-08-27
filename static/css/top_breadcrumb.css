@@ -9,7 +9,7 @@
     --breadcrumb-gap: 0.25rem;
     display: flex;
     gap: var(--breadcrumb-gap);
-    /* padding: 0.5rem; */
+    padding: 0.5rem 0;
     border-radius: 0.5rem;
     flex-direction: row;
     flex-wrap: wrap;

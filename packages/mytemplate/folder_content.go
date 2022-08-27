@@ -93,9 +93,10 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 		} else {
 			// Decide the category based on the file percentage
 			if countAll > 0 {
-				if countImageVideo > 0 && countImageVideo >= countAll/2 {
+				threshold := countAll / 2
+				if countImageVideo > 0 && countImageVideo >= threshold {
 					template_name = ImageVideo.String()
-				} else if countMusic > 0 && countMusic >= countAll/2 {
+				} else if countMusic > 0 && countMusic >= threshold {
 					template_name = Music.String()
 				} else {
 					template_name = Default.String()
@@ -108,9 +109,11 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 	fmt.Println("[FolderContent] template is:", template_name)
 
 	err := parsedTemplate.ExecuteTemplate(w, template_name, struct {
-		DisplayEntries                        []DisplayEntry
-		CountAll, CountImageVideo, CountMusic int
-		HasCover                              string
+		DisplayEntries  []DisplayEntry
+		CountAll        int
+		CountImageVideo int
+		CountMusic      int
+		HasCover        string
 	}{
 		DisplayEntries:  *data,
 		CountAll:        countAll,

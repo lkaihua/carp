@@ -10,16 +10,25 @@ import (
 func IncludeHTML(path string) template.HTML {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		fmt.Println("[IncludeHTML] Error reading file", err)
+		fmt.Println("Error reading HTML file", err)
 		return ""
 	}
 	return template.HTML(string(b))
 }
 
+func IncludeCSS(path string) template.CSS {
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		fmt.Println("Error reading CSS file", err)
+		return ""
+	}
+	return template.CSS(string(b))
+}
+
 func IncludeJS(path string) template.JS {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
-		fmt.Println("[IncludeHTML] Error reading JS file", err)
+		fmt.Println("Error reading JS file", err)
 		return ""
 	}
 	return template.JS(string(b))

@@ -15,10 +15,12 @@
     
     <span class="item-content-row meta">
         {{ if ne .ModTimeString "" }}
+        <small>Modified Time:</small>
         <span class="modTime text-secondary">{{ .ModTimeString }}</span>
         {{ end }}
 
         {{ if and (ne .EntryType "folder") (ne .SizeString "") }}
+        <small>Size:</small>
         <span class="size text-secondary mx-2">{{ .SizeString }}</span>
         {{ end }}
     </span>

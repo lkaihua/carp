@@ -4,7 +4,7 @@ body {}
     --body-max-width: 1200px;
     --top-breadcrumb-max-width: 550px;
     --music-player-max-width: 550px;
-    --section-margin-x: 2rem;
+    --section-padding-x: 2rem;
     --gray-border-color: #d8d8d8;
     --btn-background-color: white;
     --btn-border-start-color: var(--bs-red);
@@ -31,7 +31,9 @@ figure {
 }
 
 section {
-    margin: 0 var(--section-margin-x);
+    margin: 0 auto;
+    padding-left: var(--section-padding-x);
+    padding-right: var(--section-padding-x);
     max-width: min(var(--body-max-width), 100vw);
 }
 
@@ -369,7 +371,7 @@ ol.item-list {
 
 @media only screen and (max-width: 480px) {
      :root {
-        --section-margin-x: 1rem;
+        --section-padding-x: 1rem;
         font-size: 14px;
     }
     #CategorySelector li a .name {
