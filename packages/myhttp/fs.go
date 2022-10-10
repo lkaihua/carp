@@ -749,8 +749,8 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name strin
 
 	f, err := fs.Open(name)
 	if err != nil {
-		msg, code := toHTTPError(err)
-		http.Error(w, msg, code)
+		// msg, code := toHTTPError(err)
+		// http.Error(w, msg, code)
 		return
 	}
 	defer f.Close()
@@ -902,7 +902,7 @@ type fileHandler struct {
 // To use the operating system's file system implementation,
 // use http.Dir:
 //
-//     http.Handle("/", http.FileServer(http.Dir("/tmp")))
+//	http.Handle("/", http.FileServer(http.Dir("/tmp")))
 //
 // As a special case, the returned file server redirects any request
 // ending in "/index.html" to the same path, without the final

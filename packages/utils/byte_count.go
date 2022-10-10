@@ -1,11 +1,10 @@
 /*
-	Convert byte size to bytes, kilobytes, megabytes, gigabytes, ...
+Convert byte size to bytes, kilobytes, megabytes, gigabytes, ...
 
-	These utility functions convert a byte size to a human-readable string
-	in either SI (decimal) or IEC (binary) format.
+These utility functions convert a byte size to a human-readable string
+in either SI (decimal) or IEC (binary) format.
 
-
-	Source: https://yourbasic.org/golang/formatting-byte-size-to-human-readable-format/
+Source: https://yourbasic.org/golang/formatting-byte-size-to-human-readable-format/
 */
 package utils
 
@@ -40,16 +39,3 @@ func ByteCountIEC(b int64) string {
 	return fmt.Sprintf("%.1f %ciB",
 		float64(b)/float64(div), "KMGTPE"[exp])
 }
-
-// func main() {
-// 	fmt.Printf("%20s %16s %16s\n", "Input", "BytecountSI", "BytecountIEC")
-// 	for _, b := range []int64{
-// 		999, 1000, 1023, 1024,
-// 		987654321, math.MaxInt64,
-// 	} {
-// 		fmt.Printf("%20d %16q %16q\n",
-// 			b,
-// 			ByteCountSI(b),
-// 			ByteCountIEC(b))
-// 	}
-// }

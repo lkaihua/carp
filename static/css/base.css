@@ -348,8 +348,7 @@ ol.item-list {
 }
 
 #Footer {
-    margin-top: 1rem;
-    margin-bottom: 10rem;
+    margin: 1rem 0;
 }
 
 #Footer .description {

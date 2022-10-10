@@ -1,0 +1,28 @@
+{{define "folder_content_image_video_cell_video"}}
+<script>
+    window.ImageVideoRow = window.ImageVideoRow || [];
+    window.ImageVideoRow.push(`
+        <div class="col"><div class="container"><div class="bg-light">
+            <button type="button" class='btn rounded btn-preview btn-preview-video flex-center'
+                data-bs-toggle="modal" data-bs-target="#PreviewModal"
+                data-bs-url-string="{{.UrlString}}"
+                data-bs-name="{{.Name}}"
+                data-bs-lastName="{{.LastName}}"
+                data-bs-entry-type="video"
+            >
+                <span class="video-preview rounded border-1 flex-center image-preview lazyload pos-absolute-max" data-src="{{ .HasThumbnail }}">
+                    <span class="icon video-play"></span>
+                </span>
+                <span class="video-preview rounded border-1 flex-center video-preview-placeholder">
+                    <span class="icon video-play"></span>
+                    <span class='firstName text-center text-max-lines-3 {{ if eq .FirstName "" -}} hidden {{- end }}'>{{ .FirstName }}</span>
+                </span>
+            </button>
+        </div></div></div>`
+    )
+    if (window.ImageVideoRow.length == 3) {
+        window.ImageVideoRows.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+        window.ImageVideoRow = []
+    }
+</script>
+{{end}}

@@ -141,6 +141,15 @@
 #ImageVideoContainer span.video-play::before {}
 
 
+#ImageVideoContainer .row{
+    --bs-gutter-x: 0 !important;
+}
+
+#ImageVideoContainer .col {
+    padding-left: 0;
+    padding-right: 0;
+}
+
 /* Aspect Ratio https://www.w3schools.com/howto/howto_css_aspect_ratio.asp */
 
 #ImageVideoContainer .col .container {
@@ -182,10 +191,10 @@
 }
 
 #ImageVideoContainer .col .container .btn .firstName {
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 #ImageVideoContainer .col .container .btn .blur-bg {

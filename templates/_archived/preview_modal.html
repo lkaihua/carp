@@ -1,0 +1,63 @@
+{{ define "preview_modal" }}
+<div class="modal" id="PreviewModal" tabindex="-1" aria-labelledby="PreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-max-lines-2" id="PreviewModalLabel"></h5>
+            </div>
+            <div class="modal-body flex-center">
+
+                <div class="preview-content-container image-container hidden flex-center">
+                    <div id="ModalPreviewImage"><!-- <img src="" class="checker-background" /> --></div>
+                </div>
+
+                <div class="preview-content-container music-container hidden flex-center">
+                    <a id="ModalPreviewMusicPlayItem" class="music-play-item hidden" href="">
+                        <span class="visually-hidden">Play</span>
+                    </a>
+                    <div id="ModalPreviewMusic">
+                        {{ template "music_player" dict "CountMusic" ""    "HasCover" ""    "Sticky" "none" }}
+                    </div>
+                </div>
+
+                <div class="preview-content-container video-container hidden flex-center">
+                    <video width="100%" poster="" id="ModalPreviewVideo" preload="metadata" controls autoplay loop playsinline>
+                        <source src="" type="">
+                        <p>To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
+                    </video>
+                </div>
+                
+                <div class="preview-content-container default-container hidden flex-center">
+                   <ul class="list-group" id="ModalPreviewDefault">
+                        <li id="ModalPreviewImageSize" class="text-light"></li>
+                        {{/* <li><label>File type:</label><span class="list-item-content "></span></li>
+                        <li><label>File name:</label><span class="list-item-content "></span></li>
+                        <li><label>File size:</label><span class="list-item-content "></span></li>
+                        <li><label>Modification time:</label><span class="list-item-content "></span></li>
+                        <li><a class="btn btn-primary" href="#" role="button">Open Raw File Link</a></li>
+                        <li><a class="btn btn-primary" href="#" role="button">Preview as text</a></li> */}}
+                    </ul>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class="button-container">
+                    <button class="carousel-control carousel-control-prev btn" type="button" data-bs-dismiss="modal" id="ModalButtonPrev" aria-label="Previous">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    <button class="carousel-control carousel-control-next btn" type="button" data-bs-dismiss="modal" id="ModalButtonNext" aria-label="Next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+{{ includeJS "./templates/preview_modal.js" }}
+</script>
+{{ end }}

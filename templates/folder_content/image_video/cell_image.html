@@ -1,0 +1,25 @@
+{{define "folder_content_image_video_cell_image"}}
+<script>
+    window.ImageVideoRow = window.ImageVideoRow || [];
+    window.ImageVideoRow.push(`
+        <div class="col"><div class="container"><div class="bg-light">
+            <button type="button" class="btn rounded btn-preview btn-preview-image flex-center {{ if .IsCover }}btn-preview-cover{{ end }}"
+                data-bs-toggle="modal" data-bs-target="#PreviewModal" 
+                data-bs-url-string="{{.UrlString}}"
+                data-bs-name="{{.Name}}"
+                data-bs-lastName="{{.LastName}}"
+                data-bs-entry-type="image"
+                data-is-cover="{{.IsCover}}"
+            >   
+                {{ $previewImageUrl := .UrlString }}
+                {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
+                <img data-src="{{$previewImageUrl}}" class="image-preview lazyload"/>
+            </button>
+        </div></div></div>
+    `)
+    if (window.ImageVideoRow.length == 3) {
+        window.ImageVideoRows.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+        window.ImageVideoRow = []
+    }
+</script>
+{{ end }}

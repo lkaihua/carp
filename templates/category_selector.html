@@ -3,7 +3,7 @@
     {{ with .Categories }}      
         <ul class="row list-unstyled list my-1 px-1">
             {{ range . }}
-                <li class="col" >
+                <li id="Col-{{- .Value}}" class="col" >
                     <a class="d-block text-dark text-decoration-none text-center" href="?category={{- .Value -}}">
                         <button class="btn rounded-pill rounded category-btn category-btn-{{- .Value}}">
                             {{ if eq .Value "all"}}

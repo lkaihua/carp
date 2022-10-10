@@ -9,22 +9,19 @@ import (
 	"github.com/lkaihua/carp-web-gallery/packages/types"
 )
 
-const template_prefix string = "folder_content_"
-const template_gohtml string = ".html"
+const template_folder string = "folder_content"
+const template_ext string = ".html"
 
 type ViewCategory string
 
 const (
 	Default    ViewCategory = "default"
-	ImageVideo ViewCategory = "image_and_video"
+	ImageVideo ViewCategory = "image_video"
 	Music      ViewCategory = "music"
 )
 
 func (v ViewCategory) String() string {
 	return string(v)
-}
-func (v ViewCategory) TemplateName() string {
-	return template_prefix + v.String() + template_gohtml
 }
 
 type DisplayEntry struct {
@@ -45,12 +42,15 @@ type DisplayEntry struct {
 func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry) {
 
 	templates := []string{
-		filepath.Join("./templates", Default.TemplateName()),
-		filepath.Join("./templates", ImageVideo.TemplateName()),
-		filepath.Join("./templates", Music.TemplateName()),
-		filepath.Join("./templates", "preview_modal"+template_gohtml),
-		filepath.Join("./templates", "music_player"+template_gohtml),
-		filepath.Join("./templates", "item_primary_content"+template_gohtml),
+		filepath.Join("./templates", template_folder, "default", "index"+template_ext),
+		filepath.Join("./templates", template_folder, "default", "cell"+template_ext),
+		filepath.Join("./templates", template_folder, "image_video", "index"+template_ext),
+		filepath.Join("./templates", template_folder, "image_video", "cell_image"+template_ext),
+		filepath.Join("./templates", template_folder, "image_video", "cell_video"+template_ext),
+		filepath.Join("./templates", template_folder, "music", "index"+template_ext),
+		filepath.Join("./templates", template_folder, "item_primary_content"+template_ext),
+		filepath.Join("./templates", "music_player"+template_ext),
+		filepath.Join("./templates", "preview_modal"+template_ext),
 	}
 	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
 
@@ -105,7 +105,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 		}
 	}
 
-	template_name = template_prefix + template_name
+	template_name = template_folder + "_" + template_name
 	fmt.Println("[FolderContent] template is:", template_name)
 
 	err := parsedTemplate.ExecuteTemplate(w, template_name, struct {

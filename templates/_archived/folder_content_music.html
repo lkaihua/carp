@@ -42,22 +42,6 @@
         {{ end }}
     </div>
 
-    {{ if lt .CountMusic .CountAll }}
-        <h4 class="mt-4 mb-2">Other Files</h4>
-        <ul id="OtherList" class="item-list mx-0 border-1 ">
-            {{ range .DisplayEntries }}
-                {{ if ne .EntryType "music" }}
-                    <li>
-                        <a class="item-primary dropdown-item item-entry-type-{{ .EntryType }}" href="{{ .UrlString }}">
-                            {{ template "item_primary_content" dict "EntryType" .EntryType "FirstName" .FirstName "LastName" .LastName "ModTimeString" .ModTimeString "SizeString" .SizeString}}
-                        </a>
-                    </li>
-                {{ end }}
-            {{ end }}
-        </ul>
-    {{ end }}
-
-
     <script>
     {{ includeJS "./templates/folder_content_music.js" }}
     </script>

@@ -29,6 +29,12 @@
 
 ### Work log
 
+#### 2022-10-08
+
+- [ ]: Add endless scolling for all pages. Extract it to a common function. 
+- [ ]: Add prompt when running server in terminal, to select destination folder, to enable password.
+- [ ]: Add QR code when running server in terminal
+
 #### 2022-04-12
 
 - Introduce a vitual dom scrolling library `clusterize.js` and combine with image `lazyload.js` to preview folders with huge number of images or videos. 

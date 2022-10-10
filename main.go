@@ -11,6 +11,7 @@ import (
 	"github.com/lkaihua/carp-web-gallery/packages/myhttp"
 	"github.com/lkaihua/carp-web-gallery/packages/mypath"
 	"github.com/lkaihua/carp-web-gallery/packages/mytemplate"
+	"github.com/lkaihua/carp-web-gallery/packages/utils"
 )
 
 var rootDir string
@@ -33,7 +34,10 @@ func main() {
 	rootDir = *directory
 	http.HandleFunc("/", indexHandler)
 
-	log.Printf("Serving %s on HTTP port: %s\n", *directory, *port)
+	ipAddress := utils.GetOutboundIP()
+
+	log.Printf("Serving %s on IP: %s And http port: %s\n", *directory, ipAddress, *port)
+	log.Printf("Serving http://%s:%s\n", ipAddress, *port)
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
