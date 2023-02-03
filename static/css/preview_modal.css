@@ -38,7 +38,6 @@
     background-color: var(--preview-model-bg-color);
     border-top: none;
     justify-content: center;
-    padding-bottom: 25px;
 }
 
 #PreviewModal .modal-footer .button-container {

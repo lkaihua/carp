@@ -2,12 +2,32 @@
 <script>document.querySelector("#CategorySelector #Col-all").classList.add("active");</script>
 
 <section id="FolderContent" class="folder_content_default">
-    <div>
+    <div style="display: flex; align-items: center; gap: 10px;">
         <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+        <h6 class="mt-1 mb-1">{{.CountAll}} Files</h6>
     </div>
 
+    <div class="filter-type-container">
+        <select id="AllFilter" class="form-select form-select-sm">
+            <option value="" {{ if eq $category "image-video" }}selected{{ end }}>Filter by</option>
+            <option value="video" {{ if eq $category "video" }}selected{{ end }}>Only show video ({{.CountVideo}})</option>
+            <option value="image" {{ if eq $category "image" }}selected{{ end }}>Only show image ({{.CountImage}})</option>
+        </select>
+    </div>
+
+    <script>
+        document.querySelector("#FolderContentHeader").onchange = function(evt) {
+            window.location.href = window.location.pathname + "?category=all&sortBy=" + evt.target.value
+        }
+    </script>
+
+    
+
     {{ with .DisplayEntries }}
-    <script>window.EntryRows = window.EntryRows || [];</script>
+    <script>
+    window.EntryRows = window.EntryRows || [];
+    window.EntryRow = window.EntryRow || [];
+    </script>
     <ul class="item-list mx-0 border-1 my-2">
         {{ range . }}
         <li>
@@ -29,7 +49,7 @@
                 <!-- Preview Button starts -->
                 {{ if eq .EntryType "image" }}
                     <script>
-                        window.EntryRow = window.EntryRow || [];
+                        
                         window.EntryRows.push(`
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
@@ -47,7 +67,7 @@
                     </script>
                 {{ else if eq .EntryType "music" }}
                     <script>
-                        window.EntryRow = window.EntryRow || [];
+                        
                         window.EntryRows.push(`
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
@@ -70,7 +90,7 @@
                     </script>
                 {{ else if eq .EntryType "video" }}
                     <script>
-                        window.EntryRow = window.EntryRow || [];
+                        
                         window.EntryRows.push(`
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
@@ -106,23 +126,23 @@
         {{ end }}
     </ul>
     <script>
-        window.addEventListener("load", function(event) { 
-            if (window.EntryRow && window.EntryRow.length > 0) {
-                window.EntryRows.push(`<div class="row row-cols-3">${window.EntryRow.join("")}</div>`)
-            }
-            // update max-height of ImageVideoContainer
-            const imageVideoContainer = document.querySelector("#ImageVideoContainer")
-            imageVideoContainer.style.maxHeight = window.innerHeight - imageVideoContainer.offsetTop + "px"
+        // window.addEventListener("load", function(event) { 
+        //     if (window.EntryRow && window.EntryRow.length > 0) {
+        //         window.EntryRows.push(`<div class="row row-cols-3">${window.EntryRow.join("")}</div>`)
+        //     }
+        //     // update max-height of ImageVideoContainer
+        //     const imageVideoContainer = document.querySelector("#ImageVideoContainer")
+        //     imageVideoContainer.style.maxHeight = window.innerHeight - imageVideoContainer.offsetTop + "px"
             
-            window.clusterize = new Clusterize({
-                rows: window.ImageVideoRows,
-                scrollId: 'ImageVideoContainer',
-                contentId: 'ImageVideoItems',
-                callbacks: {
-                    clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
-                }
-            })
-        })
+        //     window.clusterize = new Clusterize({
+        //         rows: window.ImageVideoRows,
+        //         scrollId: 'ImageVideoContainer',
+        //         contentId: 'ImageVideoItems',
+        //         callbacks: {
+        //             clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
+        //         }
+        //     })
+        // })
     </script>
     
     {{ template "preview_modal" }}

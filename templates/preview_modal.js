@@ -2,6 +2,10 @@
     const $ = (path) => document.querySelector(path)
     const $a = (path) => document.querySelectorAll(path)
     const previewModal = $('#PreviewModal')
+
+    // To disable double-tap on <Video> on iOS. This is ugly but useful.
+    // previewModal.addEventListener("click", () => {}); // does not work
+
     previewModal.addEventListener('hide.bs.modal', function(event) {
         previewModal.querySelectorAll('.preview-content-container').forEach(c => c.classList.add('hidden'))
 

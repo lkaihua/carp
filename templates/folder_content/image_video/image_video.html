@@ -1,0 +1,89 @@
+{{define "folder_content_image_video"}}
+<script>document.querySelector("#CategorySelector #Col-image-video").classList.add("active");</script>
+
+<section id="FolderContent" class="folder_content_image_and_video">
+{{ if gt .CountAll 0 }}
+    {{ $category := .Category }}
+    <div id="FolderContentHeader">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+            <h6 class="mt-1 mb-1">
+                <p>Image & Video - {{.CountImageVideo}} Files</p>
+                <p class="text-secondary">{{minus .CountAll .CountImageVideo}} Other Files Not Shown</p>
+            </h6>
+            
+        </div>
+        <div class="filter-type-container">
+            <select id="ImageVideoFilter" class="form-select form-select-sm">
+                <option value="image-video" {{ if eq $category "image-video" }}selected{{ end }}>Filter by</option>
+                <option value="video" {{ if eq $category "video" }}selected{{ end }}>Only show video ({{.CountVideo}})</option>
+                <option value="image" {{ if eq $category "image" }}selected{{ end }}>Only show image ({{.CountImage}})</option>
+            </select>
+        </div>
+    
+        <script>
+            document.querySelector("#FolderContentHeader").onchange = function(evt) {
+                window.location.href = window.location.pathname + "?category=" + evt.target.value
+            }
+        </script>
+    </div>
+    
+    <div id="ImageVideoContainer" class="my-2 clusterize-scroll">
+        
+        {{ if eq .CountImageVideo 0 }}
+            <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+                <h4>No image or video files here.</h4>
+            </div>
+        {{ else }}
+            <div id="ImageVideoItems" class="clusterize-content">
+                <p class="nojs"><noscript>Please enable JavaScript to enable this view</noscript></p>
+            </div>
+
+            <script>window.ImageVideoRows = window.ImageVideoRows || [];</script>
+            {{ range $index, $value := .DisplayEntries }}
+                {{ if and (eq $value.EntryType "image") (contains $category "image") }}
+                    {{ template "folder_content_image_video_cell_image" dict    "IsCover" $value.IsCover    "UrlString" $value.UrlString    "Name" $value.Name    "LastName" $value.LastName    "HasThumbnail" $value.HasThumbnail}}
+                {{ else if and (eq $value.EntryType "video") (contains $category "video") }}
+                    {{ template "folder_content_image_video_cell_video" dict    "UrlString" $value.UrlString    "Name" $value.Name    "FirstName" $value.FirstName    "LastName" $value.LastName    "HasThumbnail" $value.HasThumbnail}}
+                {{ end }}
+            {{ end }}
+            
+        {{ end }}
+    </div>
+
+    <script>
+    window.addEventListener("load", function(event) { 
+        if (window.ImageVideoRow && window.ImageVideoRow.length > 0) {
+            window.ImageVideoRows.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+        }
+        if (window.ImageVideoRows.length > 0) {
+            // Update max-height of ImageVideoContainer
+            const imageVideoContainer = document.querySelector("#ImageVideoContainer")
+            imageVideoContainer.style.maxHeight = window.innerHeight - imageVideoContainer.offsetTop + "px"
+            
+            window.clusterize = new Clusterize({
+                rows: window.ImageVideoRows,
+                scrollId: 'ImageVideoContainer',
+                contentId: 'ImageVideoItems',
+                callbacks: {
+                    clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
+                }
+            })
+        }
+    })
+    </script>
+
+    {{ template "preview_modal" }}
+
+{{ else }}
+    <div>
+        <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+    </div>
+    <div class="empty-folder-placeholder my-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+        <h4>The folder is empty.</h4>
+    </div>
+{{ end }}
+</section>
+
+
+{{ end }}

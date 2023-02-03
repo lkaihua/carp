@@ -5,7 +5,13 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"strconv"
+	"strings"
 )
+
+/**
+ * Extension of Golang template functions
+ */
 
 func IncludeHTML(path string) template.HTML {
 	b, err := ioutil.ReadFile(path)
@@ -49,10 +55,20 @@ func Dict(values ...interface{}) (map[string]interface{}, error) {
 	return dict, nil
 }
 
+func Contains(str string, sub string) bool {
+	return strings.Contains(str, sub)
+}
+
+func Minus(a, b int) string {
+	return strconv.FormatInt(int64(a-b), 10)
+}
+
 var templateFuncMap = template.FuncMap{
 	"includeHTML": IncludeHTML,
 	"includeJS":   IncludeJS,
 	"dict":        Dict,
+	"contains":    Contains,
+	"minus":       Minus,
 }
 
 func NewTemplate() *template.Template {

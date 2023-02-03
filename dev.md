@@ -35,6 +35,8 @@
 - [ ]: Add prompt when running server in terminal, to select destination folder, to enable password.
 - [ ]: Add QR code when running server in terminal
 
+- [ ]: When the path is invalid, output the warning in the content body.
+
 #### 2022-04-12
 
 - Introduce a vitual dom scrolling library `clusterize.js` and combine with image `lazyload.js` to preview folders with huge number of images or videos. 

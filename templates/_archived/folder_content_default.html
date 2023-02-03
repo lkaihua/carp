@@ -6,8 +6,11 @@
         <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
     </div>
 
+    <script>
+    window.EntryRows = window.EntryRows || [];
+    window.EntryRow = window.EntryRow || [];
+    </script>
     {{ with .DisplayEntries }}
-    <script>window.EntryRows = window.EntryRows || [];</script>
     <ul class="item-list mx-0 border-1 my-2">
         {{ range . }}
         <li>
@@ -29,7 +32,6 @@
                 <!-- Preview Button starts -->
                 {{ if eq .EntryType "image" }}
                     <script>
-                        window.EntryRow = window.EntryRow || [];
                         window.EntryRows.push(`
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
@@ -47,7 +49,6 @@
                     </script>
                 {{ else if eq .EntryType "music" }}
                     <script>
-                        window.EntryRow = window.EntryRow || [];
                         window.EntryRows.push(`
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
@@ -70,7 +71,6 @@
                     </script>
                 {{ else if eq .EntryType "video" }}
                     <script>
-                        window.EntryRow = window.EntryRow || [];
                         window.EntryRows.push(`
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
@@ -105,6 +105,25 @@
         <li> Ops! Nothing here. </li>
         {{ end }}
     </ul>
+    <script>
+        window.addEventListener("load", function(event) { 
+            if (window.EntryRow && window.EntryRow.length > 0) {
+                window.EntryRows.push(`<div class="row row-cols-3">${window.EntryRow.join("")}</div>`)
+            }
+            // update max-height of ImageVideoContainer
+            const imageVideoContainer = document.querySelector("#ImageVideoContainer")
+            imageVideoContainer.style.maxHeight = window.innerHeight - imageVideoContainer.offsetTop + "px"
+            
+            window.clusterize = new Clusterize({
+                rows: window.ImageVideoRows,
+                scrollId: 'ImageVideoContainer',
+                contentId: 'ImageVideoItems',
+                callbacks: {
+                    clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
+                }
+            })
+        })
+    </script>
     
     {{ template "preview_modal" }}
 

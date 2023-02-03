@@ -1,9 +1,10 @@
 {{define "folder_content_music"}}
-<script>document.querySelector("#CategorySelector #Col-music")[2].classList.add("active");</script>
+<script>document.querySelector("#CategorySelector #Col-music").classList.add("active");</script>
 
 <section id="FolderContent" class="folder_content_music">
-    <div>
+    <div style="display: flex; align-items: center; gap: 10px;">
         <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+        <h6 class="mt-1 mb-1">Playlist - {{.CountMusic}} Audio Files</h6>
     </div>
 
 {{ if gt .CountAll 0 }}
@@ -15,8 +16,6 @@
             </div>
         {{ else }}
             {{ template "music_player" dict "CountMusic" .CountMusic    "HasCover" .HasCover    "Sticky" "top" }}
-            <h6 class="mt-4 mb-2">Playlist ( {{.CountMusic}} )</h6>
-
             <ul id="MusicPlaylist" class="item-list mx-0 border-1">
                 {{ range .DisplayEntries }}
                     {{ if eq .EntryType "music" }}
