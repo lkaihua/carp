@@ -99,18 +99,27 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		{Value: "music", DisplayText: "Music"},
 	}
 
-	indexView := mytemplate.IndexView{
+	indexData := mytemplate.IndexData{
 		Title:      "Carp - " + r.URL.Path,
 		Dir:        rootDir,
 		Breadcrumb: breadcrumb,
 		Categories: categories,
 	}
+	// Load Templates
+	parsedTemplates, err := mytemplate.ParseTemplate()
+
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
+
 	// Html Header
-	mytemplate.Index(w, &indexView)
+	mytemplate.Index(w, parsedTemplates, &indexData)
 
 	// Html Body
-	myhttp.ServeFile(w, r, rootDir+r.URL.Path)
+	myhttp.ServeFile(w, r, rootDir+r.URL.Path, parsedTemplates)
 
 	// Html Footer
-	mytemplate.Footer(w)
+	mytemplate.Footer(w, parsedTemplates)
 }

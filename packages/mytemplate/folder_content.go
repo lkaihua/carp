@@ -2,6 +2,7 @@ package mytemplate
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -11,9 +12,6 @@ import (
 	"github.com/lkaihua/carp-web-gallery/packages/types"
 	"github.com/lkaihua/carp-web-gallery/packages/utils"
 )
-
-const template_folder string = "folder_content"
-const template_ext string = ".html"
 
 type ViewCategory string
 
@@ -44,19 +42,19 @@ type DisplayEntry struct {
 	HasThumbnail  string
 }
 
-func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry) {
+func FolderContent(w http.ResponseWriter, r *http.Request, template *template.Template,  *[]DisplayEntry) {
 
-	allTempaltes, err := utils.GetAllFiles(filepath.Join("./templates", template_folder), template_ext)
-	if err != nil {
-		fmt.Println("[FolderContent] error in get all files for Template:", err)
-		return
-	}
+	// allTempaltes, err := utils.GetAllFiles(filepath.Join("./templates", template_folder), utils.Html(""))
+	// if err != nil {
+	// 	fmt.Println("[FolderContent] error in get all files for Template:", err)
+	// 	return
+	// }
 
-	templates := append([]string{
-		filepath.Join("./templates", "music_player"+template_ext),
-		filepath.Join("./templates", "preview_modal"+template_ext),
-	}, allTempaltes...)
-	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
+	// templates := append([]string{
+	// 	filepath.Join("./templates", utils.Html("music_player")),
+	// 	filepath.Join("./templates", utils.Html("preview_modal")),
+	// }, allTempaltes...)
+	// parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
 
 	countAll := len(*data)
 	countMap := make(map[types.EntryType]int)
@@ -127,7 +125,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry)
 	template_name = template_folder + "_" + template_name
 	fmt.Println("[FolderContent] template is:", template_name)
 
-	err = parsedTemplate.ExecuteTemplate(w, template_name, struct {
+	err = template.ExecuteTemplate(w, template_name, struct {
 		DisplayEntries  []DisplayEntry
 		Category        string
 		CountAll        int

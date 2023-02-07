@@ -22,6 +22,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/lkaihua/carp-web-gallery/packages/mytemplate"
@@ -156,7 +157,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		}
 	}
 
-	mytemplate.FolderContent(w, r, &data)
+	mytemplate.FolderContent(w, r, template, &data)
 }
 
 // ========================
@@ -286,35 +287,6 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 	formatDirHtml(w, r, dirData)
 
 	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	/*
-		fmt.Fprintf(w, "<ul>\n")
-		for _, d := range dirs {
-			name := d.Name()
-			if d.IsDir() {
-				name += "/"
-			}
-
-			// name may contain '?' or '#', which must be escaped to remain
-			// part of the URL path, and not indicate the start of a query
-			// string or fragment.
-			url := url.URL{Path: name}
-
-			urlString := url.String()
-			// Add a path appendix to Files
-			if !d.IsDir() {
-				urlString = urlString + "?file=1"
-			}
-
-			// Add a image
-			if strings.HasSuffix(name, ".jpg") {
-				fmt.Fprintf(w, "<img src=\"%s\" width=\"50\" height=\"50\" />", urlString)
-			}
-
-			// fmt.Fprintf(w, "<li><a href=\"%s\">%s</a></li>\n", url.String(), htmlReplacer.Replace(name))
-			fmt.Fprintf(w, "<li><a href=\"%s\">%s</a></li>\n", urlString, htmlReplacer.Replace(name))
-		}
-		fmt.Fprintf(w, "</ul>\n")
-	*/
 }
 
 // ServeContent replies to the request using the content in the
@@ -736,7 +708,7 @@ func checkPreconditions(w http.ResponseWriter, r *http.Request, modtime time.Tim
 }
 
 // name is '/'-separated, not filepath.Separator.
-func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name string, redirect bool) {
+func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name string, redirect bool, templates *template.Template) {
 	const indexPage = "/index.html"
 
 	// redirect .../index.html to .../
@@ -864,7 +836,7 @@ func localRedirect(w http.ResponseWriter, r *http.Request, newPath string) {
 // Outside of those two special cases, ServeFile does not use
 // r.URL.Path for selecting the file or directory to serve; only the
 // file or directory provided in the name argument is used.
-func ServeFile(w http.ResponseWriter, r *http.Request, name string) {
+func ServeFile(w http.ResponseWriter, r *http.Request, name string, templates *template.Template) {
 	if containsDotDot(r.URL.Path) {
 		// Too many programs use r.URL.Path to construct the argument to
 		// serveFile. Reject the request under the assumption that happened
