@@ -6,7 +6,7 @@
         <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
         <h6 class="mt-1 mb-1">{{.CountAll}} Files</h6>
     </div>
-
+    {{ $category := .Category }}
     <div class="filter-type-container">
         <select id="AllFilter" class="form-select form-select-sm">
             <option value="" {{ if eq $category "image-video" }}selected{{ end }}>Filter by</option>
