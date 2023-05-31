@@ -28,6 +28,20 @@
     window.EntryRows = window.EntryRows || [];
     window.EntryRow = window.EntryRow || [];
     </script>
+
+    
+<script>
+    window.h  = [];
+        {{ range . }}
+        window.h.push([
+            '{{ .EntryType }}',
+            '{{ .FirstName }}',
+            '{{ .LastName }}',
+            '{{ .ModTimeString }}',
+            '{{ .SizeString }}',
+        ]);
+        {{ end }}
+        </script>
     <ul class="item-list mx-0 border-1 my-2">
         {{ range . }}
         <li>
@@ -49,49 +63,45 @@
                 <!-- Preview Button starts -->
                 {{ if eq .EntryType "image" }}
                     <script>
-                        
-                        window.EntryRows.push(`
-                            <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
-                                data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                                data-bs-url-string="{{.UrlString}}"
-                                data-bs-name="{{.Name}}"
-                                data-bs-firstName="{{.FirstName}}"
-                                data-bs-lastName="{{.LastName}}"
-                                data-bs-entry-type="{{.EntryType}}"
-                            >   
-                                {{ $previewImageUrl := .UrlString }}
-                                {{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}
-                                <img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />
-                            </button>
-                        `);
+                        window.EntryRows.push([
+                            '<button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"',
+                                'data-bs-toggle="modal" data-bs-target="#PreviewModal"',
+                                'data-bs-url-string="{{.UrlString}}"',
+                                'data-bs-name="{{.Name}}"',
+                                'data-bs-firstName="{{.FirstName}}"',
+                                'data-bs-lastName="{{.LastName}}"',
+                                'data-bs-entry-type="{{.EntryType}}"',
+                            '>',
+                                '{{ $previewImageUrl := .UrlString }}',
+                                '{{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}',
+                                '<img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />',
+                            '</button>',
+                        ].join(""));
                     </script>
                 {{ else if eq .EntryType "music" }}
                     <script>
+                        window.EntryRows.push([
+                            '<button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"',
+                                'data-bs-toggle="modal" data-bs-target="#PreviewModal"',
+                                'data-bs-url-string="{{.UrlString}}"',
+                                'data-bs-name="{{.Name}}"',
+                                'data-bs-firstName="{{.FirstName}}"',
+                                'data-bs-lastName="{{.LastName}}"',
+                                'data-bs-entry-type="{{.EntryType}}"',
+                            '> ',
+                                '<span class="pos-relative music-preview rounded border-1 flex-center">',
+                                    '{{ if .HasThumbnail }}<img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />{{ end }}',
+                                    '<span class="pos-absolute-max flex-center">',
+                                        '<span class="icon music-note"></span>',
+                                    '</span>',
+                                '</span>',
+                            '</button>',
+                        ].join(""));
                         
-                        window.EntryRows.push(`
-                            <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
-                                data-bs-toggle="modal" data-bs-target="#PreviewModal" 
-                                data-bs-url-string="{{.UrlString}}"
-                                data-bs-name="{{.Name}}"
-                                data-bs-firstName="{{.FirstName}}"
-                                data-bs-lastName="{{.LastName}}"
-                                data-bs-entry-type="{{.EntryType}}"
-                            >   
-                                <span class="pos-relative music-preview rounded border-1 flex-center">
-                                    {{ if .HasThumbnail }}
-                                    <img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />
-                                    {{ end }}
-                                    <span class="pos-absolute-max flex-center">
-                                        <span class="icon music-note"></span>
-                                    </span>
-                                </span>
-                            </button>
-                        `);
                     </script>
                 {{ else if eq .EntryType "video" }}
-                    <script>
-                        
-                        window.EntryRows.push(`
+                    
+                        window.EntryRows.push([
                             <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                                 data-bs-url-string="{{.UrlString}}"

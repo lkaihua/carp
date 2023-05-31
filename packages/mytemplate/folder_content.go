@@ -30,11 +30,12 @@ func (v ViewCategory) String() string {
 }
 
 type DisplayEntry struct {
-	Name          string
-	EntryType     types.EntryType
-	UrlString     string
-	FirstName     string
-	LastName      string // File extension string if it's a file, or "/" if it's a folder
+	Name      string          `json:"name"`
+	EntryType types.EntryType `j	son:"entryType"`
+	UrlString string
+	FirstName string
+	LastName  string
+	// File extension string if it's a file, or "/" if it's a folder
 	IsCover       bool
 	IsThumbnail   bool
 	ModTimeString string
