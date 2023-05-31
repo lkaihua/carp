@@ -27,12 +27,12 @@
     <script>
     window.EntryRows = window.EntryRows || [];
     window.EntryRow = window.EntryRow || [];
+
+    window.h  = [];
     </script>
 
-    
-<script>
-    window.h  = [];
-        {{ range . }}
+    {{ range . }}
+        <script>
         window.h.push([
             '{{ .EntryType }}',
             '{{ .FirstName }}',
@@ -40,8 +40,9 @@
             '{{ .ModTimeString }}',
             '{{ .SizeString }}',
         ]);
-        {{ end }}
         </script>
+    {{ end }}
+    
     <ul class="item-list mx-0 border-1 my-2">
         {{ range . }}
         <li>

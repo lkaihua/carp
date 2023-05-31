@@ -30,19 +30,18 @@ func (v ViewCategory) String() string {
 }
 
 type DisplayEntry struct {
-	Name      string          `json:"name"`
-	EntryType types.EntryType `j	son:"entryType"`
-	UrlString string
-	FirstName string
-	LastName  string
-	// File extension string if it's a file, or "/" if it's a folder
-	IsCover       bool
-	IsThumbnail   bool
-	ModTimeString string
-	ModTimeUnix   int64
-	SizeString    string
-	SizeInt       int64
-	HasThumbnail  string
+	Name          string          `json:"name"`
+	EntryType     types.EntryType `json:"entryType"`
+	UrlString     string          `json:"urlString"`
+	FirstName     string          `json:"firstName"`
+	LastName      string          `json:"lastName"` // File extension string if it's a file, or "/" if it's a folder
+	IsCover       bool            `json:"isCover"`
+	IsThumbnail   bool            `json:"isThumbnail"`
+	ModTimeString string          `json:"modTimeString"`
+	ModTimeUnix   int64           `json:"modTimeUnix"`
+	SizeString    string          `json:"sizeString"`
+	SizeInt       int64           `json:"sizeInt"`
+	HasThumbnail  string          `json:"hasThumbnail"`
 }
 
 func FolderContent(w http.ResponseWriter, r *http.Request, data *[]DisplayEntry) {
