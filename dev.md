@@ -2,7 +2,7 @@
 
 | Draft  | Items | 
 | ------------- | ------------- | 
-| ![docs/images/2022-02-draft.jpg](docs/images/2022-02-draft.jpg)  | - [x] To navigate folders and open files  <br> - [x] To have a breadcrumb navigation bar <br>- [x] To abbreviate very long folder/file name smartly <br> - [x] To dynamically load images to preview <br> - [x] To highlight certain category of files in current folder <br> - [ ] To create thumbnails for images and videos |
+| ![docs/images/2022-02-draft.jpg](docs/images/2022-02-draft.jpg)  | - [x] To navigate folders and open files  <br> - [x] To have a breadcrumb navigation bar <br>- [x] To abbreviate very long folder/file name smartly <br> - [x] To dynamically load images to preview <br> - [x] To highlight certain category of files in current folder <br> - [ ] ~~To create thumbnails for images and videos~~ <br> - [x] Add a file size sorting option. <br> - [ ] Display file info in preview modal, such as Modification Time and File Size. |
 
 
 
@@ -12,42 +12,35 @@
 - [x] A mp3 player
   - [x] Loop play.
   - [x] Skip to next song when Media source could not be decoded. 
-  - [ ] Stop playing when all songs are not playable.
+  - [x] Stop playing when all songs are not playable.
   - [x] Highlight the current playing track.
 - [ ] To highlight the last selected file or visited folder. 
-- [ ] To have a config yaml.
 - [ ] To highlight the previous folder after navigation to upper folder. 
-- [ ] To generate thumbnails when entering a gallery folder 
+- [ ] To have a config yaml.
 - [ ] A web-based local admin panel and a remote rich media browser.
 - [ ] Simple password protection.
-- [ ] Prompt to get Admin's confirmation to generate thumbnails of images/vidoes. This sounds unsafe, write operation from html access. 
-    1. To resize image to a thumbnail
-    2. https://github.com/xfrr/goffmpeg to extract first frame of video
-    3. Show a progress of above progress
-- [ ] Add a file size sorting option. For now files are sorted with newest modification time to oldest. 
-- [ ] Display file info in preview modal, such as Modification Time and File Size.
+- [ ] To generate thumbnails when entering a gallery folder 
+  1. To resize image to a thumbnail
+  2. https://github.com/xfrr/goffmpeg to extract first frame of video
+  3. Show a progress of above progress
+- [ ]: Add QR code in terminal when starting and web/home so mobile phone can scan it to open. 
 
 ### Work log
 
-#### 2022-10-08
+#### 2023-06-13
 
-- [ ]: Add endless scolling for all pages. Extract it to a common function. 
-- [ ]: Add prompt when running server in terminal, to select destination folder, to enable password.
-- [ ]: Add QR code when running server in terminal
-
-- [ ]: When the path is invalid, output the warning in the content body.
+- After Go version and fix the issue of not support "\` \`" syntax in new version go template. 
 
 #### 2022-04-12
 
 - Introduce a vitual dom scrolling library `clusterize.js` and combine with image `lazyload.js` to preview folders with huge number of images or videos. 
 Not only very few dom nodes within the view port are created, also the images are lazy loaded. Tested on iOS, Android phone and desktop Chrome, performance tests are improved dramatically for the latter two.
-- UI: Improve the skipped track style. Unify the height of primary items for folder, image, music and video.
-- [ ] Height of virtual list needs refactoring. Think about how the users are able to scroll to `Other files` section underneath.
+- Improve the skipped track style. Unify the height of primary items for folder, image, music and video.
 
 
-| Album Folder - Default View  | Album Folder - Music Player View | 
-| ------------- | ------------- | 
-| ![docs/images/2022-04-12-all.png](docs/images/2022-04-12-all.jpg)  | ![docs/images/2022-04-12-music.png](docs/images/2022-04-12-music.jpg) |
+  | Album Folder - Default View  | Album Folder - Music Player View | 
+  | ------------- | ------------- | 
+  | ![docs/images/2022-04-12-all.png](docs/images/2022-04-12-all.jpg)  | ![docs/images/2022-04-12-music.png](docs/images/2022-04-12-music.jpg) |
 
 
 #### 2022-04-11
@@ -99,7 +92,6 @@ Not only very few dom nodes within the view port are created, also the images ar
 - Update the Preview Modal.
 - Finish view of music player. Playing track is highlighted in the list. Change the player position to bottom fix.
 
-  ![docs/images/2022-03-17-music-player-ios.png](docs/images/2022-03-17-music-player-ios.png)
 #### 2022-03-16
 
 - Refactor template modules. 
@@ -119,9 +111,9 @@ Not only very few dom nodes within the view port are created, also the images ar
 
 - Add the preview modal for images and videos in the default view and in the image video view.
 
-| Image Video view  | Preview modal for image | Preview modal for video |
-| ------------- | ------------- | ------------- |
-| ![docs/images/2022-03-14-image-video.png](docs/images/2022-03-14-image-video.png)  | ![docs/images/2022-03-14-image-video-preview-modal.png](docs/images/2022-03-14-image-video-preview-modal.png) | ![docs/images/2022-03-14-video-preview-mobile.png](docs/images/2022-03-14-video-preview-mobile.png)  | 
+  | Image Video view  | Preview modal for image | Preview modal for video |
+  | ------------- | ------------- | ------------- |
+  | ![docs/images/2022-03-14-image-video.png](docs/images/2022-03-14-image-video.png)  | ![docs/images/2022-03-14-image-video-preview-modal.png](docs/images/2022-03-14-image-video-preview-modal.png) | ![docs/images/2022-03-14-video-preview-mobile.png](docs/images/2022-03-14-video-preview-mobile.png)  | 
 
 
 
@@ -163,5 +155,6 @@ Not only very few dom nodes within the view port are created, also the images ar
 - Draft UI on commute.
 
   ![docs/images/2022-02-draft.jpg](docs/images/2022-02-draft.jpg)
+
 
 
