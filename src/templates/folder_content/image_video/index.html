@@ -1,0 +1,97 @@
+{{define "folder_content_image_video"}}
+<script>document.querySelector("#CategorySelector #Col-image-video").classList.add("active");</script>
+
+<section id="FolderContent" class="folder_content_image_and_video">
+{{ if gt .CountAll 0 }}
+    {{ $category := .Category }}
+    <div id="FolderContentHeader">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+            <h6 class="mt-1 mb-1">
+                <p>Image & Video <em>View</em></p>
+                <p class="text-secondary">{{.CountImageVideo}} files matched, and {{minus .CountAll .CountImageVideo}} not shown</p>
+            </h6>
+        </div>
+
+        <div id="FolderContentSorter" class="dropdown filter-type-container">
+            <button id="ImageVideoFilter" class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ if eq $category "video" }}Video{{ else if eq $category "image" }}Image{{ else }}Sort by{{ end }}
+            </button>
+            <ul id="ImageVideoFilterDroplist" class="dropdown-menu dropdown-menu-end" aria-labelledby="ImageVideoFilter">
+                <li><a class="dropdown-item" data-category="image-video" href="#">None</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class='dropdown-item {{ if eq $category "video" }}active{{ end }}' data-category="video" href="#"><span>Show Videos First</span><span class="badge bg-secondary">{{.CountVideo}}</span></a></li>
+                <li><a class='dropdown-item {{ if eq $category "image" }}active{{ end }}' data-category="image" href="#"><span>Show Images First</span><span class="badge bg-secondary">{{.CountImage}}</span></a></li>
+            </ul>
+        </div>
+    
+        <script>
+            const dropdownlist = [].slice.call(document.querySelectorAll("#FolderContentSorter ul li a"));
+            dropdownlist.forEach(link => link.addEventListener('click', () => {
+                window.location.href = window.location.pathname + "?category=" + link.getAttribute("data-category")
+                return false;
+            }, false))
+        </script>
+    </div>
+    
+    <div id="ImageVideoContainer" class="my-2 clusterize-scroll">
+        
+        {{ if eq .CountImageVideo 0 }}
+            <div class="empty-folder-placeholder mb-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+                <h4>No image or video files here.</h4>
+            </div>
+        {{ else }}
+            <div id="ImageVideoItems" class="clusterize-content">
+                <p class="nojs"><noscript>Please enable JavaScript to enable this view</noscript></p>
+            </div>
+
+            <script>window.ImageVideoRows = window.ImageVideoRows || [];</script>
+            {{ range $index, $value := .DisplayEntries }}
+                {{ if (eq $value.EntryType "image")  }}
+                    {{ template "folder_content_image_video_cell_image" dict    "IsCover" $value.IsCover    "UrlString" $value.UrlString    "Name" $value.Name    "LastName" $value.LastName    "HasThumbnail" $value.HasThumbnail}}
+                {{ else if (eq $value.EntryType "video") }}
+                    {{ template "folder_content_image_video_cell_video" dict    "UrlString" $value.UrlString    "Name" $value.Name    "FirstName" $value.FirstName    "LastName" $value.LastName    "HasThumbnail" $value.HasThumbnail}}
+                {{ end }}
+            {{ end }}
+            
+        {{ end }}
+    </div>
+
+    <script>
+    window.addEventListener("load", function(event) { 
+        if (window.ImageVideoRow && window.ImageVideoRow.length > 0) {
+            window.ImageVideoRows.push(`<div class="row row-cols-3">${window.ImageVideoRow.join("")}</div>`)
+        }
+        if (window.ImageVideoRows.length > 0) {
+            // Update max-height of ImageVideoContainer
+            const imageVideoContainer = document.querySelector("#ImageVideoContainer")
+            imageVideoContainer.style.maxHeight = window.innerHeight - imageVideoContainer.offsetTop + "px"
+            
+            window.clusterize = new Clusterize({
+                rows: window.ImageVideoRows,
+                scrollId: 'ImageVideoContainer',
+                contentId: 'ImageVideoItems',
+                callbacks: {
+                    clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
+                }
+            })
+        }
+    })
+    </script>
+
+    {{ template "preview_modal" }}
+
+{{ else }}
+    <div>
+        <a href="../" class="btn navigation-button navigation-back"><span class="icon arrow-up"></span></a>
+    </div>
+    <div class="empty-folder-placeholder my-4 border rounded-3 align-items-center justify-content-center p-3 py-6">
+        <h4>The folder is empty.</h4>
+    </div>
+{{ end }}
+</section>
+
+
+{{ end }}

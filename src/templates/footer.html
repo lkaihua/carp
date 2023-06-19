@@ -1,0 +1,21 @@
+{{define "footer"}}
+    <section id="Footer">
+      <div class="description"></div>
+    </section>
+</body>
+<script>
+(function(){
+  // To remove body class according to events
+  window.addEventListener("DOMContentLoaded", function(event) { 
+    // console.debug('DOM fully loaded and parsed'); 
+    document.body.classList.remove("event-dom-content-not-loaded");
+  });
+  window.addEventListener("load", function(event) { 
+    // console.debug('Page fully loaded');
+    document.body.classList.remove("event-body-not-loaded");
+    window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"})
+  });
+})();
+</script>
+</html>
+{{end}}
