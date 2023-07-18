@@ -1,4 +1,4 @@
-module github.com/lkaihua/carp-web-gallery
+module github.com/lkaihua/carp
 
 go 1.15
 

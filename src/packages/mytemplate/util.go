@@ -14,7 +14,9 @@ import (
  * Extension of Golang template functions
  */
 func readLocalFile(path string) (string, error) {
-	b, err := ioutil.ReadFile(filepath.Join("src", path))
+	b, err := ioutil.ReadFile(
+		filepath.Join("src", path)
+	)
 
 	return string(b), err
 }
