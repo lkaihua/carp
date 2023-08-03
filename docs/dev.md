@@ -25,8 +25,8 @@
 ### Work log
 
 #### 2023-08-03
-- [ ] Use channel to load at least 1-level sub folder's info. Otherwise it seems not quite useful.
-- [ ] move breadcrumb into frontend. 
+- [ ] Use channel to load at least 1-level sub folder's info. Otherwise it seems not quite useful if you can't peak into the folder, either in default view to show the content icon for the folder, or in media / music view to display a smart playlist. 
+- [ ] Use [virtuoso](https://virtuoso.dev/) to show items as the target is to handle very big files. 
 
 #### 2023-07-29
 - Add JSON format for directory list metadata. 
