@@ -1,33 +1,54 @@
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import viteLogo from '/vite.svg'
+import React, { useState } from 'react'
+import {signal} from "@preact/signals-react"
 import './app.css'
+import { Back } from './components/back/Back'
+import carpLogo from './assets/carplogo.svg'
+import carpLogo2 from './assets/image150.png'
+import {usePrevious} from "@uidotdev/usehooks";
 
 export function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
+
+  const count = signal(0)
+
+  const increment = () => {
+    count.value = count.value + 1
+  }
+
+  // A global state to show if the full screen player is on
+  const fullScreen = signal(false)
+
+  // Read from the global or call the JSON api
+  const dirList = signal(window.CARP_DIR_LIST || [])
+
+  const [dir, setDir] = useState('')
+  const previousDir = usePrevious(dir)
 
   return (
     <>
+      <Back />
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
         <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
+          <img src={carpLogo} className="logo" alt="carp logo" />
+          <img src={carpLogo2} className="logo" alt="carp logo" />
         </a>
       </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <h1>Carp</h1>
+      <span>{count}</span>
+      <div className="card">
+        <button onClick={increment}>
+          +
         </button>
+
+
         <p>
           Edit <code>src/app.jsx</code> and save to test HMR
         </p>
       </div>
-      <p class="read-the-docs">
+      <p className="read-the-docs">
         Click on the Vite and Preact logos to learn more
       </p>
     </>
   )
 }
+

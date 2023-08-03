@@ -24,6 +24,23 @@
 
 ### Work log
 
+#### 2023-08-03
+- [ ] Use channel to load at least 1-level sub folder's info. Otherwise it seems not quite useful.
+- [ ] move breadcrumb into frontend. 
+
+#### 2023-07-29
+- Add JSON format for directory list metadata. 
+- Add a summary of the sub folders (1-level depth).
+- Using `React` and `Radix-ui` to build `carp-web`.
+
+#### 2023-07-01
+- Separate codes into `carp-server` backend and `carp-web` frontend. 
+- Server is a http server to fulfill to page/file requests, and respond folder/file metadata in json format. 
+  - Refactor `carp-server/packages/carphttp/fs.go` and rebase it to go 1.20 package. Introduce `fs_deps.go` to solve the dependency issue when customerising `fs.go`.
+  - Create `carp-server/public/` folder. This folder will host the compiled `carp-web` javascript and other static assets.
+- Web is a pure browser side app to load folder/file metadata and render a list of folders, a grid table of images, and a player for media files. 
+  - Using `pnpm` and `vite` because they look compact and fast. 
+
 #### 2023-06-19
 
 - Fix video control bar not working by removeing dummy `source` element.
