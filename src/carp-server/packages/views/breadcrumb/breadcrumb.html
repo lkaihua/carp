@@ -1,8 +1,8 @@
 {{define "breadcrumb"}}
 
 <section id="TopBreadcrumb" class="shadow">
-{{ with .Breadcrumb }}
-    <ol class='item-list border-1'>
+
+    <ul class='item-list border-1'>
         {{ range $index, $value := . }}
         <li>
             <a class="dropdown-item btn d-block text-decoration-none" href="{{ $value.UrlString }}">
@@ -10,18 +10,20 @@
                     <span class='icon
                         {{- if eq $index 0 }} home {{- else if $value.IsCurrent }} folder {{ else }} folder-plus {{ end -}}
                     '></span>
-                    <span class="name">{{ .Name }}</span>
+                    <span class="name">
+                        {{- if eq $index 0 }} home {{ else }} {{ .Name }} {{ end -}}
+                    </span>
                 </span>
             </a>
         </li>
         {{ else }}
         <li> Ops! Nothing here. </li>
         {{ end }}
-    </ol>
-{{ end }}
+    </ul>
+
 </section>
 
 <style>
-{{ IncludeCSS "./carp-server/packages/carptemplate/breadcrumb.css" }}
+{{ IncludeCSS "./packages/views/breadcrumb/breadcrumb.css" }}
 </style>
 {{end}}

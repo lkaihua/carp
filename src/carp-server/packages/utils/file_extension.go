@@ -3,7 +3,7 @@ package utils
 import (
 	"strings"
 
-	"github.com/lkaihua/carp/src/carp-server/packages/types"
+	"github.com/lkaihua/carp/src/carp-server/packages/models"
 )
 
 var DefaultImages = []string{"jpg", "jpeg", "png", "gif", "tiff", "webp", "pic", "raw", "svg"}
@@ -24,23 +24,23 @@ func isExtension(filename string, exts *[]string) bool {
 	return false
 }
 
-func GetFileEntityType(filename string) types.EntryType {
+func GetFileEntityType(filename string) models.EntryType {
 	if isExtension(filename, &DefaultImages) {
-		return types.EntryTypeImage
+		return models.EntryTypeImage
 	}
 	if isExtension(filename, &DefaultVideos) {
-		return types.EntryTypeVideo
+		return models.EntryTypeVideo
 	}
 	if isExtension(filename, &DefaultAudios) {
-		return types.EntryTypeAudio
+		return models.EntryTypeAudio
 	}
 	if isExtension(filename, &DefaultText) {
-		return types.EntryTypeText
+		return models.EntryTypeText
 	}
 	if isExtension(filename, &DefaultBinary) {
-		return types.EntryTypeBinary
+		return models.EntryTypeBinary
 	}
-	return types.EntryTypeUnknown
+	return models.EntryTypeUnknown
 }
 
 func GetFirstAndLastName(fileName string) (string, string) {

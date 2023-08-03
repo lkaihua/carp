@@ -1,0 +1,31 @@
+{{define "header"}}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="content-language" content="en-us">
+    <title>{{ .Title }}</title>
+    <!-- <link rel="stylesheet" href="/public/css/bootstrap.min.css?public=1">
+    <link rel="stylesheet" href="/public/css/base.css?public=1">
+    <link rel="stylesheet" href="/public/css/top_breadcrumb.css?public=1">
+    <link rel="stylesheet" href="/public/css/category_selector.css?public=1">
+    <link rel="stylesheet" href="/public/css/folder_content.css?public=1">
+    <link rel="stylesheet" href="/public/css/preview_modal.css?public=1">
+    <link rel="stylesheet" href="/public/css/music_player.css?public=1">
+    <link rel="stylesheet" href="/public/css/video_js.css?public=1">
+    <script src="/public/scripts/bootstrap.bundle.min.js?public=1"></script>
+    <script src="/public/scripts/clusterize.min.js?public=1"></script>
+    <script src="/public/scripts/lazyload.js?public=1"></script>
+    <script src="/public/scripts/video.min.js?public=1"></script> -->
+</head>
+
+<script>window.CARP_DIR_LIST = window.CARP_DIR_LIST || {{ .DisplayEntries }};</script>
+
+<pre><code>
+{{ .DisplayEntries }}
+</code></pre>
+
+{{end}}

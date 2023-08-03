@@ -5,7 +5,7 @@
     overflow: hidden;
 }
 
-#TopBreadcrumb ol {
+#TopBreadcrumb ul {
     --breadcrumb-gap: 0.25rem;
     display: flex;
     gap: var(--breadcrumb-gap);
@@ -18,7 +18,7 @@
     margin: 0.5rem var(--section-margin-x) !important;
 }
 
-#TopBreadcrumb ol li {
+#TopBreadcrumb ul li {
     /* flex-grow: 1;
   flex-shrink: 1; */
     --btn-background-color: var(--bs-gray-200);
@@ -30,7 +30,9 @@
     max-width: min(300px, calc(50% - var(--breadcrumb-gap) / 2));
     /* height: 32px; */
     user-select: none;
+    list-style:none;
 }
+
 
 #TopBreadcrumb .btn-container {
     height: 32px;
@@ -52,37 +54,37 @@
     margin-left: 5px;
 }
 
-#TopBreadcrumb ol li.row-trailing-item {
+#TopBreadcrumb ul li.row-trailing-item {
     /* Let the trailing item to fulfill all the space until the row end */
     flex: 1 1 auto;
     /* max-width: 100%; */
     /* max-width: 75vw; */
 }
 
-#TopBreadcrumb ol li a {
+#TopBreadcrumb ul li a {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 }
 
-#TopBreadcrumb ol li a:active {
+#TopBreadcrumb ul li a:active {
     color: black;
     background: var(--bs-light);
 }
 
-#TopBreadcrumb ol li:first-child .btn-container {
+#TopBreadcrumb ul li:first-child .btn-container {
     justify-content: center;
 }
 
-#TopBreadcrumb ol li:first-child .btn-container .name {
+/* #TopBreadcrumb ul li:first-child .btn-container .name {
     display: none;
-}
+} */
 
-#TopBreadcrumb ol li:last-child.row-trailing-item {
+#TopBreadcrumb ul li:last-child.row-trailing-item {
     /* max-width: calc(70vw - 3rem); */
     flex: none;
 }
 
-#TopBreadcrumb ol li:last-child a {
+#TopBreadcrumb ul li:last-child a {
     --btn-background-color: white;
     padding: 1px;
     background-image: linear-gradient(var(--btn-background-color), var(--btn-background-color)), linear-gradient(30deg, var(--bs-red), var(--bs-blue));
@@ -91,10 +93,10 @@
     /* font-weight: bold; */
 }
 
-#TopBreadcrumb ol li:last-child a>span {
+#TopBreadcrumb ul li:last-child a>span {
     margin: 3px calc(0.5rem - 2px);
 }
 
-#TopBreadcrumb ol li:first-child.row-trailing-item a {
+#TopBreadcrumb ul li:first-child.row-trailing-item a {
     background-color: white;
 }

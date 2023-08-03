@@ -1,4 +1,4 @@
-package carptemplate
+package views
 
 import (
 	"strings"

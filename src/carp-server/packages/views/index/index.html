@@ -1,0 +1,17 @@
+{{define "index"}}
+
+<body class="event-dom-content-not-loaded event-body-not-loaded">
+    <section id="Header"></section>
+
+    <section id="HeaderInfo" class="hidden">
+        <h4> This is only visible to admin and will NOT be shown for other remote clients. </h4>
+        <div> Only visible in domain localhost and 127.0.0.1 for administration use. </div>
+        <p>Root folder path: {{ .Dir }} {{ .View }}</p>
+    </section>
+    
+    {{ template "breadcrumb" .Breadcrumb }}
+
+
+{{ template "footer" . }}
+
+{{end}}

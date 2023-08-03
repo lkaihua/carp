@@ -1,9 +1,9 @@
-// This file fixes the dependency issue when migrating `fs` from offical `http` to carp usage.
+// This file fixes the dependency issue when migrating `fs` from offical `net/http` to a custom `carphttp` package.
 package carphttp
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"net/http"
 	"runtime"
 )
@@ -38,7 +38,7 @@ var ParseTime = http.ParseTime
 
 // Alias logf
 func logf(r *Request, format string, args ...interface{}) {
-	fmt.Printf(format, args...)
+	log.Printf(format, args...)
 }
 
 // `safefilepath.FromFS`

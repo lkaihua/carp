@@ -1,4 +1,4 @@
-package carptemplate
+package views
 
 import (
 	"strings"
@@ -11,14 +11,15 @@ type BreadcrumbLevel struct {
 }
 
 // return all a list of upstream folder paths from the current folder path
+//
+// Happy Path
+// "/a/b/" =>  ["/a/", "/a/b/"]
+// "/a/b/c.png" => ["/a/", "/a/b/"]
+//
+// Corner cases
+// "/" =>  ["/"]
+// "/a//b/" => ["/a/", "/a/b/"]
 func Breadcrumb(path string) []BreadcrumbLevel {
-	// Happy Path
-	// "/a/b/" =>  ["/a/", "/a/b/"]
-	// "/a/b/c.png" => ["/a/", "/a/b/"]
-
-	// Corner cases
-	// "/" =>  ["/"]
-	// "/a//b/" => ["/a/", "/a/b/"]
 
 	levels := strings.Split(path, "/")
 	res := []BreadcrumbLevel{{Name: " ", UrlString: "/"}}

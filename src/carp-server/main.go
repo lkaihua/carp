@@ -1,22 +1,20 @@
 package main
 
 import (
+	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/lkaihua/carp/src/carp-server/packages/carphttp"
-	"github.com/lkaihua/carp/src/carp-server/packages/carptemplate"
-	"github.com/lkaihua/carp/src/carp-server/packages/types"
+	"github.com/lkaihua/carp/src/carp-server/packages/models"
 	"github.com/lkaihua/carp/src/carp-server/packages/utils"
+	"github.com/lkaihua/carp/src/carp-server/packages/views"
 )
 
 const defaultPort string = "8100"
-const defaultRootDir string = "./example_files/"
-const publicDir string = "./public/"
+const defaultRootDir string = "./example_root/"
 
 var rootDir string
 
@@ -44,35 +42,21 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
-// Serve a file
-func serveFile(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[serveFile]", r.URL.Path)
-	carphttp.ServeFile(w, r, rootDir+r.URL.Path)
-}
-
-// Serve a folder
-func serveFolder(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[serveFolder]", r.URL.Path)
-	carphttp.ServeFile(w, r, rootDir+r.URL.Path)
-}
-
-// Serve public static files for carp web UI
-func servePublic(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[servePublic]", r.URL.Path)
-	carphttp.ServeFile(w, r, publicDir+r.URL.Path)
-}
-
 func serverHandler(w http.ResponseWriter, r *http.Request) {
-	view := types.ViewTypeAll
+	// Add root dir as a Value in the new context in the http request
+	ctx := context.WithValue(r.Context(), "rootDir", rootDir)
+	r = r.WithContext(ctx)
+
+	var view models.ViewType
 
 	// Query strings can be used to force serving a file, a folder, or public assets of carp web UI
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if _, ok := queries["public"]; ok {
-			servePublic(w, r)
+			carphttp.ServePublic(w, r)
 			return
 		}
 		if _, ok := queries["file"]; ok {
-			serveFile(w, r)
+			carphttp.Serve(w, r)
 			return
 		}
 		// if value, ok := queries["category"]; ok {
@@ -80,38 +64,29 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 		// }
 
 		if views, ok := queries["view"]; ok {
-			switch strings.ToLower(views[0]) {
-			case types.ViewTypeImageVideo.String():
-				view = types.ViewTypeImageVideo
-			case types.ViewTypeMusic.String():
-				view = types.ViewTypeMusic
-			}
+			view = models.GetViewType(views[0])
 		}
 
 	}
 
-	fmt.Println("[indexHandler] output html <body> for: ", r.URL.Path)
-	// Html Body
-	serveFolder(w, r)
+	// This can redirect if the url does not end with "/" and therefor put in the beginning of output sequence
+	carphttp.Serve(w, r)
 
-	breadcrumb := carptemplate.Breadcrumb(r.URL.Path)
+	// Stop rendering if the request format is json
+	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
+		if formats, ok := queries["format"]; ok {
+			if models.GetOutputFormat(formats[0]) == models.JsonFormat {
+				return
+			}
+		}
+	}
 
-	// categories := []mytemplate.Category{
-	// 	{Value: "all", DisplayText: "All"},
-	// 	{Value: "image-video", DisplayText: "Image & Video"},
-	// 	{Value: "music", DisplayText: "Music"},
-	// }
-
-	// Html Header
-	fmt.Println("[indexHandler] output html <header> for: ", r.URL.Path)
-	carptemplate.Index(w, carptemplate.IndexView{
-		Title:      "Carp-" + r.URL.Path,
+	// fmt.Println("[indexHandler] output html <body> for: ", r.URL.Path)
+	// Output the rest of the page
+	breadcrumb := views.Breadcrumb(r.URL.Path)
+	views.Index(w, views.IndexView{
 		Dir:        rootDir,
 		Breadcrumb: breadcrumb,
 		View:       view,
 	})
-
-	// Html Footer
-	fmt.Println("[indexHandler] output html <footer> for: ", r.URL.Path)
-	// mytemplate.Footer(w)
 }

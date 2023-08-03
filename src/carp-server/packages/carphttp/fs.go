@@ -2,7 +2,7 @@
 //// https://cs.opensource.google/go/go/+/refs/tags/go1.20.6:src/net/http/fs.go
 ////
 //// All modifications are marked with "// //CARP".
-//// Dependecies are moved to fs_deps.go
+//// Dependencies are moved to fs_deps.go
 
 // Copyright 2009 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style

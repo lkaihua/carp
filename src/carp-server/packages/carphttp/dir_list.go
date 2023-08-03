@@ -2,13 +2,12 @@ package carphttp
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
+	"log"
 	"net/url"
 	"strings"
 
-	"github.com/lkaihua/carp/src/carp-server/packages/carptemplate"
-	"github.com/lkaihua/carp/src/carp-server/packages/types"
+	"github.com/lkaihua/carp/src/carp-server/packages/models"
 	"github.com/lkaihua/carp/src/carp-server/packages/utils"
 )
 
@@ -32,7 +31,7 @@ func htmlEscape(s string) string {
 }
 
 func outputDirList(w ResponseWriter, r *Request, dirs anyDirs) {
-	data := []types.DisplayEntry{}
+	data := []models.DisplayEntry{}
 
 	for i, n := 0, dirs.len(); i < n; i++ {
 		name := dirs.name(i)
@@ -49,20 +48,40 @@ func outputDirList(w ResponseWriter, r *Request, dirs anyDirs) {
 		name = htmlEscape(name)
 
 		var firstName, lastName string
-		var entryType types.EntryType
+		var entryType models.EntryType
+		var children string
 
 		if isFolder {
-			entryType = types.EntryTypeFolder
+			entryType = models.EntryTypeFolder
 			firstName = name
 			lastName = "/" // Folder last name is always "/"
 			urlString += "/"
+
+			// let fetch children
+
+			// if depth := r.Context().Value("depth"); depth != nil {
+
+			// ctx := context.WithValue(r.Context(), "rootDir", rootDir)
+			// r = r.WithContext(ctx)
+
+			// rNew := r.Clone(r.Context())
+			// rNew.URL.Path += urlString
+			// 	// wNew := httptest.NewRecorder()
+			// 	var log bytes.Buffer
+			// 	// w1:= new ResponseWriter{}
+			// 	// Serve(&log, rNew)
+			// 	b, _ := ioutil.ReadAll(wNew.Result().Body)
+			// 	log.Println(b)
+			// 	children = string(b)
+			// }
+
 		} else {
 			entryType = utils.GetFileEntityType(name)
 			firstName, lastName = utils.GetFirstAndLastName(name)
 			urlString += "?file=" + entryType.String()
 		}
 
-		data = append(data, types.DisplayEntry{
+		data = append(data, models.DisplayEntry{
 			Name:          name,
 			FirstName:     firstName,
 			LastName:      lastName,
@@ -72,18 +91,36 @@ func outputDirList(w ResponseWriter, r *Request, dirs anyDirs) {
 			ModTimeUnix:   modTime.Unix(),
 			SizeString:    utils.ByteCountSI(size),
 			SizeInt:       size,
+			Children:      children,
 		})
 
 	}
 
 	displayEntries, err := json.Marshal(data)
 	if err != nil {
-		fmt.Println("[outputDirList] error in encoding json:", err)
+		log.Println("[outputDirList] error in encoding json:", err)
 		return
 	}
-	parsedTemplate, _ := carptemplate.LoadTemplates("dirlist")
 
-	parsedTemplate.ExecuteTemplate(w, "dirlist", template.JS(displayEntries))
+	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
+		if formats, ok := queries["format"]; ok {
+			if models.GetOutputFormat(formats[0]) == models.JsonFormat {
+				w.Header().Set("Content-Type", "application/json")
+				// w.Write([]byte(`{"data":`))
+				w.Write(displayEntries)
+				// w.Write([]byte(`}`))
+				return
+			}
+		}
+	}
 
-	// mytemplate.FolderContent(w, r, &data)
+	parsedTemplate, _ := utils.LoadTemplates("header")
+
+	parsedTemplate.ExecuteTemplate(w, "header", struct {
+		Title          string
+		DisplayEntries template.JS
+	}{
+		Title:          r.URL.Path,
+		DisplayEntries: template.JS(displayEntries),
+	})
 }
