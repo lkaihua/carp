@@ -69,7 +69,7 @@ func serverHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	// This can redirect if the url does not end with "/" and therefor put in the beginning of output sequence
+	// This can redirect if the url does not end with "/" and therefore put in the beginning of output sequence
 	carphttp.Serve(w, r)
 
 	// Stop rendering if the request format is json
