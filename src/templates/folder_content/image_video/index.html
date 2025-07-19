@@ -48,11 +48,11 @@
             </div>
 
             <script>window.ImageVideoRows = window.ImageVideoRows || [];</script>
-            {{ range $index, $value := .DisplayEntries }}
+            {{ range $index, $value := .DisplayItems }}
                 {{ if (eq $value.EntryType "image")  }}
-                    {{ template "folder_content_image_video_cell_image" dict    "IsCover" $value.IsCover    "UrlString" $value.UrlString    "Name" $value.Name    "LastName" $value.LastName    "HasThumbnail" $value.HasThumbnail}}
+                    {{ template "folder_content/image_video_cell_image" dict    "UrlString" $value.UrlString    "Name" $value.Name    "LastName" $value.LastName }}
                 {{ else if (eq $value.EntryType "video") }}
-                    {{ template "folder_content_image_video_cell_video" dict    "UrlString" $value.UrlString    "Name" $value.Name    "FirstName" $value.FirstName    "LastName" $value.LastName    "HasThumbnail" $value.HasThumbnail}}
+                    {{ template "folder_content_image_video_cell_video" dict    "UrlString" $value.UrlString    "Name" $value.Name    "FirstName" $value.FirstName    "LastName" $value.LastName }}
                 {{ end }}
             {{ end }}
             

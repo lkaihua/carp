@@ -1,17 +1,19 @@
 package mytemplate
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"path/filepath"
 
-	"github.com/lkaihua/carp-web-gallery/src/packages/mypath"
+	"github.com/lkaihua/carp/src/packages/mypath"
+	"github.com/lkaihua/carp/src/packages/utils"
 )
 
 type Category struct {
 	Value       string
 	DisplayText string
 }
+
 type IndexView struct {
 	Title      string
 	Dir        string
@@ -20,45 +22,29 @@ type IndexView struct {
 	// ActiveCategory string
 }
 
-func Index(w http.ResponseWriter, indexView *IndexView) {
-	templates := []string{
-		filepath.Join("src", "templates", "index.html"),
-		filepath.Join("src", "templates", "top_breadcrumb.html"),
-		filepath.Join("src", "templates", "category_selector.html"),
-		// filepath.Join("templates", "footer.html"),
+func Header(w http.ResponseWriter, indexView *IndexView) {
+	templates, err := utils.GetAllFiles(filepath.Join("src", "templates"), ".html")
+	if err != nil {
+		fmt.Println("[FolderContent] error in get all files for Template:", err)
+		return
 	}
 	parsedTemplate, err := NewTemplate().ParseFiles(templates...)
 	if err != nil {
-		// Log the detailed error
-		log.Println("[Index] template parse error:" + err.Error())
-		// Return a generic "Internal Server Error" message
-		http.Error(w, http.StatusText(500), 500)
+		fmt.Println("[FolderContent] Error reading templates folder:", err)
 		return
 	}
 
-	err = parsedTemplate.ExecuteTemplate(w, "index", indexView)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, http.StatusText(500), 500)
-	}
+	Render(w, parsedTemplate, "header", indexView)
 }
 
 func Footer(w http.ResponseWriter) {
-	templates := []string{
-		filepath.Join("src", "templates", "footer.html"),
-	}
-	parsedTemplate, err := NewTemplate().ParseFiles(templates...)
+	templates, err := utils.GetAllFiles(filepath.Join("src", "templates"), ".html")
+
 	if err != nil {
-		// Log the detailed error
-		log.Println("[Footer] template parse error:" + err.Error())
-		// Return a generic "Internal Server Error" message
-		http.Error(w, http.StatusText(500), 500)
+		fmt.Println("[FolderContent] error in get all files for Template:", err)
 		return
 	}
+	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
 
-	err = parsedTemplate.ExecuteTemplate(w, "footer", nil)
-	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, http.StatusText(500), 500)
-	}
+	Render(w, parsedTemplate, "footer", nil)
 }

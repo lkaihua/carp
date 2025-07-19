@@ -20,9 +20,9 @@
                 <h4>No music files here.</h4>
             </div>
         {{ else }}
-            {{ template "music_player" dict "CountMusic" .CountMusic    "HasCover" .HasCover    "Sticky" "top" }}
+            {{ template "music_player" dict "CountMusic" .CountMusic    "CoverImage" .CoverImage    "Sticky" "top" }}
             <ul id="MusicPlaylist" class="item-list mx-0 border-1">
-                {{ range .DisplayEntries }}
+                {{ range .DisplayItems }}
                     {{ if eq .EntryType "music" }}
                         <li>
                             <a class="item-primary item-entry-type-{{ .EntryType }}" 

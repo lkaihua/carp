@@ -1,13 +1,9 @@
-## What
+## Carp
 
-Carp Web Gallery
-
-Turning a folder into a gallery website to share your videos, songs and images in the local netwrok.
-
+Turning a folder into a website of photos, videos and songs.
 
 - Browser your local photos, videos and songs in a webpage.
 - Mobile and desktop friendly.
-- Password protected.
 
 
 ## Folder

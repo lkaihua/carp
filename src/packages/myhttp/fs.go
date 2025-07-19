@@ -1,9 +1,12 @@
-// HTTP file system request handler
-// Customized from Go's offical `HTTP file system request handler`.
-//
-// 1. Fix dependent function and const
-// 2. New functions to output HTML with templates
-// 3. Go's offical HTTP file system request handler
+/*
+ * HTTP file system request handler
+ *
+ * The file is mainly customized from Go's offical `HTTP file system request handler`,
+ * and can be divieded into three sections,
+ * 1. Added dependent `function`s and `const`s.
+ * 2. Added new functions to output HTML with templates.
+ * 3. Contains Go's offical HTTP file system request handler.
+ */
 
 package myhttp
 
@@ -24,24 +27,25 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lkaihua/carp-web-gallery/src/packages/mytemplate"
-	"github.com/lkaihua/carp-web-gallery/src/packages/types"
-	"github.com/lkaihua/carp-web-gallery/src/packages/utils"
+	"github.com/lkaihua/carp/src/packages/mytemplate"
+	"github.com/lkaihua/carp/src/packages/types"
+	"github.com/lkaihua/carp/src/packages/utils"
 )
 
-// ========== 1 ===========
-// Fix dependent function and const
+// ========== section 1 =============
+// Fixed dependent function and const
 
-func logf(r *http.Request, format string, args ...interface{}) {
+func logf(r *http.Request, format string, args ...any) {
+	fmt.Printf("[%s] %s: ", r.RemoteAddr, r.URL.Path)
 	fmt.Printf(format, args...)
 }
 
 const sniffLen = 512
 
-// ========================
+// ========== section 1 ends ============
 
-// ========== 2 ===========
-// New functions to output HTML with templates
+// ========== section 2 ===========
+// Added new functions to output HTML with templates
 
 type dirEntry struct {
 	UrlString string
@@ -65,7 +69,7 @@ type dirEntry struct {
 */
 
 func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
-	data := []mytemplate.DisplayEntry{}
+	data := []mytemplate.DisplayItem{}
 
 	htmlReplacer := strings.NewReplacer(
 		"&", "&amp;",
@@ -77,7 +81,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		"'", "&#39;",
 	)
 
-	thumbnailMap := make(map[string]string)
+	// thumbnailMap := make(map[string]string)
 
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
@@ -87,7 +91,6 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		// fmt.Println(name, "-", modTime, "-", size)
 		var firstName, lastName string
 		var entryType types.EntryType
-		var isCover, isThumbnail bool
 
 		if d.IsFolder {
 			lastName = "/"
@@ -95,7 +98,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			entryType = types.EntryTypeFolder
 			urlString += "/"
 		} else {
-			// It's legal file without any extention
+			// It's still a legal filename without any file extention
 			if lastDotIndex := strings.LastIndex(name, "."); lastDotIndex == -1 {
 				lastName = ""
 				firstName = name
@@ -115,54 +118,44 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			}
 
 			urlString += "?file=" + entryType.String()
-
-			if entryType == types.EntryTypeImage {
-				if firstName == "cover" {
-					isCover = true
-				}
-				if strings.HasSuffix(firstName, "_th") {
-					isThumbnail = true
-					thumbnailMap[strings.TrimSuffix(firstName, "_th")] = urlString
-				}
-			}
 		}
 
-		data = append(data, mytemplate.DisplayEntry{
+		data = append(data, mytemplate.DisplayItem{
 			Name:          name,
 			FirstName:     firstName,
 			LastName:      lastName,
 			EntryType:     entryType,
 			UrlString:     urlString,
-			IsCover:       isCover,
-			IsThumbnail:   isThumbnail,
 			ModTimeString: d.ModTime.Format("2006-01-02 15:04"),
 			ModTimeUnix:   d.ModTime.Unix(),
 			SizeString:    utils.ByteCountSI(d.Size),
 			SizeInt:       d.Size,
 		})
-
 	}
 
-	// loop again for the image to find its thumbnail
-	if len(thumbnailMap) > 0 {
-		for index, displayEntry := range data {
-			if displayEntry.EntryType == types.EntryTypeImage ||
-				displayEntry.EntryType == types.EntryTypeVideo {
-				v, ok := thumbnailMap[displayEntry.FirstName]
-				if ok {
-					data[index].HasThumbnail = v
-				}
-			}
-		}
-	}
+	/*
+	 * loop again for the image to find its thumbnail
+	 */
+	// if len(thumbnailMap) > 0 {
+	// 	for index, displayEntry := range data {
+	// 		if displayEntry.EntryType == types.EntryTypeImage ||
+	// 			displayEntry.EntryType == types.EntryTypeVideo {
+	// 			v, ok := thumbnailMap[displayEntry.FirstName]
+	// 			if ok {
+	// 				data[index].HasThumbnail = v
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-	mytemplate.FolderContent(w, r, &data)
+	mytemplate.Folder(w, r, &data)
 }
 
-// ========================
+// ========== Section 2 ends =============
 
-// ========== 3 ===========
-// Go's offical HTTP file system request handler
+// ========== Section 3 ===========
+// Go's offical HTTP file system request handler, all changes are marked with comments
+// stariting with `CARP-COMMENTS`
 // ========================
 
 // Copyright 2009 The Go Authors. All rights reserved.
@@ -280,12 +273,17 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 
 	}
 
-	/*
+	/* CARP-COMMENTS
+	 *
 	 * Format dir info into HTML
 	 */
 	formatDirHtml(w, r, dirData)
 
 	// w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	/* CARP-COMMENTS
+	 * The following code is commented out because we will use `formatDirHtml` for outputting HTML.
+	 */
 	/*
 		fmt.Fprintf(w, "<ul>\n")
 		for _, d := range dirs {

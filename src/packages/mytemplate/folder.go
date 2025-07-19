@@ -6,14 +6,11 @@ import (
 	"net/url"
 	"path/filepath"
 
-	// "sort"
-
-	"github.com/lkaihua/carp-web-gallery/src/packages/types"
-	"github.com/lkaihua/carp-web-gallery/src/packages/utils"
+	"github.com/lkaihua/carp/src/packages/types"
+	"github.com/lkaihua/carp/src/packages/utils"
 )
 
 const template_folder string = "folder_content"
-const template_ext string = ".html"
 
 type ViewCategory string
 
@@ -29,44 +26,44 @@ func (v ViewCategory) String() string {
 	return string(v)
 }
 
-type DisplayEntry struct {
+type DisplayItem struct {
 	Name          string          `json:"name"`
 	EntryType     types.EntryType `json:"entryType"`
 	UrlString     string          `json:"urlString"`
 	FirstName     string          `json:"firstName"`
 	LastName      string          `json:"lastName"` // File extension string if it's a file, or "/" if it's a folder
-	IsCover       bool            `json:"isCover"`
-	IsThumbnail   bool            `json:"isThumbnail"`
 	ModTimeString string          `json:"modTimeString"`
 	ModTimeUnix   int64           `json:"modTimeUnix"`
 	SizeString    string          `json:"sizeString"`
 	SizeInt       int64           `json:"sizeInt"`
-	HasThumbnail  string          `json:"hasThumbnail"`
 }
 
-func FolderContent(w http.ResponseWriter, r *http.Request, entries *[]DisplayEntry) {
+type FolderContentData struct {
+	DisplayItems    []DisplayItem
+	Category        string
+	CountAll        int
+	CountImage      int
+	CountVideo      int
+	CountImageVideo int
+	CountMusic      int
+	CoverImage      string
+}
 
-	allTempaltes, err := utils.GetAllFiles(filepath.Join("src", "templates", template_folder), template_ext)
+func Folder(w http.ResponseWriter, r *http.Request, entries *[]DisplayItem) {
+
+	templates, err := utils.GetAllFiles(filepath.Join("src", "templates"), ".html")
 	if err != nil {
 		fmt.Println("[FolderContent] error in get all files for Template:", err)
 		return
 	}
-
-	templates := append([]string{
-		filepath.Join("src", "templates", "music_player"+template_ext),
-		filepath.Join("src", "templates", "preview_modal"+template_ext),
-	}, allTempaltes...)
 	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
 
 	countAll := len(*entries)
 	countTypeMap := make(map[types.EntryType]int)
-	hasCover := ""
+	coverImage := ""
 	currentImageUrl := ""
 	for _, v := range *entries {
 		countTypeMap[v.EntryType] += 1
-		if v.IsCover {
-			hasCover = v.UrlString
-		}
 		if v.EntryType == types.EntryTypeImage {
 			currentImageUrl = v.UrlString
 		}
@@ -78,7 +75,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, entries *[]DisplayEnt
 
 	if countImage == 1 {
 		// If only one image, use it as the cover for image&video and album
-		hasCover = currentImageUrl
+		coverImage = currentImageUrl
 	}
 
 	template_name := Default.String()
@@ -133,7 +130,7 @@ func FolderContent(w http.ResponseWriter, r *http.Request, entries *[]DisplayEnt
 	}
 
 	// Group by category
-	highEntries, lowEntries := make([]DisplayEntry, 0), make([]DisplayEntry, 0)
+	highEntries, lowEntries := make([]DisplayItem, 0), make([]DisplayItem, 0)
 	for _, entry := range *entries {
 		if entry.EntryType == highRankEntityType {
 			highEntries = append(highEntries, entry)
@@ -144,30 +141,15 @@ func FolderContent(w http.ResponseWriter, r *http.Request, entries *[]DisplayEnt
 	finalEntries := append(highEntries, lowEntries...)
 
 	template_name = template_folder + "_" + template_name
-	fmt.Println("[FolderContent] template is:", template_name)
 
-	err = parsedTemplate.ExecuteTemplate(w, template_name, struct {
-		DisplayEntries  []DisplayEntry
-		Category        string
-		CountAll        int
-		CountImage      int
-		CountVideo      int
-		CountImageVideo int
-		CountMusic      int
-		HasCover        string
-	}{
-		DisplayEntries:  finalEntries,
+	Render(w, parsedTemplate, template_name, FolderContentData{
+		DisplayItems:    finalEntries,
 		Category:        category,
 		CountAll:        countAll,
 		CountImage:      countImage,
 		CountVideo:      countVideo,
 		CountImageVideo: countImageVideo,
 		CountMusic:      countMusic,
-		HasCover:        hasCover,
+		CoverImage:      coverImage,
 	})
-
-	if err != nil {
-		fmt.Println("[FolderContent] error in execute Template:", template_name, err)
-		http.Error(w, http.StatusText(500), 500)
-	}
 }

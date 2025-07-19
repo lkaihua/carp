@@ -23,7 +23,7 @@
 
     
 
-    {{ with .DisplayEntries }}
+    {{ with .DisplayItems }}
     <script>
     window.EntryRows = window.EntryRows || [];
     window.EntryRow = window.EntryRow || [];
@@ -74,8 +74,8 @@
                                 'data-bs-entry-type="{{.EntryType}}"',
                             '>',
                                 '{{ $previewImageUrl := .UrlString }}',
-                                '{{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}',
-                                '<img data-src="{{$previewImageUrl}}" class="image-preview lazyload" />',
+                                {{/* '{{ if .HasThumbnail }}{{ $previewImageUrl = .HasThumbnail }}{{ end }}', */}}
+                                '<img data-src="{{$previewImageUrl}}" class="image-preview lazy" />',
                             '</button>',
                         ].join(""));
                     </script>
@@ -91,7 +91,7 @@
                                 'data-bs-entry-type="{{.EntryType}}"',
                             '> ',
                                 '<span class="pos-relative music-preview rounded border-1 flex-center">',
-                                    '{{ if .HasThumbnail }}<img data-src="{{.HasThumbnail}}" class="image-preview lazyload" />{{ end }}',
+                                    {{/* '{{ if .HasThumbnail }}<img data-src="{{.HasThumbnail}}" class="image-preview lazy" />{{ end }}', */}}
                                     '<span class="pos-absolute-max flex-center">',
                                         '<span class="icon music-note"></span>',
                                     '</span>',
@@ -101,9 +101,9 @@
                         
                     </script>
                 {{ else if eq .EntryType "video" }}
-                    
-                        window.EntryRows.push([
-                            <button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
+                    <script>
+                        window.EntryRows.push(
+                            `<button type="button" class="btn border rounded btn-preview btn-preview-{{- .EntryType }}"
                                 data-bs-toggle="modal" data-bs-target="#PreviewModal" 
                                 data-bs-url-string="{{.UrlString}}"
                                 data-bs-name="{{.Name}}"
@@ -112,15 +112,15 @@
                                 data-bs-entry-type="{{.EntryType}}"
                             >   
                                 <span class="pos-relative video-preview rounded border-1 flex-center">
-                                    {{ if .HasThumbnail }}
-                                    <img data-src="{{.HasThumbnail}}" class="video-preview lazyload" />
-                                    {{ end }}
+                                    {{/* {{ if .HasThumbnail }}
+                                    <img data-src="{{.HasThumbnail}}" class="video-preview lazy" />
+                                    {{ end }} */}}
                                     <span class="pos-absolute-max flex-center">
                                         <span class="icon video-play"></span>
                                     </span>
                                 </span>
-                            </button>
-                        `);
+                            </button>`
+                        );
                     </script>
                 {{ end }}
                 <script>
@@ -150,7 +150,7 @@
         //         scrollId: 'ImageVideoContainer',
         //         contentId: 'ImageVideoItems',
         //         callbacks: {
-        //             clusterChanged: () => window.lazyload && window.lazyload(document.querySelectorAll(".lazyload"), {rootMargin: "25%"}),
+        //             clusterChanged: () => window.lazy && window.lazy(document.querySelectorAll(".lazy"), {rootMargin: "25%"}),
         //         }
         //     })
         // })

@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/lkaihua/carp-web-gallery/src/packages/myhttp"
-	"github.com/lkaihua/carp-web-gallery/src/packages/mypath"
-	"github.com/lkaihua/carp-web-gallery/src/packages/mytemplate"
-	"github.com/lkaihua/carp-web-gallery/src/packages/utils"
+	"github.com/lkaihua/carp/src/packages/myhttp"
+	"github.com/lkaihua/carp/src/packages/mypath"
+	"github.com/lkaihua/carp/src/packages/mytemplate"
+	"github.com/lkaihua/carp/src/packages/utils"
 )
 
 var rootDir string
@@ -106,7 +106,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		Categories: categories,
 	}
 	// Html Header
-	mytemplate.Index(w, &indexView)
+	mytemplate.Header(w, &indexView)
 
 	// Html Body
 	myhttp.ServeFile(w, r, rootDir+r.URL.Path)
