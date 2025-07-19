@@ -6,17 +6,15 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/lkaihua/carp/src/packages/myhttp"
-	"github.com/lkaihua/carp/src/packages/mypath"
-	"github.com/lkaihua/carp/src/packages/mytemplate"
 	"github.com/lkaihua/carp/src/packages/utils"
 )
 
 var rootDir string
 var staticDir string = "src/static/"
 
+// Let's start a file server that returns the current folder content in JSON format
 func main() {
 	/*
 		Serve is a very simple static file server in go
@@ -46,71 +44,15 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path
 	myhttp.ServeFile(w, r, rootDir+filePath)
 }
-func serveStatic(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[serveStatic]", r.URL.Path)
-	filePath := strings.TrimPrefix(r.URL.Path, "/static/")
-	myhttp.ServeFile(w, r, staticDir+filePath)
-}
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	// activeCategory := "all"
 
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
-		if _, ok := queries["static"]; ok {
-			serveStatic(w, r)
-			return
-		}
 		if _, ok := queries["file"]; ok {
 			serveFile(w, r)
 			return
 		}
-		// if value, ok := queries["category"]; ok {
-		// 	activeCategory = value[0]
-		// }
 	}
 
-	/*
-		// lp := filepath.Join("templates", "list.html")
-		// bp := filepath.Join("templates", "body.html")
-		// fp := filepath.Join("templates", filepath.Clean(r.URL.Path))
-
-		// Return a 404 if the template doesn't exist
-		info, err := os.Stat(fp)
-		if err != nil {
-			if os.IsNotExist(err) {
-				http.NotFound(w, r)
-				return
-			}
-		}
-		// Return a 404 if the request is for a directory
-		if info.IsDir() {
-			http.NotFound(w, r)
-			return
-		}
-	*/
-
-	breadcrumb := mypath.Breadcrumb(r.URL.Path)
-	// save point: 2022-03-05
-	// next step: each breadcrumb should have one its Name and Path
-
-	categories := []mytemplate.Category{
-		{Value: "all", DisplayText: "All"},
-		{Value: "image-video", DisplayText: "Image & Video"},
-		{Value: "music", DisplayText: "Music"},
-	}
-
-	indexView := mytemplate.IndexView{
-		Title:      "Carp - " + r.URL.Path,
-		Dir:        rootDir,
-		Breadcrumb: breadcrumb,
-		Categories: categories,
-	}
-	// Html Header
-	mytemplate.Header(w, &indexView)
-
-	// Html Body
 	myhttp.ServeFile(w, r, rootDir+r.URL.Path)
-
-	// Html Footer
-	mytemplate.Footer(w)
 }
