@@ -50,9 +50,11 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if _, ok := queries["file"]; ok {
 			serveFile(w, r)
+			log.Printf("Serving file: %s", r.URL.Path)
 			return
 		}
 	}
 
+	log.Printf("Serving: %s", rootDir+r.URL.Path)
 	myhttp.ServeFile(w, r, rootDir+r.URL.Path)
 }

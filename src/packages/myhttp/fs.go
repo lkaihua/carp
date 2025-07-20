@@ -48,11 +48,11 @@ const sniffLen = 512
 // Added new functions to output HTML with templates
 
 type dirEntry struct {
-	UrlString string
-	IsFolder  bool
-	Name      string // Full string of hanlder
-	Size      int64
-	ModTime   time.Time
+	Url      string
+	IsFolder bool
+	Name     string // Full string of hanlder
+	Size     int64
+	ModTime  time.Time
 }
 
 /*
@@ -85,7 +85,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
-		urlString := d.UrlString
+		url := d.Url
 		// modTime := d.ModTime
 		// size := d.Size
 		// fmt.Println(name, "-", modTime, "-", size)
@@ -96,7 +96,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			lastName = "/"
 			firstName = name
 			entryType = types.EntryTypeFolder
-			urlString += "/"
+			url += "/"
 		} else {
 			// It's still a legal filename without any file extention
 			if lastDotIndex := strings.LastIndex(name, "."); lastDotIndex == -1 {
@@ -116,20 +116,18 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			} else {
 				entryType = types.EntryTypeDefault
 			}
-
-			urlString += "?file=" + entryType.String()
 		}
 
 		data = append(data, mytemplate.DisplayItem{
-			Name:          name,
-			FirstName:     firstName,
-			LastName:      lastName,
-			EntryType:     entryType,
-			UrlString:     urlString,
-			ModTimeString: d.ModTime.Format("2006-01-02 15:04"),
-			ModTimeUnix:   d.ModTime.Unix(),
-			SizeString:    utils.ByteCountSI(d.Size),
-			SizeInt:       d.Size,
+			Name:        name,
+			FirstName:   firstName,
+			LastName:    lastName,
+			EntryType:   entryType,
+			UrlString:   url,
+			ModTime:     d.ModTime.Format("2006-01-02 15:04"),
+			ModTimeUnix: d.ModTime.Unix(),
+			Size:        utils.ByteCountSI(d.Size),
+			SizeInt:     d.Size,
 		})
 	}
 
@@ -244,6 +242,7 @@ type File interface {
 }
 
 func dirList(w http.ResponseWriter, r *http.Request, f File) {
+	logf(r, "dirList: %v \n", r.URL.Path)
 	dirs, err := f.Readdir(-1)
 	if err != nil {
 		logf(r, "http: error reading directory: %v", err)
@@ -264,11 +263,11 @@ func dirList(w http.ResponseWriter, r *http.Request, f File) {
 		urlString := url.String()
 
 		dirData = append(dirData, dirEntry{
-			Name:      name,
-			UrlString: urlString,
-			IsFolder:  d.IsDir(),
-			Size:      d.Size(),
-			ModTime:   d.ModTime(),
+			Name:     name,
+			Url:      urlString,
+			IsFolder: d.IsDir(),
+			Size:     d.Size(),
+			ModTime:  d.ModTime(),
 		})
 
 	}

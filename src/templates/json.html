@@ -1,0 +1,17 @@
+{{define "folder_content_default"}}
+{{/*
+  json.html - outputs file info as JSON
+  Usage: pass a slice of structs (e.g. []FileInfo) as .Files
+*/}}
+[
+{{- range $i, $f := .Files }}
+  {{- if $i}},{{end}}
+  {
+    "Name": "{{$f.Name}}",
+    "Size": {{$f.SizeString}},
+    "IsDir": {{$f.IsDir}},
+    "ModTime": "{{$f.ModTime}}"
+  }
+{{- end }}
+]
+{{end}}

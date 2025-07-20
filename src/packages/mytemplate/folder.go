@@ -1,13 +1,12 @@
 package mytemplate
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
-	"path/filepath"
 
 	"github.com/lkaihua/carp/src/packages/types"
-	"github.com/lkaihua/carp/src/packages/utils"
 )
 
 const template_folder string = "folder_content"
@@ -15,11 +14,9 @@ const template_folder string = "folder_content"
 type ViewCategory string
 
 const (
-	Default    ViewCategory = "default"
-	Image      ViewCategory = "image"
-	Video      ViewCategory = "video"
-	ImageVideo ViewCategory = "image_video"
-	Music      ViewCategory = "music"
+	Default ViewCategory = "default"
+	Photo   ViewCategory = "photo"
+	Music   ViewCategory = "music"
 )
 
 func (v ViewCategory) String() string {
@@ -27,45 +24,40 @@ func (v ViewCategory) String() string {
 }
 
 type DisplayItem struct {
-	Name          string          `json:"name"`
-	EntryType     types.EntryType `json:"entryType"`
-	UrlString     string          `json:"urlString"`
-	FirstName     string          `json:"firstName"`
-	LastName      string          `json:"lastName"` // File extension string if it's a file, or "/" if it's a folder
-	ModTimeString string          `json:"modTimeString"`
-	ModTimeUnix   int64           `json:"modTimeUnix"`
-	SizeString    string          `json:"sizeString"`
-	SizeInt       int64           `json:"sizeInt"`
+	Name        string          `json:"name"`
+	EntryType   types.EntryType `json:"entryType"`
+	UrlString   string          `json:"urlString"`
+	FirstName   string          `json:"firstName"`
+	LastName    string          `json:"lastName"` // File extension string if it's a file, or "/" if it's a folder
+	ModTime     string          `json:"modTime"`
+	ModTimeUnix int64           `json:"modTimeUnix"`
+	Size        string          `json:"size"`
+	SizeInt     int64           `json:"sizeInt"`
 }
 
 type FolderContentData struct {
-	DisplayItems    []DisplayItem
-	Category        string
-	CountAll        int
-	CountImage      int
-	CountVideo      int
-	CountImageVideo int
-	CountMusic      int
-	CoverImage      string
+	DisplayItems    []DisplayItem `json:"displayItems"`
+	ViewCategory    string        `json:"viewCategory"`
+	CountAll        int           `json:"countAll"`
+	CountImage      int           `json:"countImage"`
+	CountVideo      int           `json:"countVideo"`
+	CountImageVideo int           `json:"countImageVideo"`
+	CountMusic      int           `json:"countMusic"`
+	CoverImage      []string      `json:"coverImage"`
 }
 
 func Folder(w http.ResponseWriter, r *http.Request, entries *[]DisplayItem) {
 
-	templates, err := utils.GetAllFiles(filepath.Join("src", "templates"), ".html")
-	if err != nil {
-		fmt.Println("[FolderContent] error in get all files for Template:", err)
-		return
-	}
-	parsedTemplate, _ := NewTemplate().ParseFiles(templates...)
-
 	countAll := len(*entries)
 	countTypeMap := make(map[types.EntryType]int)
-	coverImage := ""
-	currentImageUrl := ""
+	// an array of 4 to hold cover images
+	coverImage := []string{}
+
+	fmt.Println("countAll: ", countAll)
 	for _, v := range *entries {
 		countTypeMap[v.EntryType] += 1
-		if v.EntryType == types.EntryTypeImage {
-			currentImageUrl = v.UrlString
+		if v.EntryType == types.EntryTypeImage && len(coverImage) < 4 {
+			coverImage = append(coverImage, v.UrlString)
 		}
 	}
 	countImage := countTypeMap[types.EntryTypeImage]
@@ -73,41 +65,18 @@ func Folder(w http.ResponseWriter, r *http.Request, entries *[]DisplayItem) {
 	countImageVideo := countImage + countVideo
 	countMusic := countTypeMap[types.EntryTypeMusic]
 
-	if countImage == 1 {
-		// If only one image, use it as the cover for image&video and album
-		coverImage = currentImageUrl
-	}
-
-	template_name := Default.String()
-
 	// init all query parameters
-	category := ""
-	highRankEntityType := types.EntryTypeDefault
-	// sortby := ""
-	// highRankSortType := types.SortTypeDefault
+	viewCategory := Default.String()
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if categories, ok := queries["category"]; ok {
-			category = categories[0]
-
 			// sort data by category
-			switch category {
+			switch categories[0] {
 			case "music":
-				template_name = Music.String()
-				highRankEntityType = types.EntryTypeMusic
-			case "image":
-				template_name = ImageVideo.String()
-				highRankEntityType = types.EntryTypeImage
-			case "video":
-				template_name = ImageVideo.String()
-				highRankEntityType = types.EntryTypeVideo
-			case "image-video":
-				template_name = ImageVideo.String()
-			// case "text":
-			// categoryEntityType = types.EntryTypeText
-			case "all":
-				template_name = Default.String()
+				viewCategory = Music.String()
+			case "photo":
+				viewCategory = Photo.String()
 			default:
-				template_name = Default.String()
+				viewCategory = Default.String()
 			}
 		}
 		// if sortbys, ok := queries["sortby"]; ok {
@@ -129,27 +98,17 @@ func Folder(w http.ResponseWriter, r *http.Request, entries *[]DisplayItem) {
 		// }
 	}
 
-	// Group by category
-	highEntries, lowEntries := make([]DisplayItem, 0), make([]DisplayItem, 0)
-	for _, entry := range *entries {
-		if entry.EntryType == highRankEntityType {
-			highEntries = append(highEntries, entry)
-		} else {
-			lowEntries = append(lowEntries, entry)
-		}
-	}
-	finalEntries := append(highEntries, lowEntries...)
-
-	template_name = template_folder + "_" + template_name
-
-	Render(w, parsedTemplate, template_name, FolderContentData{
-		DisplayItems:    finalEntries,
-		Category:        category,
+	contentData := FolderContentData{
+		ViewCategory:    viewCategory,
 		CountAll:        countAll,
 		CountImage:      countImage,
 		CountVideo:      countVideo,
 		CountImageVideo: countImageVideo,
 		CountMusic:      countMusic,
 		CoverImage:      coverImage,
-	})
+		DisplayItems:    *entries,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(contentData)
 }
