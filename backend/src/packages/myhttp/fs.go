@@ -28,7 +28,7 @@ import (
 	"time"
 
 	"github.com/lkaihua/carp/src/packages/mytemplate"
-	"github.com/lkaihua/carp/src/packages/types"
+	types "github.com/lkaihua/carp/src/packages/types/proto"
 	"github.com/lkaihua/carp/src/packages/utils"
 )
 
@@ -69,7 +69,7 @@ type dirEntry struct {
 */
 
 func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
-	data := []mytemplate.DisplayItem{}
+	data := []*types.DisplayItem{}
 
 	htmlReplacer := strings.NewReplacer(
 		"&", "&amp;",
@@ -95,7 +95,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		if d.IsFolder {
 			lastName = "/"
 			firstName = name
-			entryType = types.EntryTypeFolder
+			entryType = types.EntryType_ENTRY_TYPE_FOLDER
 			url += "/"
 		} else {
 			// It's still a legal filename without any file extention
@@ -108,17 +108,17 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			}
 
 			if utils.IsImage(name) {
-				entryType = types.EntryTypeImage
+				entryType = types.EntryType_ENTRY_TYPE_IMAGE
 			} else if utils.IsVideo(name) {
-				entryType = types.EntryTypeVideo
+				entryType = types.EntryType_ENTRY_TYPE_VIDEO
 			} else if utils.IsMusic(name) {
-				entryType = types.EntryTypeMusic
+				entryType = types.EntryType_ENTRY_TYPE_MUSIC
 			} else {
-				entryType = types.EntryTypeDefault
+				entryType = types.EntryType_ENTRY_TYPE_DEFAULT
 			}
 		}
 
-		data = append(data, mytemplate.DisplayItem{
+		data = append(data, &types.DisplayItem{
 			Name:        name,
 			FirstName:   firstName,
 			LastName:    lastName,
@@ -146,7 +146,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 	// 	}
 	// }
 
-	mytemplate.Folder(w, r, &data)
+	mytemplate.Folder(w, r, data)
 }
 
 // ========== Section 2 ends =============

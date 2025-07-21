@@ -1,6 +1,0 @@
-[build]
-  cmd = ""
-  bin = "tmp/main"
-  full_bin = "APP_ENV=dev go run ./src/main/main.go -d ."
-  include_ext = ["go", "tpl", "tmpl", "html"]
-  exclude_dir = ["assets", "tmp", "vendor"]

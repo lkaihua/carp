@@ -47,6 +47,11 @@ func serveFile(w http.ResponseWriter, r *http.Request) {
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
+	// CORS headers
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
 	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
 		if _, ok := queries["file"]; ok {
 			serveFile(w, r)

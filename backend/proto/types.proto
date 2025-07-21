@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "github.com/lkaihua/carp/proto/types";
+
+enum EntryType {
+  ENTRY_TYPE_DEFAULT = 0;
+  ENTRY_TYPE_FOLDER  = 1;
+  ENTRY_TYPE_IMAGE   = 2;
+  ENTRY_TYPE_VIDEO   = 3;
+  ENTRY_TYPE_MUSIC   = 4;
+  ENTRY_TYPE_TEXT    = 5;
+}
+
+enum ViewCategory {
+  VIEW_CATEGORY_DEFAULT = 0;
+  VIEW_CATEGORY_PHOTO   = 1;
+  VIEW_CATEGORY_MUSIC   = 2;
+}
+
+message DisplayItem {
+  string name = 1;
+  EntryType entryType = 2;
+  string urlString = 3;
+  string firstName = 4;
+  string lastName = 5;
+  string modTime = 6;
+  int64 modTimeUnix = 7;
+  string size = 8;
+  int64 sizeInt = 9;
+}
+
+message ItemCount {
+  int32 countAll = 1;
+  int32 countImage = 2;
+  int32 countVideo = 3;
+  int32 countPhoto = 4;
+  int32 countMusic = 5;
+}
+
+message FolderContentData {
+  repeated DisplayItem displayItems = 1;
+  ViewCategory viewCategory = 2;
+  ItemCount itemCount = 3;
+  repeated string coverImage = 4;
+}
