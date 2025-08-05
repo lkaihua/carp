@@ -1,4 +1,8 @@
-# React + Vite
+# Frontend
+
+This folder is the front end package for carp. Starts with `scripts` in `package.json` commands. 
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

@@ -73,5 +73,5 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(contentData)
+	json.NewEncoder(w).Encode(&contentData)
 }

@@ -1,0 +1,31 @@
+# Taskfile.yml
+version: '3'
+
+tasks:
+  dev:
+    desc: Run dev server with air (auto-restart on code change)
+    cmds:
+      - |
+        if ! command -v air > /dev/null 2>&1; then
+          echo "❌ air is not installed. Run 'task install-air'"
+          exit 1
+        fi
+        air
+
+  install-air:
+    desc: Install air (live reload for Go)
+    cmds:
+      - go install github.com/cosmtrek/air@latest
+
+  proto:
+    desc: Generate Go and TypeScript code from proto files
+    cmds:
+      - bash scripts/gen.sh
+    # sources: When any .proto file or gen.sh is modified, this task becomes out-of-date (used if you run task --dry or add preconditions later).
+    sources:
+      - proto/**/*.proto
+      - scripts/gen.sh
+    # generates: Tells task what files this task is expected to produce. Helps with caching and incremental builds (if you enable them later).
+    generates:
+      - src/packages/types/**/*.go
+      - ../frontend/src/types/**/*.ts

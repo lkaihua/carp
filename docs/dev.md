@@ -24,6 +24,11 @@
 
 ### Work log
 
+#### 2025-08-03
+
+- Separate into backend and frontend. Add dev server.
+- [ ] add a task to release binary backend and compiled frontend assets.
+
 #### 2023-06-19
 
 - Fix video control bar not working by removeing dummy `source` element.
