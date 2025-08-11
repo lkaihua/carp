@@ -1,0 +1,18 @@
+.navbar {
+
+  .logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .navbar-group-breadcrumbs {
+    max-width: 100%;
+
+    .bp6-entity-title-title {
+      max-width: calc(100dvw - 80px);
+    }
+
+  }
+
+  .navbar-group-options {}
+}

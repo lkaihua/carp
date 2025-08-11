@@ -3,10 +3,11 @@ package mytemplate
 import (
 	"encoding/json"
 	"net/http"
-	"net/url"
 
 	types "github.com/lkaihua/carp/src/packages/types/proto"
 )
+
+const MAX_COVER_IMAGE_COUNT = 4
 
 func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem) {
 
@@ -16,48 +17,42 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 
 	for _, v := range entries {
 		countTypeMap[v.EntryType] += 1
-		if v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE && len(coverImage) < 4 {
+		if (v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE || v.EntryType == types.EntryType_ENTRY_TYPE_VIDEO) && len(coverImage) < MAX_COVER_IMAGE_COUNT {
 			coverImage = append(coverImage, v.UrlString)
 		}
 	}
 	countImage := countTypeMap[types.EntryType_ENTRY_TYPE_IMAGE]
 	countVideo := countTypeMap[types.EntryType_ENTRY_TYPE_VIDEO]
 	countPhoto := countImage + countVideo
-
 	countMusic := countTypeMap[types.EntryType_ENTRY_TYPE_MUSIC]
 
-	// init all query parameters
 	viewCategory := types.ViewCategory_VIEW_CATEGORY_DEFAULT
-	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
-		if categories, ok := queries["category"]; ok {
-			// sort data by category
-			switch categories[0] {
-			case "music":
-				viewCategory = types.ViewCategory_VIEW_CATEGORY_MUSIC
-			case "photo":
-				viewCategory = types.ViewCategory_VIEW_CATEGORY_PHOTO
-			default:
-				viewCategory = types.ViewCategory_VIEW_CATEGORY_DEFAULT
-			}
-		}
-		// if sortbys, ok := queries["sortby"]; ok {
-		// 	sortby = sortbys[0]
-		// 	switch sortby  {
-		// 	case "oldFirst":
-		// 		sort.SliceStable(data, func(i, j int) bool {
-		// 			return (*data)[i].ModTimeUnix < (*data)[j].ModTimeUnix
-		// 		})
-		// 	case "newFirst":
-		// 		sort.SliceStable(data, func(i, j int) bool {
-		// 			return (*data)[i].ModTimeUnix > (*data)[j].ModTimeUnix
-		// 		})
-		// 	case "ztoa":
-		// 	case "atoz": // by default `atoz``
-		// 	default:
-		// 	}
-
-		// }
+	if countPhoto > countAll/2 {
+		viewCategory = types.ViewCategory_VIEW_CATEGORY_MUSIC
+	} else if countMusic > countAll/2 {
+		viewCategory = types.ViewCategory_VIEW_CATEGORY_PHOTO
 	}
+
+	// init all query parameters
+	//if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
+	// if sortbys, ok := queries["sortby"]; ok {
+	// 	sortby = sortbys[0]
+	// 	switch sortby  {
+	// 	case "oldFirst":
+	// 		sort.SliceStable(data, func(i, j int) bool {
+	// 			return (*data)[i].ModTimeUnix < (*data)[j].ModTimeUnix
+	// 		})
+	// 	case "newFirst":
+	// 		sort.SliceStable(data, func(i, j int) bool {
+	// 			return (*data)[i].ModTimeUnix > (*data)[j].ModTimeUnix
+	// 		})
+	// 	case "ztoa":
+	// 	case "atoz": // by default `atoz``
+	// 	default:
+	// 	}
+
+	// }
+	//}
 
 	contentData := types.FolderContentData{
 		ViewCategory: viewCategory,

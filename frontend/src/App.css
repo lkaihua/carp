@@ -1,30 +1,71 @@
 #root {
-  {{/* max-width: 1280px; */}}
   margin: 0 auto;
-}
-
-.logo {
-  width: 24px;
-  height: 24px;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-.header-breadcrumbs {
-  height: auto;
-  margin: 0.5em;
-}
-
-.header-breadcrumbs .bp6-button {
-  font-size: 1em;
 }
 
 .card {
   padding: 2em;
+}
+
+.list-page {
+  width: 100vw;
+  height: 100vh;
+  /* fallback for old browsers */
+  width: 100dvw;
+  height: 100dvh;
+  /* preferred for modern browsers, usually 100vh is too large for mobile browsers */
+  overflow: hidden;
+}
+
+.list-content {
+  flex: 1 1 auto;
+  width: 100%;
+  height: calc(100dvh - 50px);
+  /* 50px for header */
+  overflow: hidden;
+}
+
+.list-item {}
+
+.list-item-link {
+  margin: 5px 6px;
+  padding-inline: 12px;
+  align-items: center;
+  height: 40px;
+
+  display: flex;
+  flex: 1 1 auto;
+
+  &&:hover {
+    text-decoration: none;
+
+    .list-item-title {
+      text-decoration: underline;
+    }
+  }
+
+  .bp6-entity-title {
+    gap: 12px;
+  }
+
+  .bp6-entity-title-icon-container .bp6-icon {
+    color: black;
+  }
+}
+
+.list-item-icon {
+  color: black;
+  display: none;
+}
+
+.list-item-subtitle {}
+
+.bp6-non-ideal-state-visual {
+  /* Fix the path inside svg gets cut off */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    overflow: visible;
+  }
 }

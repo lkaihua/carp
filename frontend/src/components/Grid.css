@@ -1,0 +1,31 @@
+/* .grid-item-card {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  && {
+    padding: 0;
+  }
+} */
+
+/* Use blueprint table styles plus our custom single-pixel divider rules */
+.grid-table {
+  width: 100%;
+  table-layout: fixed; /* keeps columns equal if you want */
+}
+
+/* make every cell have a 1px border; border-collapse: collapse ensures only one shared line */
+.grid-table .cell-container {
+  border-right: 1px solid var(--bp3-border-color, #d8dde6);
+  border-bottom: 1px solid var(--bp3-border-color, #d8dde6);
+
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  && {
+    padding: 0;
+  }
+}

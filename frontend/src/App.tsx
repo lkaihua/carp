@@ -1,153 +1,185 @@
-import { useEffect, useRef, useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Link, useNavigate, Navigate } from 'react-router-dom';
-import { useQuery, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { memo } from 'react';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 
-import { Breadcrumbs, BreadcrumbProps, Button, CardList, Card, Callout, Drawer, Tag, Icon, EntityTitle } from "@blueprintjs/core";
-import { FolderContentData } from './types/proto/types';
-import { Add, Download, FolderClose, FolderOpen, Home, Video } from "@blueprintjs/icons";
-// import VideoPlayer from "./components/VideoPlayer/VideoPlayer";
+import {
+  Divider,
+  EntityTitle,
+  Icon,
+  NonIdealState,
+  NonIdealStateIconSize,
+  Spinner,
+} from '@blueprintjs/core';
+import { Issue } from '@blueprintjs/icons';
+import { DisplayItem, FolderContentData } from './types/proto/types';
 
-import './App.css'
-import { getParentFolderPath } from './utils/getParentFolderPath';
-import { generateBreadcrumbs } from './utils/getBreadCrumbs';
-import { VideoPlayer } from './components/VideoPlayer';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
+
+import { useLocalStorage } from 'usehooks-ts';
+import './App.css';
+import { Box } from './components/Box';
+import { BoxCol } from './components/BoxCol';
+import { Grid } from './components/Grid';
+import { Header } from './components/Header';
 import { Photo } from './components/Photo';
+import { Video } from './components/Video';
+import { getParentFolderPath } from './utils/getParentFolderPath';
+import { usePathData } from './utils/usePathData';
+import { getIconForType } from './utils/getIconForType';
 
+const itemHeight = 50;
 
+const Row = memo(
+  ({
+    index,
+    style,
+    data,
+  }: {
+    index: number;
+    style: React.CSSProperties;
+    data: DisplayItem[];
+  }) => {
+    const item = data[index];
+    const icon = getIconForType(item.entryType);
 
-function HeaderBreadcrumbs({ segments }: { segments: string[] }) {
-  const breadcrumbs = generateBreadcrumbs(segments);
-  return <Breadcrumbs
-    className="header-breadcrumbs"
-    items={breadcrumbs}
-    breadcrumbRenderer={(props) => (<Link to={props.href ?? "/"}><EntityTitle icon={props.icon} title={props.text as string} ellipsize /></Link>)}
-  // currentBreadcrumbRenderer={(props) => (
-  //   <span className="bp3-breadcrumbs-current">{props.text}</span>
-  // )}
-  />
-}
+    return (
+      <div className="list-item" style={style}>
+        <Link to={item.urlString} className="list-item-link">
+          <EntityTitle
+            title={<span className="list-item-title">{item.firstName}</span>}
+            icon={icon}
+            ellipsize
+            subtitle={
+              <Box gap={10} className="list-item-subtitle">
+                {item.lastName !== '/' && (
+                  <>
+                    <code>{item.lastName}</code>
+                    <Box gap={4} style={{ alignItems: 'center' }}>
+                      <Icon icon="box" size={12} />
+                      <span>{item.size}</span>
+                    </Box>
+                  </>
+                )}
+                <Box gap={4} style={{ alignItems: 'center' }}>
+                  <Icon icon="time" size={12} />
+                  <span>{item.modTime}</span>
+                </Box>
+              </Box>
+            }
+          />
+        </Link>
+        <Divider />
+      </div>
+    );
+  },
+);
 
 function ListPage() {
   // const {path = ""} = useParams();
   const { pathname } = useLocation();
-  const segments = pathname.split("/").filter(Boolean); // removes empty strings
+  const segments = pathname.split('/').filter(Boolean); // removes empty strings
+  const parentFolderPath = getParentFolderPath(segments);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["list", pathname],
-    queryFn: async () => {
-      const baseUrl = `//192.168.1.192:8100${pathname}`;
+  // TODO: always try to scroll to the last active item
+  // const [lastActiveItem, setLastActiveItem] = useLocalStorage<string>(
+  //   'lastActiveItem',
+  //   segments.at(-1) || '',
+  // );
 
-      let headRes: Response;
-      try {
-        headRes = await fetch(baseUrl, { method: "HEAD" });
-      } catch (err) {
-        throw new Error(`HEAD request failed: ${err}`);
-      }
+  // Read the current path and the parent folder
+  const { data, isLoading, error } = usePathData(pathname);
+  const { data: parentFolderData } = usePathData(parentFolderPath);
+  const [activeView] = useLocalStorage<string>('activeView', 'list');
 
-      if (!headRes.ok) {
-        throw new Error(`HEAD request failed with status ${headRes.status}`);
-      }
+  if (isLoading)
+    return (
+      <NonIdealState
+        layout={'horizontal'}
+        icon={<Spinner />}
+        iconSize={NonIdealStateIconSize.STANDARD}
+        title="Loading ..."
+        description="Fetching data from the server"
+      />
+    );
+  if (error)
+    return (
+      <NonIdealState
+        layout={'horizontal'}
+        icon={<Issue size={NonIdealStateIconSize.STANDARD} />}
+        title="Error"
+        description={error.message}
+      />
+    );
 
-      const contentType = headRes.headers.get("Content-Type") || "";
-      console.log("Content-Type:", contentType);
+  let fileViewer: JSX.Element | null = null;
 
-      // Handle JSON
-      if (contentType.includes("application/json")) {
-        try {
-          const jsonRes = await fetch(baseUrl);
-          if (!jsonRes.ok) {
-            throw new Error(`GET request failed with status ${jsonRes.status}`);
-          }
-          return await jsonRes.json();
-        } catch (err) {
-          throw new Error(`Failed to fetch or parse JSON: ${err}`);
-        }
-      }
-
-      if (contentType.startsWith("video/") || contentType.includes("mpegurl")) {
-        return { videoUrl: baseUrl, type: contentType };
-      }
-
-      if (contentType.startsWith("image/")) {
-        return { imageUrl: baseUrl, type: contentType };
-      }
-
-      if (!!contentType) {
-        throw new Error(`Unsupported content type: ${contentType} `);
-      }
-      throw new Error("No content found");
-    },
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    retry: false,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
-
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <Callout intent="danger">Error: {error.message}</Callout>;
-
-  let fileContent: JSX.Element | null = null;
-
-  const parentFolderPath = getParentFolderPath(segments)
-  if ("videoUrl" in data) {
-    // return <VideoPlayer src={data.videoUrl} type={data.type} />;
-    // fileContent = <Drawer position='bottom' size="95%"
-    //   title={decodeURIComponent(segments.at(-1) ?? "")} usePortal icon={<Video />} onClose={() => {
-    //     navigate(getParentFolderPath(segments));
-    //   }} isOpen={true}>
-    //   <video src={data.videoUrl} controls autoPlay muted width="100%" />
-    // </Drawer>;
-    fileContent = (
-      <VideoPlayer src={data.videoUrl} onCloseNavigateTo={parentFolderPath} />
-    )
+  switch (data?.type) {
+    case 'video':
+      fileViewer = <Video src={data.url} parentFolderPath={parentFolderPath} />;
+      break;
+    case 'image':
+      fileViewer = <Photo src={data.url} parentFolderPath={parentFolderPath} />;
+      break;
+    case 'json':
+      break;
+    default:
+      break;
   }
 
-  if ("imageUrl" in data) {
-    fileContent = <Photo src={data.imageUrl} onCloseNavigateTo={parentFolderPath} />;
-  }
+  // display the current folder when the file viewer is open
+  const folderData =
+    data?.folder ?? parentFolderData?.folder ?? ({} as FolderContentData);
+
+  const { viewCategory, coverImage, displayItems } = folderData;
 
   let listContent: JSX.Element | null = null;
-  const { viewCategory, coverImage, displayItems } = data as FolderContentData;
   if (Array.isArray(displayItems)) {
     listContent = (
-      <CardList>
-        {
-          displayItems.map((item, idx) => (
-            <Card key={idx}>
-              <Link to={item.urlString}>{item.name}</Link>
-            </Card>
-          ))
+      <AutoSizer>
+        {({ height, width }) =>
+          activeView === 'list' ? (
+            <List
+              width={width}
+              height={height}
+              itemData={displayItems}
+              itemCount={displayItems.length}
+              itemSize={itemHeight}
+            >
+              {Row}
+            </List>
+          ) : (
+            <Grid
+              width={width}
+              height={height}
+              itemData={displayItems}
+              columnWidth={Math.floor(width / 3)}
+              columnCount={3}
+              rowHeight={200}
+            />
+          )
         }
-      </CardList>
+      </AutoSizer>
     );
   }
 
   return (
-    <div className="list-page">
-      <HeaderBreadcrumbs segments={segments} />
-      <div className="content">
-        {fileContent}
-        {listContent}
-      </div>
-    </div>
-  )
-
+    <BoxCol className="list-content">
+      {listContent}
+      <Box>{fileViewer}</Box>
+    </BoxCol>
+  );
 }
 
 function App() {
   return (
-    <div className="carp-app">
-      {/* <div>
-        <img src={logo} className="logo react" alt="React logo" />
-      </div> */}
-
+    <BoxCol className="list-page">
+      <Header />
       <Routes>
         <Route path="/" element={<ListPage />} />
         <Route path=":path/*" element={<ListPage />} />
       </Routes>
-    </div >
+    </BoxCol>
   );
 }
 
-export default App
+export default App;
