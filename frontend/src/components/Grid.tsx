@@ -74,6 +74,14 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
     }
   }
 
+  const content = (
+    <EntityTitle
+      className="grid-item-entity-title"
+      title={item.firstName}
+      subtitle={item.lastName != '/' ? item.lastName : ''}
+      ellipsize
+    />
+  );
   // TODO: preview 4 item for each folder
   // TODO: click the folder to open it, now the preview takes to much space
   return (
@@ -86,13 +94,13 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
           iconSize={NonIdealStateIconSize.STANDARD}
           icon={icon}
           title={
-            <Link to={item.urlString} className="grid-item-link">
-              <EntityTitle
-                className="grid-item-entity-title"
-                title={item.name}
-                ellipsize
-              />
-            </Link>
+            item.urlString ? (
+              <Link to={item.urlString} className="grid-item-link">
+                {content}
+              </Link>
+            ) : (
+              content
+            )
           }
         />
       )}

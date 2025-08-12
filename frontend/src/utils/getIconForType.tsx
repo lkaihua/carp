@@ -13,9 +13,11 @@ export function getIconForType(type: EntryType): IconName {
       return 'music';
     case EntryType.ENTRY_TYPE_TEXT:
       return 'document';
+    case EntryType.UNRECOGNIZED:
+      return 'help';
     case EntryType.ENTRY_TYPE_DEFAULT:
-    default: {
       return 'document';
-    }
+    default:
+      return 'document';
   }
 }

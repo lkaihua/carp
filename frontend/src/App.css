@@ -24,9 +24,10 @@
   overflow: hidden;
 }
 
-.list-item {}
+.list-item {
+}
 
-.list-item-link {
+.list-item-link-container {
   margin: 5px 6px;
   padding-inline: 12px;
   align-items: center;
@@ -34,14 +35,6 @@
 
   display: flex;
   flex: 1 1 auto;
-
-  &&:hover {
-    text-decoration: none;
-
-    .list-item-title {
-      text-decoration: underline;
-    }
-  }
 
   .bp6-entity-title {
     gap: 12px;
@@ -51,13 +44,23 @@
     color: black;
   }
 }
+.list-item-link {
+  &&:hover {
+    text-decoration: none;
+
+    .list-item-title {
+      text-decoration: underline;
+    }
+  }
+}
 
 .list-item-icon {
   color: black;
   display: none;
 }
 
-.list-item-subtitle {}
+.list-item-subtitle {
+}
 
 .bp6-non-ideal-state-visual {
   /* Fix the path inside svg gets cut off */

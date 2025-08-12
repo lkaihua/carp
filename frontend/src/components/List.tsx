@@ -16,32 +16,45 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const item = data[index];
   const icon = getIconForType(item.entryType);
 
+  const content = (
+    <EntityTitle
+      title={<span className="list-item-title">{item.firstName}</span>}
+      icon={icon}
+      ellipsize
+      subtitle={
+        <Box gap={10} className="list-item-subtitle">
+          {item.lastName !== '/' && (
+            <>
+              <code>{item.lastName}</code>
+              {item.size ? (
+                <Box gap={4} style={{ alignItems: 'center' }}>
+                  <Icon icon="box" size={12} />
+                  <span>{item.size}</span>
+                </Box>
+              ) : null}
+            </>
+          )}
+          {item.modTime ? (
+            <Box gap={4} style={{ alignItems: 'center' }}>
+              <Icon icon="time" size={12} />
+              <span>{item.modTime}</span>
+            </Box>
+          ) : null}
+        </Box>
+      }
+    />
+  );
   return (
     <div className="list-item" style={style}>
-      <Link to={item.urlString} className="list-item-link">
-        <EntityTitle
-          title={<span className="list-item-title">{item.firstName}</span>}
-          icon={icon}
-          ellipsize
-          subtitle={
-            <Box gap={10} className="list-item-subtitle">
-              {item.lastName !== '/' && (
-                <>
-                  <code>{item.lastName}</code>
-                  <Box gap={4} style={{ alignItems: 'center' }}>
-                    <Icon icon="box" size={12} />
-                    <span>{item.size}</span>
-                  </Box>
-                </>
-              )}
-              <Box gap={4} style={{ alignItems: 'center' }}>
-                <Icon icon="time" size={12} />
-                <span>{item.modTime}</span>
-              </Box>
-            </Box>
-          }
-        />
-      </Link>
+      <div className="list-item-link-container">
+        {item.urlString ? (
+          <Link to={item.urlString} className="list-item-link">
+            {content}
+          </Link>
+        ) : (
+          content
+        )}
+      </div>
       <Divider />
     </div>
   );
@@ -77,6 +90,7 @@ export const List = forwardRef<FixedSizeList, ListProps>(
           if (scrollOffset <= 10) {
             return;
           }
+          console.log('scrolling to active row index:', scrollOffset);
           setActiveRow(scrollOffset);
         }}
       >

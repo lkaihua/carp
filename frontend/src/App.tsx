@@ -10,7 +10,7 @@ import {
   Spinner,
 } from '@blueprintjs/core';
 import { Issue } from '@blueprintjs/icons';
-import { DisplayItem, FolderContentData } from './types/proto/types';
+import { DisplayItem, EntryType, FolderContentData } from './types/proto/types';
 
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -51,9 +51,11 @@ function ListPage() {
   const { data: parentFolderData } = usePathData(parentFolderPath);
 
   useEffect(() => {
-    console.log('Path changed:', location.pathname);
-    // everytime the path changes,
-
+    // console.log('Path changed:', location.pathname);
+    // console.log('Active row:', activeRow, activeView, listRef.current);
+    // TODO: now when the active view is changed, list/grid gets destroyed and recreated
+    // i.e. so the scrolling does not work
+    // need to find a way that we can wait for the ref gets re-created
     if (activeView === 'list' && listRef.current && activeRow > 0) {
       listRef.current.scrollTo(activeRow);
     }
@@ -103,38 +105,47 @@ function ListPage() {
   const folderData =
     data?.folder ?? parentFolderData?.folder ?? ({} as FolderContentData);
 
-  const { displayItems } = folderData;
+  const { displayItems = [] } = folderData;
 
-  let listContent: JSX.Element | null = null;
-  if (Array.isArray(displayItems)) {
-    listContent = (
-      <AutoSizer>
-        {({ height, width }) =>
-          activeView === 'list' ? (
-            <List
-              width={width}
-              height={height}
-              itemData={displayItems}
-              rowHeight={rowHeight}
-              ref={listRef}
-              setActiveRow={setActiveRow}
-            />
-          ) : (
-            <Grid
-              width={width}
-              height={height}
-              itemData={displayItems}
-              columnWidth={Math.floor(width / 3)}
-              columnCount={3}
-              rowHeight={200}
-              ref={gridRef}
-              setActiveRow={setActiveRow}
-            />
-          )
-        }
-      </AutoSizer>
-    );
+  if (displayItems.length === 0) {
+    displayItems.push({
+      name: 'Empty Folder',
+      entryType: EntryType.UNRECOGNIZED,
+      urlString: '',
+      firstName: 'This folder is empty.',
+      lastName: 'Empty Folder',
+      modTime: '',
+      modTimeUnix: 0,
+    } as DisplayItem);
   }
+
+  const listContent = (
+    <AutoSizer>
+      {({ height, width }) =>
+        activeView === 'list' ? (
+          <List
+            width={width}
+            height={height}
+            itemData={displayItems}
+            rowHeight={rowHeight}
+            ref={listRef}
+            setActiveRow={setActiveRow}
+          />
+        ) : (
+          <Grid
+            width={width}
+            height={height}
+            itemData={displayItems}
+            columnWidth={Math.floor(width / 3)}
+            columnCount={3}
+            rowHeight={200}
+            ref={gridRef}
+            setActiveRow={setActiveRow}
+          />
+        )
+      }
+    </AutoSizer>
+  );
 
   return (
     <BoxCol className="list-content">
