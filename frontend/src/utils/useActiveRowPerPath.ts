@@ -14,17 +14,17 @@ export function useActiveRowPerPath(currentPath: string, defaultIndex = 0) {
     {},
   );
 
-  const activeRowIndex = useMemo(
+  const activeRow = useMemo(
     () => activeRowMap[currentPath] ?? defaultIndex,
     [activeRowMap, currentPath, defaultIndex],
   );
 
-  const setActiveRowIndex = (index: number) => {
+  const setActiveRow = (index: number) => {
     setActiveRowMap((prev) => ({
       ...prev,
       [currentPath]: index,
     }));
   };
 
-  return [activeRowIndex, setActiveRowIndex] as const;
+  return [activeRow, setActiveRow] as const;
 }

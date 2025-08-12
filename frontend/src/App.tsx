@@ -38,28 +38,13 @@ function ListPage() {
   const parentFolderPath = getParentFolderPath(segments);
 
   const [activeView] = useLocalStorage<string>('activeView', 'list');
-  const [activeRowIndex, setActiveRowIndex] = useActiveRowPerPath(
+  const [activeRow, setActiveRow] = useActiveRowPerPath(
     `${currrentPath}::${activeView}`, // distinguish between list and grid views
     0,
   );
 
-  // const hasMountedRef = useRef(false);
   const listRef = useRef<ElementRef<typeof List>>(null);
   const gridRef = useRef<ElementRef<typeof Grid>>(null);
-
-  // TODO: I don't yet know how to persist the scroll position, for each path.
-  // useEffect(() => {
-  //   console.log(
-  //     'activeRowIndex:',
-  //     activeRowIndex,
-  //     listRef.current,
-  //     hasMountedRef.current,
-  //   );
-  //   if (listRef.current && hasMountedRef.current && activeRowIndex > 0) {
-  //     console.log('scrolling to active row index:', activeRowIndex);
-  //     listRef.current.scrollToItem(activeRowIndex, 'center'); // 'center', 'auto', or 'smart'
-  //   }
-  // }, [activeRowIndex]);
 
   // Read the current path and the parent folder
   const { data, isLoading, error } = usePathData(pathname);
@@ -69,13 +54,12 @@ function ListPage() {
     console.log('Path changed:', location.pathname);
     // everytime the path changes,
 
-    if (activeView === 'list' && listRef.current && activeRowIndex > 0) {
-      listRef.current.scrollToItem(activeRowIndex, 'start');
+    if (activeView === 'list' && listRef.current && activeRow > 0) {
+      listRef.current.scrollTo(activeRow);
     }
-    if (activeView === 'grid' && gridRef.current && activeRowIndex > 0) {
-      gridRef.current.scrollToItem({
-        rowIndex: activeRowIndex,
-        align: 'start',
+    if (activeView === 'grid' && gridRef.current && activeRow > 0) {
+      gridRef.current.scrollTo({
+        scrollTop: activeRow,
       });
     }
   }, [location.pathname]);
@@ -133,7 +117,7 @@ function ListPage() {
               itemData={displayItems}
               rowHeight={rowHeight}
               ref={listRef}
-              setActiveRowIndex={setActiveRowIndex}
+              setActiveRow={setActiveRow}
             />
           ) : (
             <Grid
@@ -144,7 +128,7 @@ function ListPage() {
               columnCount={3}
               rowHeight={200}
               ref={gridRef}
-              setActiveRowIndex={setActiveRowIndex}
+              setActiveRow={setActiveRow}
             />
           )
         }

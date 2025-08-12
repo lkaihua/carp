@@ -52,14 +52,11 @@ interface ListProps {
   height: number;
   itemData: DisplayItem[];
   rowHeight: number;
-  setActiveRowIndex: (rowIndex: number) => void;
+  setActiveRow: (rowIndex: number) => void;
 }
 
 export const List = forwardRef<FixedSizeList, ListProps>(
-  (
-    { width, height, itemData, rowHeight, setActiveRowIndex }: ListProps,
-    ref,
-  ) => {
+  ({ width, height, itemData, rowHeight, setActiveRow }: ListProps, ref) => {
     const hasMountedRef = useRef(false);
     return (
       <FixedSizeList
@@ -76,7 +73,11 @@ export const List = forwardRef<FixedSizeList, ListProps>(
             hasMountedRef.current = true;
             return;
           }
-          setActiveRowIndex(Math.floor(scrollOffset / rowHeight));
+          // Fix strange corner case when onScroll is triggered prematurely and overrides the value
+          if (scrollOffset <= 10) {
+            return;
+          }
+          setActiveRow(scrollOffset);
         }}
       >
         {Row}

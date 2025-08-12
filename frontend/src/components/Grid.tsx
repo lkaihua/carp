@@ -87,7 +87,11 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
           icon={icon}
           title={
             <Link to={item.urlString} className="grid-item-link">
-              <span className="grid-item-title">{item.name}</span>
+              <EntityTitle
+                className="grid-item-entity-title"
+                title={item.name}
+                ellipsize
+              />
             </Link>
           }
         />
@@ -104,7 +108,7 @@ interface GridProps {
   columnWidth?: number;
   rowHeight?: number;
   // onScroll?: ((props: GridOnScrollProps) => any) | undefined;
-  setActiveRowIndex: (rowIndex: number) => void;
+  setActiveRow: (rowIndex: number) => void;
 }
 
 export const Grid = forwardRef<FixedSizeGrid, GridProps>(
@@ -116,7 +120,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
       columnWidth = 100,
       rowHeight = 30,
       itemData,
-      setActiveRowIndex,
+      setActiveRow,
     }: GridProps,
     ref,
   ) => {
@@ -139,7 +143,11 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
             hasMountedRef.current = true;
             return;
           }
-          setActiveRowIndex(Math.floor(scrollTop / rowHeight));
+          // Fix strange corner case when onScroll is triggered prematurely and overrides the value
+          if (scrollTop <= 10) {
+            return;
+          }
+          setActiveRow(scrollTop);
         }}
       >
         {Cell}
