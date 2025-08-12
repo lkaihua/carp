@@ -1,27 +1,21 @@
-import {
-  Document,
-  FolderClose,
-  Media,
-  Music,
-  Video as VideoIocn,
-} from '@blueprintjs/icons';
+import { IconName } from '@blueprintjs/icons';
 import { EntryType } from '../types/proto/types';
 
-export function getIconForType(type: EntryType): JSX.Element {
+export function getIconForType(type: EntryType): IconName {
   switch (type) {
     case EntryType.ENTRY_TYPE_FOLDER:
-      return <FolderClose />;
+      return 'folder-close';
     case EntryType.ENTRY_TYPE_IMAGE:
-      return <Media />;
+      return 'media';
     case EntryType.ENTRY_TYPE_VIDEO:
-      return <VideoIocn />;
+      return 'video';
     case EntryType.ENTRY_TYPE_MUSIC:
-      return <Music />;
+      return 'music';
     case EntryType.ENTRY_TYPE_TEXT:
-      return <Document />;
+      return 'document';
     case EntryType.ENTRY_TYPE_DEFAULT:
     default: {
-      return <Document />;
+      return 'document';
     }
   }
 }

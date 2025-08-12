@@ -4,7 +4,7 @@ import logoMono from '../assets/logo-mono.png';
 export function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
   const crumbs: BreadcrumbProps[] = [];
 
-  let cumulativePath = '';
+  let cumulativePath = '/';
 
   // Add "Home" root
   crumbs.push({
@@ -15,7 +15,7 @@ export function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
 
   // Add path segments
   segments.forEach((segment, index) => {
-    cumulativePath += `/${segment}`;
+    cumulativePath += `${segment}/`;
 
     const isCurrent = index === segments.length - 1;
     crumbs.push({

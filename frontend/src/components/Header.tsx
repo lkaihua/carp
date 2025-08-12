@@ -51,7 +51,7 @@ export function Header() {
           />
           <Button
             intent="none"
-            icon="grid"
+            icon="grid-view"
             active={value === 'grid'}
             onClick={() => setValue('grid')}
           />

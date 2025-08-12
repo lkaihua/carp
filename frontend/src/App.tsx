@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { ElementRef, memo, useEffect, useRef } from 'react';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 
 import {
@@ -13,12 +13,12 @@ import { Issue } from '@blueprintjs/icons';
 import { DisplayItem, FolderContentData } from './types/proto/types';
 
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList as List } from 'react-window';
 
 import { useLocalStorage } from 'usehooks-ts';
 import './App.css';
 import { Box } from './components/Box';
 import { BoxCol } from './components/BoxCol';
+import { List } from './components/List';
 import { Grid } from './components/Grid';
 import { Header } from './components/Header';
 import { Photo } from './components/Photo';
@@ -26,70 +26,59 @@ import { Video } from './components/Video';
 import { getParentFolderPath } from './utils/getParentFolderPath';
 import { usePathData } from './utils/usePathData';
 import { getIconForType } from './utils/getIconForType';
+import { useActiveRowPerPath } from './utils/useActiveRowPerPath';
 
-const itemHeight = 50;
-
-const Row = memo(
-  ({
-    index,
-    style,
-    data,
-  }: {
-    index: number;
-    style: React.CSSProperties;
-    data: DisplayItem[];
-  }) => {
-    const item = data[index];
-    const icon = getIconForType(item.entryType);
-
-    return (
-      <div className="list-item" style={style}>
-        <Link to={item.urlString} className="list-item-link">
-          <EntityTitle
-            title={<span className="list-item-title">{item.firstName}</span>}
-            icon={icon}
-            ellipsize
-            subtitle={
-              <Box gap={10} className="list-item-subtitle">
-                {item.lastName !== '/' && (
-                  <>
-                    <code>{item.lastName}</code>
-                    <Box gap={4} style={{ alignItems: 'center' }}>
-                      <Icon icon="box" size={12} />
-                      <span>{item.size}</span>
-                    </Box>
-                  </>
-                )}
-                <Box gap={4} style={{ alignItems: 'center' }}>
-                  <Icon icon="time" size={12} />
-                  <span>{item.modTime}</span>
-                </Box>
-              </Box>
-            }
-          />
-        </Link>
-        <Divider />
-      </div>
-    );
-  },
-);
+const rowHeight = 50;
 
 function ListPage() {
   // const {path = ""} = useParams();
   const { pathname } = useLocation();
   const segments = pathname.split('/').filter(Boolean); // removes empty strings
+  const currrentPath = segments.join('/');
   const parentFolderPath = getParentFolderPath(segments);
 
-  // TODO: always try to scroll to the last active item
-  // const [lastActiveItem, setLastActiveItem] = useLocalStorage<string>(
-  //   'lastActiveItem',
-  //   segments.at(-1) || '',
-  // );
+  const [activeView] = useLocalStorage<string>('activeView', 'list');
+  const [activeRowIndex, setActiveRowIndex] = useActiveRowPerPath(
+    `${currrentPath}::${activeView}`, // distinguish between list and grid views
+    0,
+  );
+
+  // const hasMountedRef = useRef(false);
+  const listRef = useRef<ElementRef<typeof List>>(null);
+  const gridRef = useRef<ElementRef<typeof Grid>>(null);
+
+  // TODO: I don't yet know how to persist the scroll position, for each path.
+  // useEffect(() => {
+  //   console.log(
+  //     'activeRowIndex:',
+  //     activeRowIndex,
+  //     listRef.current,
+  //     hasMountedRef.current,
+  //   );
+  //   if (listRef.current && hasMountedRef.current && activeRowIndex > 0) {
+  //     console.log('scrolling to active row index:', activeRowIndex);
+  //     listRef.current.scrollToItem(activeRowIndex, 'center'); // 'center', 'auto', or 'smart'
+  //   }
+  // }, [activeRowIndex]);
 
   // Read the current path and the parent folder
   const { data, isLoading, error } = usePathData(pathname);
   const { data: parentFolderData } = usePathData(parentFolderPath);
-  const [activeView] = useLocalStorage<string>('activeView', 'list');
+
+  useEffect(() => {
+    console.log('Path changed:', location.pathname);
+    // everytime the path changes,
+
+    if (activeView === 'list' && listRef.current && activeRowIndex > 0) {
+      listRef.current.scrollToItem(activeRowIndex, 'start');
+    }
+    if (activeView === 'grid' && gridRef.current && activeRowIndex > 0) {
+      gridRef.current.scrollToItem({
+        rowIndex: activeRowIndex,
+        align: 'start',
+      });
+    }
+  }, [location.pathname]);
 
   if (isLoading)
     return (
@@ -130,7 +119,7 @@ function ListPage() {
   const folderData =
     data?.folder ?? parentFolderData?.folder ?? ({} as FolderContentData);
 
-  const { viewCategory, coverImage, displayItems } = folderData;
+  const { displayItems } = folderData;
 
   let listContent: JSX.Element | null = null;
   if (Array.isArray(displayItems)) {
@@ -142,11 +131,10 @@ function ListPage() {
               width={width}
               height={height}
               itemData={displayItems}
-              itemCount={displayItems.length}
-              itemSize={itemHeight}
-            >
-              {Row}
-            </List>
+              rowHeight={rowHeight}
+              ref={listRef}
+              setActiveRowIndex={setActiveRowIndex}
+            />
           ) : (
             <Grid
               width={width}
@@ -155,6 +143,8 @@ function ListPage() {
               columnWidth={Math.floor(width / 3)}
               columnCount={3}
               rowHeight={200}
+              ref={gridRef}
+              setActiveRowIndex={setActiveRowIndex}
             />
           )
         }
