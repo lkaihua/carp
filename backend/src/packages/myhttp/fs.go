@@ -83,9 +83,12 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 
 	// thumbnailMap := make(map[string]string)
 
+	currentUrl := r.URL.String()
+
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
 		url := d.Url
+		fullUrl := currentUrl + d.Url
 		// modTime := d.ModTime
 		// size := d.Size
 		// fmt.Println(name, "-", modTime, "-", size)
@@ -97,6 +100,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			firstName = name
 			entryType = types.EntryType_ENTRY_TYPE_FOLDER
 			url += "/"
+			fullUrl += "/"
 		} else {
 			// It's still a legal filename without any file extention
 			if lastDotIndex := strings.LastIndex(name, "."); lastDotIndex == -1 {
@@ -124,6 +128,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			LastName:    lastName,
 			EntryType:   entryType,
 			UrlString:   url,
+			FullUrl:		 fullUrl,
 			ModTime:     d.ModTime.Format("2006-01-02 15:04"),
 			ModTimeUnix: d.ModTime.Unix(),
 			Size:        utils.ByteCountSI(d.Size),

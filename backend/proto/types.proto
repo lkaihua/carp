@@ -11,6 +11,7 @@ enum EntryType {
   ENTRY_TYPE_VIDEO   = 3;
   ENTRY_TYPE_MUSIC   = 4;
   ENTRY_TYPE_TEXT    = 5;
+  ENTRY_TYPE_JSON    = 6;
 }
 
 enum ViewCategory {
@@ -29,6 +30,7 @@ message DisplayItem {
   int64 modTimeUnix = 7;
   string size = 8;
   int64 sizeInt = 9;
+  string fullUrl = 10;
 }
 
 message ItemCount {

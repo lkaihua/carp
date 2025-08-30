@@ -1,17 +1,22 @@
-import { forwardRef, memo, useRef } from 'react';
+import { forwardRef, memo, useEffect, useLayoutEffect, useRef } from 'react';
 import { FixedSizeGrid, GridOnScrollProps } from 'react-window';
 import { DisplayItem, EntryType } from '../types/proto/types';
 import {
   Card,
   EntityTitle,
+  Icon,
+  IconName,
   NonIdealState,
   NonIdealStateIconSize,
+  Spinner,
 } from '@blueprintjs/core';
 import { Link, useLocation } from 'react-router-dom';
 import { serverBaseUrl, usePathData } from '../utils/usePathData';
+import { match } from 'ts-pattern';
 
 import './Grid.css';
 import { getIconForType } from '../utils/getIconForType';
+import { BoxCol } from './BoxCol';
 
 interface CellProps {
   columnIndex: number;
@@ -23,86 +28,162 @@ interface CellProps {
   };
 }
 
-const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
-  const { itemData, columnCount } = data;
+const VIDEO_PREVIEW_SECONDS = 5;
 
-  // Calculate the 1D index from row/column
-  const index = rowIndex * columnCount + columnIndex;
-  const item = itemData?.[index];
+interface CellPreviewProps {
+  previewFilePath: string;
+  linkFilePath: string;
+  linkTitle: string;
+  linkIcon?: IconName;
+}
+const CellPreview = memo(
+  ({
+    previewFilePath,
+    linkFilePath,
+    linkTitle,
+    linkIcon,
+  }: CellPreviewProps) => {
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const handleVideoReady = () => {
+      const video = videoRef.current;
+      if (!video) return;
 
-  if (!item) {
-    return null;
-  }
+      const handleTimeUpdate = () => {
+        if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
+          video.currentTime = 0;
+          video.play();
+        }
+      };
 
-  const icon = getIconForType(item.entryType);
-
-  let cover;
-  const { pathname } = useLocation();
-  const { data: newData } = usePathData(pathname + item.urlString);
-
-  if (!!newData?.folder?.coverImage?.[0]) {
-    const coverImage = newData.folder.coverImage[0];
-    const filePath = pathname + item.urlString + coverImage;
-    // console.log('Cover file path:', filePath);
+      video.addEventListener('timeupdate', handleTimeUpdate);
+    };
 
     // TODO: use better way to determine if it's a video or image
+    let cover;
     if (
-      coverImage.toLowerCase().endsWith('.mp4') ||
-      coverImage.toLowerCase().endsWith('.mov')
+      previewFilePath.toLowerCase().endsWith('.mp4') ||
+      previewFilePath.toLowerCase().endsWith('.mov')
     ) {
       cover = (
-        <Link to={filePath}>
+        <Link to={previewFilePath} className="grid-cover-video-link">
           <video
-            src={serverBaseUrl + filePath}
+            ref={videoRef}
+            src={serverBaseUrl + previewFilePath}
             controls={false}
-            autoPlay={true}
-            loop
+            autoPlay
+            loop={false}
             playsInline
             muted
-            height={200}
+            height={160}
             width="100%"
             style={{ maxHeight: '100%' }}
+            onLoadedMetadata={handleVideoReady}
           />
         </Link>
       );
     } else {
       cover = (
-        <Link to={filePath}>
-          <img src={serverBaseUrl + filePath} alt="Cover" height={200} />
+        <Link to={previewFilePath} className="grid-cover-image-link">
+          <img src={serverBaseUrl + previewFilePath} alt="Cover" height={160} />
         </Link>
       );
     }
+
+    return (
+      <>
+        <BoxCol className="grid-cover-media-container">{cover}</BoxCol>
+        <BoxCol className="grid-cover-title-container">
+          <Link to={linkFilePath}>
+            <EntityTitle
+              ellipsize
+              title={linkTitle}
+              icon={linkIcon ?? 'folder-close'}
+              className="grid-cover-title"
+            />
+          </Link>
+        </BoxCol>
+      </>
+    );
+  },
+);
+
+const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
+  const { itemData, columnCount } = data;
+
+  // Calculate the 1D index from row/column
+  const index = rowIndex * columnCount + columnIndex;
+  const item = itemData?.at(index);
+  const isFolder = item?.entryType === EntryType.ENTRY_TYPE_FOLDER;
+
+  const filePath = item?.fullUrl;
+
+  // Request the metadata only if the target is FOLDER
+  const {
+    data: newItemData,
+    isLoading,
+    error,
+  } = usePathData(isFolder ? filePath : undefined);
+
+  // console.log('item', item);
+  if (!item) {
+    return null;
   }
+  const previewFilePath = match(item.entryType)
+    .with(EntryType.ENTRY_TYPE_FOLDER, () =>
+      newItemData?.type == EntryType.ENTRY_TYPE_FOLDER &&
+      newItemData?.folder?.coverImage?.length > 0
+        ? filePath + newItemData.folder.coverImage.at(0)
+        : '',
+    )
+    .with(EntryType.ENTRY_TYPE_IMAGE, () => filePath)
+    .with(EntryType.ENTRY_TYPE_VIDEO, () => filePath)
+    .otherwise(() => '');
+
+  const icon = getIconForType(item.entryType);
+  const cover = previewFilePath ? (
+    <CellPreview
+      previewFilePath={previewFilePath}
+      linkFilePath={filePath}
+      linkTitle={item.firstName}
+      linkIcon={icon}
+    />
+  ) : null;
 
   const content = (
     <EntityTitle
       className="grid-item-entity-title"
       title={item.firstName}
-      subtitle={item.lastName != '/' ? item.lastName : ''}
+      subtitle={isFolder ? '' : item.lastName}
       ellipsize
     />
   );
-  // TODO: preview 4 item for each folder
+
+  const fallback = (
+    <NonIdealState
+      className="grid-item-title"
+      iconSize={NonIdealStateIconSize.STANDARD}
+      icon={icon}
+      title={
+        item.urlString ? (
+          <Link to={item.urlString} className="grid-item-link">
+            {content}
+          </Link>
+        ) : (
+          content
+        )
+      }
+    />
+  );
+
   // TODO: click the folder to open it, now the preview takes to much space
   return (
     <div style={style} className="cell-container">
-      {cover ? (
+      {isLoading ? (
+        <Spinner />
+      ) : cover ? (
         <div className="cover-container">{cover}</div>
       ) : (
-        <NonIdealState
-          className="grid-item-title"
-          iconSize={NonIdealStateIconSize.STANDARD}
-          icon={icon}
-          title={
-            item.urlString ? (
-              <Link to={item.urlString} className="grid-item-link">
-                {content}
-              </Link>
-            ) : (
-              content
-            )
-          }
-        />
+        fallback
       )}
     </div>
   );
@@ -115,8 +196,8 @@ interface GridProps {
   columnCount?: number;
   columnWidth?: number;
   rowHeight?: number;
-  // onScroll?: ((props: GridOnScrollProps) => any) | undefined;
-  setActiveRow: (rowIndex: number) => void;
+  onItemsRendered: () => void;
+  setActiveVerticalPos: (rowIndex: number) => void;
 }
 
 export const Grid = forwardRef<FixedSizeGrid, GridProps>(
@@ -128,7 +209,8 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
       columnWidth = 100,
       rowHeight = 30,
       itemData,
-      setActiveRow,
+      onItemsRendered,
+      setActiveVerticalPos,
     }: GridProps,
     ref,
   ) => {
@@ -145,6 +227,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
         columnWidth={columnWidth}
         rowHeight={rowHeight}
         itemData={{ itemData, columnCount }} // Todo: use memo for better performance
+        onItemsRendered={() => onItemsRendered()}
         onScroll={({ scrollTop }) => {
           // First mounts
           if (!hasMountedRef.current) {
@@ -155,7 +238,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
           if (scrollTop <= 10) {
             return;
           }
-          setActiveRow(scrollTop);
+          setActiveVerticalPos(scrollTop);
         }}
       >
         {Cell}

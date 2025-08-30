@@ -1,28 +1,38 @@
 import { useQuery } from '@tanstack/react-query';
-import { FolderContentData } from '../types/proto/types';
+import { EntryType, FolderContentData } from '../types/proto/types';
 import { isIOS } from 'react-device-detect';
 
 // TODO: the server port name should coming from an env variable.
 const serverPort = 8100;
 export const serverBaseUrl = `//${window.location.hostname}:${serverPort}`;
 
-interface pathData {
-  data?: {
-    type: 'json' | 'video' | 'image';
-    folder?: FolderContentData;
-    url?: string;
-  };
-  isLoading: boolean;
-  error?: Error;
-}
+// Extend this for more supported data types
 
-export function usePathData(pathname: string): pathData {
+export type PathData =
+  | {
+      type: EntryType.ENTRY_TYPE_FOLDER;
+      folder: FolderContentData;
+    }
+  | {
+      type: EntryType.ENTRY_TYPE_VIDEO | EntryType.ENTRY_TYPE_IMAGE;
+      url: string;
+    };
+
+// export interface PathDataResponse {
+//   data?: PathData;
+//   isLoading: boolean;
+//   error?: Error;
+// }
+
+export function usePathData(pathname?: string) {
   const { data, isLoading, error } = useQuery({
     queryKey: ['list', pathname],
-    queryFn: async () => {
+    queryFn: async (): Promise<PathData> => {
       const baseUrl = `${serverBaseUrl}${pathname}`;
 
       let headRes: Response;
+
+      // Important: use HEAD before the real fetch
       try {
         headRes = await fetch(baseUrl, { method: 'HEAD' });
       } catch (err) {
@@ -34,9 +44,7 @@ export function usePathData(pathname: string): pathData {
       }
 
       const contentType = headRes.headers.get('Content-Type') || '';
-      // console.log("Content-Type:", contentType);
 
-      // Handle JSON
       if (contentType.includes('application/json')) {
         try {
           const jsonRes = await fetch(baseUrl);
@@ -44,30 +52,35 @@ export function usePathData(pathname: string): pathData {
             throw new Error(`GET request failed with status ${jsonRes.status}`);
           }
           const result = await jsonRes.json();
-          return { type: 'json' as const, folder: result };
+          return {
+            type: EntryType.ENTRY_TYPE_FOLDER,
+            folder: result,
+          } as const;
         } catch (err) {
           throw new Error(`Failed to fetch or parse JSON: ${err}`);
         }
       }
-
-      // for (const [key, value] of headRes.headers.entries()) {
-      //   console.log(`${key}: ${value}`);
-      // }
-
-      if (contentType.startsWith('video/') || contentType.includes('mpegurl')) {
-        return { type: 'video' as const, url: baseUrl };
+      if (contentType.startsWith('video') || contentType.includes('mpegurl')) {
+        return {
+          type: EntryType.ENTRY_TYPE_VIDEO,
+          url: baseUrl,
+        } as const;
       }
-      if (contentType.startsWith('image/')) {
-        return { type: 'image' as const, url: baseUrl };
+      if (contentType.startsWith('image')) {
+        return {
+          type: EntryType.ENTRY_TYPE_IMAGE,
+          url: baseUrl,
+        } as const;
       }
-
-      // iOS specific handling
       if (isIOS) {
         if (contentType.startsWith('application/octet-stream')) {
           // Check if the file is an image based on the extension
           const extension = pathname.split('.').pop()?.toLowerCase();
           if (extension === 'heic' || extension === 'heif') {
-            return { type: 'image' as const, url: baseUrl };
+            return {
+              type: EntryType.ENTRY_TYPE_IMAGE,
+              url: baseUrl,
+            } as const;
           }
         }
       }
@@ -77,6 +90,7 @@ export function usePathData(pathname: string): pathData {
       }
       throw new Error('No content found');
     },
+    enabled: !!pathname,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     retry: false,

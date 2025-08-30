@@ -16,6 +16,7 @@ export enum EntryType {
   ENTRY_TYPE_VIDEO = 3,
   ENTRY_TYPE_MUSIC = 4,
   ENTRY_TYPE_TEXT = 5,
+  ENTRY_TYPE_JSON = 6,
   UNRECOGNIZED = -1,
 }
 
@@ -39,6 +40,9 @@ export function entryTypeFromJSON(object: any): EntryType {
     case 5:
     case "ENTRY_TYPE_TEXT":
       return EntryType.ENTRY_TYPE_TEXT;
+    case 6:
+    case "ENTRY_TYPE_JSON":
+      return EntryType.ENTRY_TYPE_JSON;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -60,6 +64,8 @@ export function entryTypeToJSON(object: EntryType): string {
       return "ENTRY_TYPE_MUSIC";
     case EntryType.ENTRY_TYPE_TEXT:
       return "ENTRY_TYPE_TEXT";
+    case EntryType.ENTRY_TYPE_JSON:
+      return "ENTRY_TYPE_JSON";
     case EntryType.UNRECOGNIZED:
     default:
       return "UNRECOGNIZED";
@@ -115,6 +121,7 @@ export interface DisplayItem {
   modTimeUnix: number;
   size: string;
   sizeInt: number;
+  fullUrl: string;
 }
 
 export interface ItemCount {
@@ -143,6 +150,7 @@ function createBaseDisplayItem(): DisplayItem {
     modTimeUnix: 0,
     size: "",
     sizeInt: 0,
+    fullUrl: "",
   };
 }
 
@@ -174,6 +182,9 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     }
     if (message.sizeInt !== 0) {
       writer.uint32(72).int64(message.sizeInt);
+    }
+    if (message.fullUrl !== "") {
+      writer.uint32(82).string(message.fullUrl);
     }
     return writer;
   },
@@ -257,6 +268,14 @@ export const DisplayItem: MessageFns<DisplayItem> = {
           message.sizeInt = longToNumber(reader.int64());
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.fullUrl = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -277,6 +296,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
       modTimeUnix: isSet(object.modTimeUnix) ? globalThis.Number(object.modTimeUnix) : 0,
       size: isSet(object.size) ? globalThis.String(object.size) : "",
       sizeInt: isSet(object.sizeInt) ? globalThis.Number(object.sizeInt) : 0,
+      fullUrl: isSet(object.fullUrl) ? globalThis.String(object.fullUrl) : "",
     };
   },
 
@@ -309,6 +329,9 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     if (message.sizeInt !== 0) {
       obj.sizeInt = Math.round(message.sizeInt);
     }
+    if (message.fullUrl !== "") {
+      obj.fullUrl = message.fullUrl;
+    }
     return obj;
   },
 
@@ -326,6 +349,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     message.modTimeUnix = object.modTimeUnix ?? 0;
     message.size = object.size ?? "";
     message.sizeInt = object.sizeInt ?? 0;
+    message.fullUrl = object.fullUrl ?? "";
     return message;
   },
 };

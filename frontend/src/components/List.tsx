@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import { getIconForType } from '../utils/getIconForType';
 import { Box } from './Box';
 
+import './List.css';
+
 interface RowProps {
   index: number;
   style: React.CSSProperties;
@@ -65,11 +67,22 @@ interface ListProps {
   height: number;
   itemData: DisplayItem[];
   rowHeight: number;
-  setActiveRow: (rowIndex: number) => void;
+  onItemsRendered: () => void;
+  setActiveVerticalPos: (rowIndex: number) => void;
 }
 
 export const List = forwardRef<FixedSizeList, ListProps>(
-  ({ width, height, itemData, rowHeight, setActiveRow }: ListProps, ref) => {
+  (
+    {
+      width,
+      height,
+      itemData,
+      rowHeight,
+      onItemsRendered,
+      setActiveVerticalPos,
+    }: ListProps,
+    ref,
+  ) => {
     const hasMountedRef = useRef(false);
     return (
       <FixedSizeList
@@ -80,6 +93,7 @@ export const List = forwardRef<FixedSizeList, ListProps>(
         itemData={itemData}
         itemCount={itemData.length}
         itemSize={rowHeight}
+        onItemsRendered={() => onItemsRendered()}
         onScroll={({ scrollOffset }) => {
           // First mounts
           if (!hasMountedRef.current) {
@@ -91,7 +105,7 @@ export const List = forwardRef<FixedSizeList, ListProps>(
             return;
           }
           console.log('scrolling to active row index:', scrollOffset);
-          setActiveRow(scrollOffset);
+          setActiveVerticalPos(scrollOffset);
         }}
       >
         {Row}

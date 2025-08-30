@@ -30,6 +30,7 @@ const (
 	EntryType_ENTRY_TYPE_VIDEO   EntryType = 3
 	EntryType_ENTRY_TYPE_MUSIC   EntryType = 4
 	EntryType_ENTRY_TYPE_TEXT    EntryType = 5
+	EntryType_ENTRY_TYPE_JSON    EntryType = 6
 )
 
 // Enum value maps for EntryType.
@@ -41,6 +42,7 @@ var (
 		3: "ENTRY_TYPE_VIDEO",
 		4: "ENTRY_TYPE_MUSIC",
 		5: "ENTRY_TYPE_TEXT",
+		6: "ENTRY_TYPE_JSON",
 	}
 	EntryType_value = map[string]int32{
 		"ENTRY_TYPE_DEFAULT": 0,
@@ -49,6 +51,7 @@ var (
 		"ENTRY_TYPE_VIDEO":   3,
 		"ENTRY_TYPE_MUSIC":   4,
 		"ENTRY_TYPE_TEXT":    5,
+		"ENTRY_TYPE_JSON":    6,
 	}
 )
 
@@ -139,6 +142,7 @@ type DisplayItem struct {
 	ModTimeUnix   int64                  `protobuf:"varint,7,opt,name=modTimeUnix,proto3" json:"modTimeUnix,omitempty"`
 	Size          string                 `protobuf:"bytes,8,opt,name=size,proto3" json:"size,omitempty"`
 	SizeInt       int64                  `protobuf:"varint,9,opt,name=sizeInt,proto3" json:"sizeInt,omitempty"`
+	FullUrl       string                 `protobuf:"bytes,10,opt,name=fullUrl,proto3" json:"fullUrl,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -234,6 +238,13 @@ func (x *DisplayItem) GetSizeInt() int64 {
 		return x.SizeInt
 	}
 	return 0
+}
+
+func (x *DisplayItem) GetFullUrl() string {
+	if x != nil {
+		return x.FullUrl
+	}
+	return ""
 }
 
 type ItemCount struct {
@@ -384,7 +395,7 @@ var File_proto_types_proto protoreflect.FileDescriptor
 
 const file_proto_types_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/types.proto\x12\x05types\"\x93\x02\n" +
+	"\x11proto/types.proto\x12\x05types\"\xad\x02\n" +
 	"\vDisplayItem\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12.\n" +
 	"\tentryType\x18\x02 \x01(\x0e2\x10.types.EntryTypeR\tentryType\x12\x1c\n" +
@@ -394,7 +405,9 @@ const file_proto_types_proto_rawDesc = "" +
 	"\amodTime\x18\x06 \x01(\tR\amodTime\x12 \n" +
 	"\vmodTimeUnix\x18\a \x01(\x03R\vmodTimeUnix\x12\x12\n" +
 	"\x04size\x18\b \x01(\tR\x04size\x12\x18\n" +
-	"\asizeInt\x18\t \x01(\x03R\asizeInt\"\xa7\x01\n" +
+	"\asizeInt\x18\t \x01(\x03R\asizeInt\x12\x18\n" +
+	"\afullUrl\x18\n" +
+	" \x01(\tR\afullUrl\"\xa7\x01\n" +
 	"\tItemCount\x12\x1a\n" +
 	"\bcountAll\x18\x01 \x01(\x05R\bcountAll\x12\x1e\n" +
 	"\n" +
@@ -415,14 +428,15 @@ const file_proto_types_proto_rawDesc = "" +
 	"\titemCount\x18\x03 \x01(\v2\x10.types.ItemCountR\titemCount\x12\x1e\n" +
 	"\n" +
 	"coverImage\x18\x04 \x03(\tR\n" +
-	"coverImage*\x91\x01\n" +
+	"coverImage*\xa6\x01\n" +
 	"\tEntryType\x12\x16\n" +
 	"\x12ENTRY_TYPE_DEFAULT\x10\x00\x12\x15\n" +
 	"\x11ENTRY_TYPE_FOLDER\x10\x01\x12\x14\n" +
 	"\x10ENTRY_TYPE_IMAGE\x10\x02\x12\x14\n" +
 	"\x10ENTRY_TYPE_VIDEO\x10\x03\x12\x14\n" +
 	"\x10ENTRY_TYPE_MUSIC\x10\x04\x12\x13\n" +
-	"\x0fENTRY_TYPE_TEXT\x10\x05*[\n" +
+	"\x0fENTRY_TYPE_TEXT\x10\x05\x12\x13\n" +
+	"\x0fENTRY_TYPE_JSON\x10\x06*[\n" +
 	"\fViewCategory\x12\x19\n" +
 	"\x15VIEW_CATEGORY_DEFAULT\x10\x00\x12\x17\n" +
 	"\x13VIEW_CATEGORY_PHOTO\x10\x01\x12\x17\n" +

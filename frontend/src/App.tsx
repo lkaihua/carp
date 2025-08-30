@@ -1,44 +1,46 @@
-import { ElementRef, memo, useEffect, useRef } from 'react';
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import { ElementRef, useEffect, useRef, useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import {
-  Divider,
-  EntityTitle,
-  Icon,
   NonIdealState,
   NonIdealStateIconSize,
   Spinner,
 } from '@blueprintjs/core';
 import { Issue } from '@blueprintjs/icons';
-import { DisplayItem, EntryType, FolderContentData } from './types/proto/types';
+import { DisplayItem, EntryType } from './types/proto/types';
 
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { useLocalStorage } from 'usehooks-ts';
 import './App.css';
-import { Box } from './components/Box';
 import { BoxCol } from './components/BoxCol';
-import { List } from './components/List';
+import { FileViewer } from './components/FileViewer';
 import { Grid } from './components/Grid';
 import { Header } from './components/Header';
-import { Photo } from './components/Photo';
-import { Video } from './components/Video';
+import { List } from './components/List';
 import { getParentFolderPath } from './utils/getParentFolderPath';
+import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
 import { usePathData } from './utils/usePathData';
-import { getIconForType } from './utils/getIconForType';
-import { useActiveRowPerPath } from './utils/useActiveRowPerPath';
 
 const rowHeight = 50;
 
 function ListPage() {
-  // const {path = ""} = useParams();
   const { pathname } = useLocation();
+
   const segments = pathname.split('/').filter(Boolean); // removes empty strings
   const currrentPath = segments.join('/');
   const parentFolderPath = getParentFolderPath(segments);
 
+  // TODO: the right way to do this
+  // `/photos/test.jpg`
+  // `/photos/`
+  // list `/photos/` folder, and then toggle on the preview if needed
+  // `/photos/test.jpg/` the folder fetch fails, try `/photos/test.jpg`
+  console.log(currrentPath, parentFolderPath);
+
   const [activeView] = useLocalStorage<string>('activeView', 'list');
-  const [activeRow, setActiveRow] = useActiveRowPerPath(
+  const [itemsRendered, setItemsRendered] = useState(false);
+  const [activeVerticalPos, setActiveVerticalPos] = useActiveVerticalPos(
     `${currrentPath}::${activeView}`, // distinguish between list and grid views
     0,
   );
@@ -48,25 +50,37 @@ function ListPage() {
 
   // Read the current path and the parent folder
   const { data, isLoading, error } = usePathData(pathname);
-  const { data: parentFolderData } = usePathData(parentFolderPath);
+  const {
+    data: parentFolderData,
+    isLoading: isParentFolderLoading,
+    error: parentFolderError,
+  } = usePathData(parentFolderPath);
 
+  // Persist last scroll position
   useEffect(() => {
-    // console.log('Path changed:', location.pathname);
-    // console.log('Active row:', activeRow, activeView, listRef.current);
-    // TODO: now when the active view is changed, list/grid gets destroyed and recreated
-    // i.e. so the scrolling does not work
-    // need to find a way that we can wait for the ref gets re-created
-    if (activeView === 'list' && listRef.current && activeRow > 0) {
-      listRef.current.scrollTo(activeRow);
+    // A true itemsRendered flag makes sure container ref is ready
+    if (itemsRendered && activeVerticalPos > 0) {
+      if (activeView === 'list' && listRef.current) {
+        requestAnimationFrame(() =>
+          listRef.current.scrollTo(activeVerticalPos),
+        );
+      } else if (activeView === 'grid' && gridRef.current) {
+        requestAnimationFrame(() =>
+          gridRef.current.scrollTo({
+            scrollTop: activeVerticalPos,
+          }),
+        );
+      }
     }
-    if (activeView === 'grid' && gridRef.current && activeRow > 0) {
-      gridRef.current.scrollTo({
-        scrollTop: activeRow,
-      });
-    }
-  }, [location.pathname]);
+  }, [location.pathname, itemsRendered, activeVerticalPos, activeView]);
 
-  if (isLoading)
+  // Sync document title with path
+  useEffect(() => {
+    document.title =
+      segments.length > 0 ? `Carp - ${segments.join('/')}` : 'Carp';
+  }, [segments]);
+
+  if (isLoading || isParentFolderLoading) {
     return (
       <NonIdealState
         layout={'horizontal'}
@@ -76,39 +90,20 @@ function ListPage() {
         description="Fetching data from the server"
       />
     );
-  if (error)
+  }
+  if (error || parentFolderError) {
     return (
       <NonIdealState
         layout={'horizontal'}
         icon={<Issue size={NonIdealStateIconSize.STANDARD} />}
         title="Error"
-        description={error.message}
+        description={error.message || parentFolderError.message}
       />
     );
-
-  let fileViewer: JSX.Element | null = null;
-
-  switch (data?.type) {
-    case 'video':
-      fileViewer = <Video src={data.url} parentFolderPath={parentFolderPath} />;
-      break;
-    case 'image':
-      fileViewer = <Photo src={data.url} parentFolderPath={parentFolderPath} />;
-      break;
-    case 'json':
-      break;
-    default:
-      break;
   }
 
-  // display the current folder when the file viewer is open
-  const folderData =
-    data?.folder ?? parentFolderData?.folder ?? ({} as FolderContentData);
-
-  const { displayItems = [] } = folderData;
-
-  if (displayItems.length === 0) {
-    displayItems.push({
+  const defaultDisplayItems = [
+    {
       name: 'Empty Folder',
       entryType: EntryType.UNRECOGNIZED,
       urlString: '',
@@ -116,8 +111,15 @@ function ListPage() {
       lastName: 'Empty Folder',
       modTime: '',
       modTimeUnix: 0,
-    } as DisplayItem);
-  }
+    } as DisplayItem,
+  ];
+  // display the current folder when the file viewer is open
+  const { displayItems = defaultDisplayItems } =
+    data?.type === EntryType.ENTRY_TYPE_FOLDER
+      ? data.folder
+      : parentFolderData.type === EntryType.ENTRY_TYPE_FOLDER
+        ? parentFolderData.folder
+        : {};
 
   const listContent = (
     <AutoSizer>
@@ -129,7 +131,8 @@ function ListPage() {
             itemData={displayItems}
             rowHeight={rowHeight}
             ref={listRef}
-            setActiveRow={setActiveRow}
+            onItemsRendered={() => setItemsRendered(true)}
+            setActiveVerticalPos={setActiveVerticalPos}
           />
         ) : (
           <Grid
@@ -140,7 +143,8 @@ function ListPage() {
             columnCount={3}
             rowHeight={200}
             ref={gridRef}
-            setActiveRow={setActiveRow}
+            onItemsRendered={() => setItemsRendered(true)}
+            setActiveVerticalPos={setActiveVerticalPos}
           />
         )
       }
@@ -148,16 +152,16 @@ function ListPage() {
   );
 
   return (
-    <BoxCol className="list-content">
-      {listContent}
-      <Box>{fileViewer}</Box>
-    </BoxCol>
+    <>
+      <BoxCol className="list-page">{listContent}</BoxCol>
+      <FileViewer data={data} parentFolderPath={parentFolderPath} />
+    </>
   );
 }
 
 function App() {
   return (
-    <BoxCol className="list-page">
+    <BoxCol className="app-container">
       <Header />
       <Routes>
         <Route path="/" element={<ListPage />} />

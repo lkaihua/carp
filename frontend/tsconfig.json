@@ -1,15 +1,12 @@
 {
-    "compilerOptions": {
-        "jsx": "react-jsx", // enables JSX for React 17+ (or "react" for older)
-        "esModuleInterop": true, // common for imports
-        "moduleResolution": "node", // required for module lookup
-        "module": "esnext", // modern module output
-        "target": "esnext", // modern JS target
-        "types": [
-            "vite/client"
-        ] // keep Vite type declarations
-    },
-    "include": [
-        "src"
-    ]
+  "compilerOptions": {
+    "jsx": "react-jsx", // enables JSX for React 17+ (or "react" for older)
+    "esModuleInterop": true, // common for imports
+    "moduleResolution": "bundler", // required for module lookup
+    "module": "esnext", // modern module output
+    "target": "esnext", // modern JS target
+    "allowSyntheticDefaultImports": true,
+    "types": ["vite/client"] // keep Vite type declarations
+  },
+  "include": ["src"]
 }

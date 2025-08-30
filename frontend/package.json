@@ -23,8 +23,10 @@
     "react-router-dom": "^7.7.0",
     "react-virtualized-auto-sizer": "^1.0.26",
     "react-window": "^1.8.11",
+    "ts-pattern": "^5.8.0",
     "usehooks-ts": "^3.1.1",
-    "vaul": "^1.1.2"
+    "vaul": "^1.1.2",
+    "yet-another-react-lightbox": "^3.25.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
