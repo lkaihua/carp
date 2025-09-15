@@ -13,12 +13,12 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 
 	countAll := len(entries)
 	countTypeMap := make(map[types.EntryType]int)
-	coverImage := []string{}
+	coverImages := []string{}
 
 	for _, v := range entries {
 		countTypeMap[v.EntryType] += 1
-		if (v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE || v.EntryType == types.EntryType_ENTRY_TYPE_VIDEO) && len(coverImage) < MAX_COVER_IMAGE_COUNT {
-			coverImage = append(coverImage, v.UrlString)
+		if (v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE || v.EntryType == types.EntryType_ENTRY_TYPE_VIDEO) && len(coverImages) < MAX_COVER_IMAGE_COUNT {
+			coverImages = append(coverImages, v.UrlString)
 		}
 	}
 	countImage := countTypeMap[types.EntryType_ENTRY_TYPE_IMAGE]
@@ -55,7 +55,7 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 	//}
 
 	contentData := types.FolderContentData{
-		ViewCategory: viewCategory,
+		ViewCategory: &viewCategory,
 		ItemCount: &types.ItemCount{
 			CountAll:   int32(countAll),
 			CountImage: int32(countImage),
@@ -63,8 +63,8 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 			CountPhoto: int32(countPhoto),
 			CountMusic: int32(countMusic),
 		},
-		CoverImage:   coverImage,
-		DisplayItems: entries,
+		CoverImages: &types.CoverImages{Data: coverImages},
+		DisplayItems: &types.DisplayItems{Data: entries},
 	}
 
 	w.Header().Set("Content-Type", "application/json")

@@ -41,9 +41,16 @@ message ItemCount {
   int32 countMusic = 5;
 }
 
+message DisplayItems {
+  repeated DisplayItem data = 1;
+}
+message CoverImages {
+  repeated string data = 1;
+}
+
 message FolderContentData {
-  repeated DisplayItem displayItems = 1;
-  ViewCategory viewCategory = 2;
-  ItemCount itemCount = 3;
-  repeated string coverImage = 4;
+  optional DisplayItems displayItems = 1;
+  optional ViewCategory viewCategory = 2;
+  optional ItemCount itemCount = 3;
+  optional CoverImages coverImages = 4;
 }

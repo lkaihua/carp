@@ -323,19 +323,107 @@ func (x *ItemCount) GetCountMusic() int32 {
 	return 0
 }
 
+type DisplayItems struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          []*DisplayItem         `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DisplayItems) Reset() {
+	*x = DisplayItems{}
+	mi := &file_proto_types_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DisplayItems) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DisplayItems) ProtoMessage() {}
+
+func (x *DisplayItems) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_types_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DisplayItems.ProtoReflect.Descriptor instead.
+func (*DisplayItems) Descriptor() ([]byte, []int) {
+	return file_proto_types_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DisplayItems) GetData() []*DisplayItem {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+type CoverImages struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          []string               `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoverImages) Reset() {
+	*x = CoverImages{}
+	mi := &file_proto_types_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoverImages) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoverImages) ProtoMessage() {}
+
+func (x *CoverImages) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_types_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoverImages.ProtoReflect.Descriptor instead.
+func (*CoverImages) Descriptor() ([]byte, []int) {
+	return file_proto_types_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *CoverImages) GetData() []string {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type FolderContentData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	DisplayItems  []*DisplayItem         `protobuf:"bytes,1,rep,name=displayItems,proto3" json:"displayItems,omitempty"`
-	ViewCategory  ViewCategory           `protobuf:"varint,2,opt,name=viewCategory,proto3,enum=types.ViewCategory" json:"viewCategory,omitempty"`
-	ItemCount     *ItemCount             `protobuf:"bytes,3,opt,name=itemCount,proto3" json:"itemCount,omitempty"`
-	CoverImage    []string               `protobuf:"bytes,4,rep,name=coverImage,proto3" json:"coverImage,omitempty"`
+	DisplayItems  *DisplayItems          `protobuf:"bytes,1,opt,name=displayItems,proto3,oneof" json:"displayItems,omitempty"`
+	ViewCategory  *ViewCategory          `protobuf:"varint,2,opt,name=viewCategory,proto3,enum=types.ViewCategory,oneof" json:"viewCategory,omitempty"`
+	ItemCount     *ItemCount             `protobuf:"bytes,3,opt,name=itemCount,proto3,oneof" json:"itemCount,omitempty"`
+	CoverImages   *CoverImages           `protobuf:"bytes,4,opt,name=coverImages,proto3,oneof" json:"coverImages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *FolderContentData) Reset() {
 	*x = FolderContentData{}
-	mi := &file_proto_types_proto_msgTypes[2]
+	mi := &file_proto_types_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -347,7 +435,7 @@ func (x *FolderContentData) String() string {
 func (*FolderContentData) ProtoMessage() {}
 
 func (x *FolderContentData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_types_proto_msgTypes[2]
+	mi := &file_proto_types_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -360,10 +448,10 @@ func (x *FolderContentData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FolderContentData.ProtoReflect.Descriptor instead.
 func (*FolderContentData) Descriptor() ([]byte, []int) {
-	return file_proto_types_proto_rawDescGZIP(), []int{2}
+	return file_proto_types_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *FolderContentData) GetDisplayItems() []*DisplayItem {
+func (x *FolderContentData) GetDisplayItems() *DisplayItems {
 	if x != nil {
 		return x.DisplayItems
 	}
@@ -371,8 +459,8 @@ func (x *FolderContentData) GetDisplayItems() []*DisplayItem {
 }
 
 func (x *FolderContentData) GetViewCategory() ViewCategory {
-	if x != nil {
-		return x.ViewCategory
+	if x != nil && x.ViewCategory != nil {
+		return *x.ViewCategory
 	}
 	return ViewCategory_VIEW_CATEGORY_DEFAULT
 }
@@ -384,9 +472,9 @@ func (x *FolderContentData) GetItemCount() *ItemCount {
 	return nil
 }
 
-func (x *FolderContentData) GetCoverImage() []string {
+func (x *FolderContentData) GetCoverImages() *CoverImages {
 	if x != nil {
-		return x.CoverImage
+		return x.CoverImages
 	}
 	return nil
 }
@@ -421,14 +509,21 @@ const file_proto_types_proto_rawDesc = "" +
 	"countPhoto\x12\x1e\n" +
 	"\n" +
 	"countMusic\x18\x05 \x01(\x05R\n" +
-	"countMusic\"\xd4\x01\n" +
-	"\x11FolderContentData\x126\n" +
-	"\fdisplayItems\x18\x01 \x03(\v2\x12.types.DisplayItemR\fdisplayItems\x127\n" +
-	"\fviewCategory\x18\x02 \x01(\x0e2\x13.types.ViewCategoryR\fviewCategory\x12.\n" +
-	"\titemCount\x18\x03 \x01(\v2\x10.types.ItemCountR\titemCount\x12\x1e\n" +
+	"countMusic\"6\n" +
+	"\fDisplayItems\x12&\n" +
+	"\x04data\x18\x01 \x03(\v2\x12.types.DisplayItemR\x04data\"!\n" +
+	"\vCoverImages\x12\x12\n" +
+	"\x04data\x18\x01 \x03(\tR\x04data\"\xbf\x02\n" +
+	"\x11FolderContentData\x12<\n" +
+	"\fdisplayItems\x18\x01 \x01(\v2\x13.types.DisplayItemsH\x00R\fdisplayItems\x88\x01\x01\x12<\n" +
+	"\fviewCategory\x18\x02 \x01(\x0e2\x13.types.ViewCategoryH\x01R\fviewCategory\x88\x01\x01\x123\n" +
+	"\titemCount\x18\x03 \x01(\v2\x10.types.ItemCountH\x02R\titemCount\x88\x01\x01\x129\n" +
+	"\vcoverImages\x18\x04 \x01(\v2\x12.types.CoverImagesH\x03R\vcoverImages\x88\x01\x01B\x0f\n" +
+	"\r_displayItemsB\x0f\n" +
+	"\r_viewCategoryB\f\n" +
 	"\n" +
-	"coverImage\x18\x04 \x03(\tR\n" +
-	"coverImage*\xa6\x01\n" +
+	"_itemCountB\x0e\n" +
+	"\f_coverImages*\xa6\x01\n" +
 	"\tEntryType\x12\x16\n" +
 	"\x12ENTRY_TYPE_DEFAULT\x10\x00\x12\x15\n" +
 	"\x11ENTRY_TYPE_FOLDER\x10\x01\x12\x14\n" +
@@ -455,24 +550,28 @@ func file_proto_types_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_types_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_proto_types_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_proto_types_proto_goTypes = []any{
 	(EntryType)(0),            // 0: types.EntryType
 	(ViewCategory)(0),         // 1: types.ViewCategory
 	(*DisplayItem)(nil),       // 2: types.DisplayItem
 	(*ItemCount)(nil),         // 3: types.ItemCount
-	(*FolderContentData)(nil), // 4: types.FolderContentData
+	(*DisplayItems)(nil),      // 4: types.DisplayItems
+	(*CoverImages)(nil),       // 5: types.CoverImages
+	(*FolderContentData)(nil), // 6: types.FolderContentData
 }
 var file_proto_types_proto_depIdxs = []int32{
 	0, // 0: types.DisplayItem.entryType:type_name -> types.EntryType
-	2, // 1: types.FolderContentData.displayItems:type_name -> types.DisplayItem
-	1, // 2: types.FolderContentData.viewCategory:type_name -> types.ViewCategory
-	3, // 3: types.FolderContentData.itemCount:type_name -> types.ItemCount
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	2, // 1: types.DisplayItems.data:type_name -> types.DisplayItem
+	4, // 2: types.FolderContentData.displayItems:type_name -> types.DisplayItems
+	1, // 3: types.FolderContentData.viewCategory:type_name -> types.ViewCategory
+	3, // 4: types.FolderContentData.itemCount:type_name -> types.ItemCount
+	5, // 5: types.FolderContentData.coverImages:type_name -> types.CoverImages
+	6, // [6:6] is the sub-list for method output_type
+	6, // [6:6] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_proto_types_proto_init() }
@@ -480,13 +579,14 @@ func file_proto_types_proto_init() {
 	if File_proto_types_proto != nil {
 		return
 	}
+	file_proto_types_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_types_proto_rawDesc), len(file_proto_types_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
