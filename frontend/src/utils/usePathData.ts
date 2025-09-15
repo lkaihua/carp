@@ -1,10 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { EntryType, FolderContentData } from '../types/proto/types';
 import { isIOS } from 'react-device-detect';
 
 // TODO: the server port name should coming from an env variable.
 const serverPort = 8100;
-export const serverBaseUrl = `//${window.location.hostname}:${serverPort}`;
+const serverProtocol = 'http://';
+export const serverBaseUrl = `${serverProtocol}${window.location.hostname}:${serverPort}`;
 
 // Extend this for more supported data types
 
@@ -14,21 +15,23 @@ export type PathData =
       folder: FolderContentData;
     }
   | {
-      type: EntryType.ENTRY_TYPE_VIDEO | EntryType.ENTRY_TYPE_IMAGE;
+      type: EntryType.ENTRY_TYPE_VIDEO;
+      url: string;
+    }
+  | {
+      type: EntryType.ENTRY_TYPE_IMAGE;
       url: string;
     };
 
-// export interface PathDataResponse {
-//   data?: PathData;
-//   isLoading: boolean;
-//   error?: Error;
-// }
-
-export function usePathData(pathname?: string) {
-  const { data, isLoading, error } = useQuery({
+export function usePathData(
+  pathname?: string,
+  options?: Omit<UseQueryOptions<PathData, Error>, 'queryKey' | 'queryFn'>,
+) {
+  return useQuery<PathData, Error>({
     queryKey: ['list', pathname],
-    queryFn: async (): Promise<PathData> => {
-      const baseUrl = `${serverBaseUrl}${pathname}`;
+    queryFn: async () => {
+      // console.log(pathname, serverBaseUrl);
+      const baseUrl = new URL(pathname ?? '', serverBaseUrl).href;
 
       let headRes: Response;
 
@@ -75,7 +78,7 @@ export function usePathData(pathname?: string) {
       if (isIOS) {
         if (contentType.startsWith('application/octet-stream')) {
           // Check if the file is an image based on the extension
-          const extension = pathname.split('.').pop()?.toLowerCase();
+          const extension = pathname?.split('.').pop()?.toLowerCase();
           if (extension === 'heic' || extension === 'heif') {
             return {
               type: EntryType.ENTRY_TYPE_IMAGE,
@@ -90,12 +93,11 @@ export function usePathData(pathname?: string) {
       }
       throw new Error('No content found');
     },
-    enabled: !!pathname,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: !!pathname,
+    ...options,
   });
-
-  return { data, isLoading, error };
 }

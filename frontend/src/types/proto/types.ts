@@ -132,11 +132,19 @@ export interface ItemCount {
   countMusic: number;
 }
 
+export interface DisplayItems {
+  data: DisplayItem[];
+}
+
+export interface CoverImages {
+  data: string[];
+}
+
 export interface FolderContentData {
-  displayItems: DisplayItem[];
-  viewCategory: ViewCategory;
-  itemCount: ItemCount | undefined;
-  coverImage: string[];
+  displayItems?: DisplayItems | undefined;
+  viewCategory?: ViewCategory | undefined;
+  itemCount?: ItemCount | undefined;
+  coverImages?: CoverImages | undefined;
 }
 
 function createBaseDisplayItem(): DisplayItem {
@@ -478,23 +486,139 @@ export const ItemCount: MessageFns<ItemCount> = {
   },
 };
 
+function createBaseDisplayItems(): DisplayItems {
+  return { data: [] };
+}
+
+export const DisplayItems: MessageFns<DisplayItems> = {
+  encode(message: DisplayItems, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.data) {
+      DisplayItem.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DisplayItems {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDisplayItems();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.data.push(DisplayItem.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DisplayItems {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => DisplayItem.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: DisplayItems): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => DisplayItem.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<DisplayItems>, I>>(base?: I): DisplayItems {
+    return DisplayItems.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<DisplayItems>, I>>(object: I): DisplayItems {
+    const message = createBaseDisplayItems();
+    message.data = object.data?.map((e) => DisplayItem.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseCoverImages(): CoverImages {
+  return { data: [] };
+}
+
+export const CoverImages: MessageFns<CoverImages> = {
+  encode(message: CoverImages, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.data) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CoverImages {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCoverImages();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.data.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CoverImages {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => globalThis.String(e)) : [] };
+  },
+
+  toJSON(message: CoverImages): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CoverImages>, I>>(base?: I): CoverImages {
+    return CoverImages.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CoverImages>, I>>(object: I): CoverImages {
+    const message = createBaseCoverImages();
+    message.data = object.data?.map((e) => e) || [];
+    return message;
+  },
+};
+
 function createBaseFolderContentData(): FolderContentData {
-  return { displayItems: [], viewCategory: 0, itemCount: undefined, coverImage: [] };
+  return { displayItems: undefined, viewCategory: undefined, itemCount: undefined, coverImages: undefined };
 }
 
 export const FolderContentData: MessageFns<FolderContentData> = {
   encode(message: FolderContentData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.displayItems) {
-      DisplayItem.encode(v!, writer.uint32(10).fork()).join();
+    if (message.displayItems !== undefined) {
+      DisplayItems.encode(message.displayItems, writer.uint32(10).fork()).join();
     }
-    if (message.viewCategory !== 0) {
+    if (message.viewCategory !== undefined) {
       writer.uint32(16).int32(message.viewCategory);
     }
     if (message.itemCount !== undefined) {
       ItemCount.encode(message.itemCount, writer.uint32(26).fork()).join();
     }
-    for (const v of message.coverImage) {
-      writer.uint32(34).string(v!);
+    if (message.coverImages !== undefined) {
+      CoverImages.encode(message.coverImages, writer.uint32(34).fork()).join();
     }
     return writer;
   },
@@ -511,7 +635,7 @@ export const FolderContentData: MessageFns<FolderContentData> = {
             break;
           }
 
-          message.displayItems.push(DisplayItem.decode(reader, reader.uint32()));
+          message.displayItems = DisplayItems.decode(reader, reader.uint32());
           continue;
         }
         case 2: {
@@ -535,7 +659,7 @@ export const FolderContentData: MessageFns<FolderContentData> = {
             break;
           }
 
-          message.coverImage.push(reader.string());
+          message.coverImages = CoverImages.decode(reader, reader.uint32());
           continue;
         }
       }
@@ -549,30 +673,26 @@ export const FolderContentData: MessageFns<FolderContentData> = {
 
   fromJSON(object: any): FolderContentData {
     return {
-      displayItems: globalThis.Array.isArray(object?.displayItems)
-        ? object.displayItems.map((e: any) => DisplayItem.fromJSON(e))
-        : [],
-      viewCategory: isSet(object.viewCategory) ? viewCategoryFromJSON(object.viewCategory) : 0,
+      displayItems: isSet(object.displayItems) ? DisplayItems.fromJSON(object.displayItems) : undefined,
+      viewCategory: isSet(object.viewCategory) ? viewCategoryFromJSON(object.viewCategory) : undefined,
       itemCount: isSet(object.itemCount) ? ItemCount.fromJSON(object.itemCount) : undefined,
-      coverImage: globalThis.Array.isArray(object?.coverImage)
-        ? object.coverImage.map((e: any) => globalThis.String(e))
-        : [],
+      coverImages: isSet(object.coverImages) ? CoverImages.fromJSON(object.coverImages) : undefined,
     };
   },
 
   toJSON(message: FolderContentData): unknown {
     const obj: any = {};
-    if (message.displayItems?.length) {
-      obj.displayItems = message.displayItems.map((e) => DisplayItem.toJSON(e));
+    if (message.displayItems !== undefined) {
+      obj.displayItems = DisplayItems.toJSON(message.displayItems);
     }
-    if (message.viewCategory !== 0) {
+    if (message.viewCategory !== undefined) {
       obj.viewCategory = viewCategoryToJSON(message.viewCategory);
     }
     if (message.itemCount !== undefined) {
       obj.itemCount = ItemCount.toJSON(message.itemCount);
     }
-    if (message.coverImage?.length) {
-      obj.coverImage = message.coverImage;
+    if (message.coverImages !== undefined) {
+      obj.coverImages = CoverImages.toJSON(message.coverImages);
     }
     return obj;
   },
@@ -582,12 +702,16 @@ export const FolderContentData: MessageFns<FolderContentData> = {
   },
   fromPartial<I extends Exact<DeepPartial<FolderContentData>, I>>(object: I): FolderContentData {
     const message = createBaseFolderContentData();
-    message.displayItems = object.displayItems?.map((e) => DisplayItem.fromPartial(e)) || [];
-    message.viewCategory = object.viewCategory ?? 0;
+    message.displayItems = (object.displayItems !== undefined && object.displayItems !== null)
+      ? DisplayItems.fromPartial(object.displayItems)
+      : undefined;
+    message.viewCategory = object.viewCategory ?? undefined;
     message.itemCount = (object.itemCount !== undefined && object.itemCount !== null)
       ? ItemCount.fromPartial(object.itemCount)
       : undefined;
-    message.coverImage = object.coverImage?.map((e) => e) || [];
+    message.coverImages = (object.coverImages !== undefined && object.coverImages !== null)
+      ? CoverImages.fromPartial(object.coverImages)
+      : undefined;
     return message;
   },
 };

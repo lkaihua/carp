@@ -1,12 +1,14 @@
-import { forwardRef, memo, useRef } from 'react';
-import { DisplayItem } from '../types/proto/types';
+import { forwardRef, memo, useEffect, useRef, useState } from 'react';
+import { DisplayItem } from '../../types/proto/types';
 import { FixedSizeList } from 'react-window';
 import { EntityTitle, Icon, Divider } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
-import { getIconForType } from '../utils/getIconForType';
-import { Box } from './Box';
+import { getIconForType } from '../../utils/getIconForType';
+import { Box } from '../Box/Box';
+import { useDebounce } from '@uidotdev/usehooks';
 
 import './List.css';
+import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
 
 interface RowProps {
   index: number;
@@ -67,8 +69,8 @@ interface ListProps {
   height: number;
   itemData: DisplayItem[];
   rowHeight: number;
-  onItemsRendered: () => void;
-  setActiveVerticalPos: (rowIndex: number) => void;
+  onItemsRendered?: () => void;
+  setActiveVerticalPos?: (rowIndex: number) => void;
 }
 
 export const List = forwardRef<FixedSizeList, ListProps>(
@@ -83,7 +85,26 @@ export const List = forwardRef<FixedSizeList, ListProps>(
     }: ListProps,
     ref,
   ) => {
-    const hasMountedRef = useRef(false);
+    // const hasMountedRef = useRef(false);
+    // const [scrollOffset, setScrollOffset] = useState(0);
+    // const debouncedScrollOffset = useDebounce(scrollOffset, 150);
+
+    // useEffect(() => {
+    //   if (!hasMountedRef.current) return;
+
+    //   if (debouncedScrollOffset >= 0) {
+    //     console.log('scroll finished at:', debouncedScrollOffset);
+    //     setActiveVerticalPos(debouncedScrollOffset);
+    //   }
+    // }, [debouncedScrollOffset]);
+
+    console.log('List render with items:', itemData.length);
+
+    const { handleScroll } = useDebouncedScrollOffset((offset) => {
+      // console.log('List scroll finished at:', offset);
+      setActiveVerticalPos?.(offset);
+    });
+
     return (
       <FixedSizeList
         ref={ref}
@@ -93,20 +114,8 @@ export const List = forwardRef<FixedSizeList, ListProps>(
         itemData={itemData}
         itemCount={itemData.length}
         itemSize={rowHeight}
-        onItemsRendered={() => onItemsRendered()}
-        onScroll={({ scrollOffset }) => {
-          // First mounts
-          if (!hasMountedRef.current) {
-            hasMountedRef.current = true;
-            return;
-          }
-          // Fix strange corner case when onScroll is triggered prematurely and overrides the value
-          if (scrollOffset <= 10) {
-            return;
-          }
-          console.log('scrolling to active row index:', scrollOffset);
-          setActiveVerticalPos(scrollOffset);
-        }}
+        onItemsRendered={() => onItemsRendered?.()}
+        onScroll={({ scrollOffset }) => handleScroll(scrollOffset)}
       >
         {Row}
       </FixedSizeList>

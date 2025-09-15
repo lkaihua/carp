@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { generateBreadcrumbs } from '../utils/getBreadCrumbs';
+import { generateBreadcrumbs } from '../../utils/getBreadCrumbs';
 import {
   Alignment,
   Breadcrumbs,

@@ -1,6 +1,13 @@
-import { forwardRef, memo, useEffect, useLayoutEffect, useRef } from 'react';
+import {
+  forwardRef,
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { FixedSizeGrid, GridOnScrollProps } from 'react-window';
-import { DisplayItem, EntryType } from '../types/proto/types';
+import { DisplayItem, EntryType } from '../../types/proto/types';
 import {
   Card,
   EntityTitle,
@@ -11,12 +18,16 @@ import {
   Spinner,
 } from '@blueprintjs/core';
 import { Link, useLocation } from 'react-router-dom';
-import { serverBaseUrl, usePathData } from '../utils/usePathData';
+import { serverBaseUrl, usePathData } from '../../utils/usePathData';
 import { match } from 'ts-pattern';
+import ReactPlayer from 'react-player';
 
 import './Grid.css';
-import { getIconForType } from '../utils/getIconForType';
-import { BoxCol } from './BoxCol';
+import { getIconForType } from '../../utils/getIconForType';
+import { BoxCol } from '../BoxCol/BoxCol';
+import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
+import { getPathMeta, joinPath } from '../../utils/path';
+import { preview } from 'vite';
 
 interface CellProps {
   columnIndex: number;
@@ -50,7 +61,7 @@ const CellPreview = memo(
 
       const handleTimeUpdate = () => {
         if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
-          video.currentTime = 0;
+          video.currentTime = 0.5;
           video.play();
         }
       };
@@ -66,25 +77,43 @@ const CellPreview = memo(
     ) {
       cover = (
         <Link to={previewFilePath} className="grid-cover-video-link">
-          <video
+          {/* <video
             ref={videoRef}
             src={serverBaseUrl + previewFilePath}
             controls={false}
-            autoPlay
+            autoPlay={false}
             loop={false}
             playsInline
             muted
             height={160}
             width="100%"
             style={{ maxHeight: '100%' }}
-            onLoadedMetadata={handleVideoReady}
+            // onLoadedMetadata={handleVideoReady}
+          /> */}
+          {/* <ReactPlayer
+            // todo: get this src correct
+            src={joinPath(serverBaseUrl, previewFilePath)}
+            controls={true}
+            style={{ height: '100%' }}
+            muted={false}
+            autoPlay={false}
+          /> */}
+          <EntityTitle
+            ellipsize
+            title={getPathMeta(previewFilePath).fileName || ''}
+            icon="video"
+            className="grid-cover-title"
           />
         </Link>
       );
     } else {
       cover = (
         <Link to={previewFilePath} className="grid-cover-image-link">
-          <img src={serverBaseUrl + previewFilePath} alt="Cover" height={160} />
+          <img
+            src={joinPath(serverBaseUrl, previewFilePath)}
+            alt="Cover"
+            height={160}
+          />
         </Link>
       );
     }
@@ -114,7 +143,6 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
   const index = rowIndex * columnCount + columnIndex;
   const item = itemData?.at(index);
   const isFolder = item?.entryType === EntryType.ENTRY_TYPE_FOLDER;
-
   const filePath = item?.fullUrl;
 
   // Request the metadata only if the target is FOLDER
@@ -124,30 +152,34 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
     error,
   } = usePathData(isFolder ? filePath : undefined);
 
-  // console.log('item', item);
+  const previewFilePath = match(item)
+    .with({ entryType: EntryType.ENTRY_TYPE_FOLDER }, (folder) =>
+      newItemData?.type == EntryType.ENTRY_TYPE_FOLDER &&
+      (newItemData?.folder?.coverImages?.data ?? []).length > 0
+        ? joinPath(filePath, newItemData?.folder?.coverImages?.data.at(0))
+        : '',
+    )
+    .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => filePath)
+    .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, () => filePath)
+    .otherwise(() => '');
+
+  const icon = getIconForType(item?.entryType);
+  const cover = useMemo(
+    () =>
+      previewFilePath && (
+        <CellPreview
+          previewFilePath={previewFilePath}
+          linkFilePath={filePath}
+          linkTitle={item?.firstName}
+          linkIcon={icon}
+        />
+      ),
+    [previewFilePath, filePath, item, icon],
+  );
+
   if (!item) {
     return null;
   }
-  const previewFilePath = match(item.entryType)
-    .with(EntryType.ENTRY_TYPE_FOLDER, () =>
-      newItemData?.type == EntryType.ENTRY_TYPE_FOLDER &&
-      newItemData?.folder?.coverImage?.length > 0
-        ? filePath + newItemData.folder.coverImage.at(0)
-        : '',
-    )
-    .with(EntryType.ENTRY_TYPE_IMAGE, () => filePath)
-    .with(EntryType.ENTRY_TYPE_VIDEO, () => filePath)
-    .otherwise(() => '');
-
-  const icon = getIconForType(item.entryType);
-  const cover = previewFilePath ? (
-    <CellPreview
-      previewFilePath={previewFilePath}
-      linkFilePath={filePath}
-      linkTitle={item.firstName}
-      linkIcon={icon}
-    />
-  ) : null;
 
   const content = (
     <EntityTitle
@@ -196,8 +228,8 @@ interface GridProps {
   columnCount?: number;
   columnWidth?: number;
   rowHeight?: number;
-  onItemsRendered: () => void;
-  setActiveVerticalPos: (rowIndex: number) => void;
+  onItemsRendered?: () => void;
+  setActiveVerticalPos?: (rowIndex: number) => void;
 }
 
 export const Grid = forwardRef<FixedSizeGrid, GridProps>(
@@ -215,7 +247,12 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
     ref,
   ) => {
     const totalItems = itemData.length;
-    const hasMountedRef = useRef(false);
+
+    const { handleScroll } = useDebouncedScrollOffset((offset) => {
+      // console.log('Grid scroll finished at:', offset);
+      setActiveVerticalPos?.(offset);
+    });
+
     return (
       <FixedSizeGrid
         ref={ref}
@@ -227,19 +264,8 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
         columnWidth={columnWidth}
         rowHeight={rowHeight}
         itemData={{ itemData, columnCount }} // Todo: use memo for better performance
-        onItemsRendered={() => onItemsRendered()}
-        onScroll={({ scrollTop }) => {
-          // First mounts
-          if (!hasMountedRef.current) {
-            hasMountedRef.current = true;
-            return;
-          }
-          // Fix strange corner case when onScroll is triggered prematurely and overrides the value
-          if (scrollTop <= 10) {
-            return;
-          }
-          setActiveVerticalPos(scrollTop);
-        }}
+        onItemsRendered={() => onItemsRendered?.()}
+        onScroll={({ scrollTop }) => handleScroll(scrollTop)}
       >
         {Cell}
       </FixedSizeGrid>

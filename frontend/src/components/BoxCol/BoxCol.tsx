@@ -1,13 +1,13 @@
-import React from "react";
-import { Box } from "./Box";
+import React from 'react';
+import { Box } from '../Box/Box';
 
-interface BoxColProps extends React.ComponentProps<typeof Box> { }
+interface BoxColProps extends React.ComponentProps<typeof Box> {}
 
 export const BoxCol: React.FC<BoxColProps> = ({ style, ...rest }) => {
   return (
     <Box
       style={{
-        flexDirection: "column",
+        flexDirection: 'column',
         ...style,
       }}
       {...rest}

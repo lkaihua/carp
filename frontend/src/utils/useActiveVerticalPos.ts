@@ -1,5 +1,5 @@
 import { useLocalStorage } from 'usehooks-ts';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 type ActiveVerticalPosMap = Record<string, number>;
 
@@ -17,12 +17,15 @@ export function useActiveVerticalPos(currentPath: string, defaultIndex = 0) {
     [activeVerticalPosMap, currentPath, defaultIndex],
   );
 
-  const setActiveVerticalPos = (index: number) => {
-    setActiveVerticalPosMap((prev) => ({
-      ...prev,
-      [currentPath]: index,
-    }));
-  };
+  const setActiveVerticalPos = useCallback(
+    (index: number) => {
+      setActiveVerticalPosMap((prev) => ({
+        ...prev,
+        [currentPath]: index,
+      }));
+    },
+    [currentPath, setActiveVerticalPosMap],
+  );
 
   return [activeVerticalPos, setActiveVerticalPos] as const;
 }

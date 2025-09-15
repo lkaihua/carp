@@ -6,7 +6,8 @@
     "module": "esnext", // modern module output
     "target": "esnext", // modern JS target
     "allowSyntheticDefaultImports": true,
-    "types": ["vite/client"] // keep Vite type declarations
+    "types": ["vite/client"], // keep Vite type declarations
+    "strict": true
   },
   "include": ["src"]
 }

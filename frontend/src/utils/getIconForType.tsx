@@ -1,7 +1,7 @@
 import { IconName } from '@blueprintjs/icons';
 import { EntryType } from '../types/proto/types';
 
-export function getIconForType(type: EntryType): IconName {
+export function getIconForType(type?: EntryType): IconName {
   switch (type) {
     case EntryType.ENTRY_TYPE_FOLDER:
       return 'folder-close';

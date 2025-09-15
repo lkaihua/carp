@@ -6,14 +6,13 @@ import { Media } from '@blueprintjs/icons';
 import { useNavigate } from 'react-router-dom';
 
 import './Drawer.css';
-import { BoxCol } from './BoxCol';
-import { PropsWithChildren } from 'react';
+import { BoxCol } from '../BoxCol/BoxCol';
+import { PropsWithChildren, useCallback } from 'react';
+
+const DRAWER_HEIGHT = '80%';
 
 export interface Props {
-  src: string;
-  /**
-   * Optional name for the photo, used as the title in the drawer.
-   */
+  src?: string;
   name?: string;
   icon?: DrawerProps['icon'];
   onCloseNavigateTo?: string;
@@ -27,17 +26,20 @@ export function Drawer({
   icon = <Media />,
 }: PropsWithChildren<Props>) {
   const navigate = useNavigate();
+  if (!src) {
+    return null;
+  }
   const title = name ?? decodeURIComponent(src.split('/').pop() ?? '');
-  const onClose = () => {
+  const onClose = useCallback(() => {
     if (onCloseNavigateTo) {
       navigate(onCloseNavigateTo);
     }
-  };
+  }, [navigate, onCloseNavigateTo]);
 
   return (
     <BlueprintDrawer
       position="bottom"
-      size="90%"
+      size={DRAWER_HEIGHT}
       title={title}
       usePortal
       icon={icon}

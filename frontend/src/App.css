@@ -16,14 +16,6 @@
   overflow: hidden;
 }
 
-.list-page {
-  flex: 1 1 auto;
-  width: 100%;
-  height: calc(100dvh - 50px);
-  /* 50px for header */
-  overflow: hidden;
-}
-
 .bp6-non-ideal-state-visual {
   /* Fix the path inside svg gets cut off */
   display: flex;
