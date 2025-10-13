@@ -3,17 +3,26 @@ import { EntryType, FolderContentData } from '../types/proto/types';
 import { isIOS } from 'react-device-detect';
 
 // TODO: the server port name should coming from an env variable.
+// Need to resolve this two-port issue sooner or later. Now there are two ports:
+// Dev - 5173 for vite dev, 8100 for the backend server
+// Production - 8000 for all
+//   - https://192.168.1.1:8000/index.html
+//   - https://192.168.1.1:8000/favicon.ico
+//   - https://192.168.1.1:8000/main.js
+//   - https://192.168.1.1:8000/~/example_folder/ - folder meta
+//   - https://192.168.1.1:8000/~/example_folder/test.mp4 - file raw
+
 const serverPort = 8100;
 const serverProtocol = 'http://';
 export const serverBaseUrl = `${serverProtocol}${window.location.hostname}:${serverPort}`;
 
-// Extend this for more supported data types
+export type FolderData = {
+  type: EntryType.ENTRY_TYPE_FOLDER;
+  folder: FolderContentData;
+};
 
 export type PathData =
-  | {
-      type: EntryType.ENTRY_TYPE_FOLDER;
-      folder: FolderContentData;
-    }
+  | FolderData
   | {
       type: EntryType.ENTRY_TYPE_VIDEO;
       url: string;
@@ -24,14 +33,19 @@ export type PathData =
     };
 
 export function usePathData(
-  pathname?: string,
+  relativePath?: string | null,
   options?: Omit<UseQueryOptions<PathData, Error>, 'queryKey' | 'queryFn'>,
 ) {
   return useQuery<PathData, Error>({
-    queryKey: ['list', pathname],
+    queryKey: ['list', relativePath],
     queryFn: async () => {
       // console.log(pathname, serverBaseUrl);
-      const baseUrl = new URL(pathname ?? '', serverBaseUrl).href;
+      // todo: we can get rid of the server base url I think with fullUrl passed back
+      // only for the first folder request, we need to use the server base url actually
+
+      const baseUrl = relativePath?.startsWith('http')
+        ? relativePath
+        : new URL(relativePath ?? '', serverBaseUrl).href;
 
       let headRes: Response;
 
@@ -78,7 +92,7 @@ export function usePathData(
       if (isIOS) {
         if (contentType.startsWith('application/octet-stream')) {
           // Check if the file is an image based on the extension
-          const extension = pathname?.split('.').pop()?.toLowerCase();
+          const extension = relativePath?.split('.').pop()?.toLowerCase();
           if (extension === 'heic' || extension === 'heif') {
             return {
               type: EntryType.ENTRY_TYPE_IMAGE,
@@ -97,7 +111,7 @@ export function usePathData(
     refetchOnWindowFocus: true,
     retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    enabled: !!pathname,
+    enabled: !!relativePath,
     ...options,
   });
 }

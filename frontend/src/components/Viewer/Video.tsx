@@ -19,12 +19,14 @@ export function Video({ src }: { src: string }) {
       controls={true}
       style={{
         width: 'auto',
-        height: 'auto',
+        height: '100%',
         maxHeight: '100%',
         maxWidth: '100%',
       }}
-      muted={false}
+      muted={true}
       autoPlay={true}
+      loop
+      playsInline
     />
   );
 }

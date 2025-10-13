@@ -114,6 +114,7 @@ export function viewCategoryToJSON(object: ViewCategory): string {
 export interface DisplayItem {
   name: string;
   entryType: EntryType;
+  /** item name safe string for url usage, encoded. */
   urlString: string;
   firstName: string;
   lastName: string;
@@ -121,7 +122,10 @@ export interface DisplayItem {
   modTimeUnix: number;
   size: string;
   sizeInt: number;
+  /** http://192.168.1.192:5173/folder/name.webp */
   fullUrl: string;
+  /** /folder/name.webp */
+  relativeUrl: string;
 }
 
 export interface ItemCount {
@@ -159,6 +163,7 @@ function createBaseDisplayItem(): DisplayItem {
     size: "",
     sizeInt: 0,
     fullUrl: "",
+    relativeUrl: "",
   };
 }
 
@@ -193,6 +198,9 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     }
     if (message.fullUrl !== "") {
       writer.uint32(82).string(message.fullUrl);
+    }
+    if (message.relativeUrl !== "") {
+      writer.uint32(90).string(message.relativeUrl);
     }
     return writer;
   },
@@ -284,6 +292,14 @@ export const DisplayItem: MessageFns<DisplayItem> = {
           message.fullUrl = reader.string();
           continue;
         }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.relativeUrl = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -305,6 +321,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
       size: isSet(object.size) ? globalThis.String(object.size) : "",
       sizeInt: isSet(object.sizeInt) ? globalThis.Number(object.sizeInt) : 0,
       fullUrl: isSet(object.fullUrl) ? globalThis.String(object.fullUrl) : "",
+      relativeUrl: isSet(object.relativeUrl) ? globalThis.String(object.relativeUrl) : "",
     };
   },
 
@@ -340,6 +357,9 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     if (message.fullUrl !== "") {
       obj.fullUrl = message.fullUrl;
     }
+    if (message.relativeUrl !== "") {
+      obj.relativeUrl = message.relativeUrl;
+    }
     return obj;
   },
 
@@ -358,6 +378,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     message.size = object.size ?? "";
     message.sizeInt = object.sizeInt ?? 0;
     message.fullUrl = object.fullUrl ?? "";
+    message.relativeUrl = object.relativeUrl ?? "";
     return message;
   },
 };

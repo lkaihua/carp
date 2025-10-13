@@ -1,7 +1,15 @@
 import { ElementRef, useEffect, useMemo, useRef, useState } from 'react';
-import { Route, Routes, useLocation, useParams } from 'react-router-dom';
+import {
+  Link,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
 
 import {
+  Card,
   NonIdealState,
   NonIdealStateIconSize,
   Spinner,
@@ -19,7 +27,7 @@ import { Grid } from './components/Grid/Grid';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
 import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
-import { usePathData } from './utils/usePathData';
+import { FolderData, PathData, usePathData } from './utils/usePathData';
 import { usePathMeta } from './utils/usePathMeta';
 import { joinPath } from './utils/path';
 import { LoadingBoundary } from './components/LoadingBoundary/LoadingBoundary';
@@ -42,18 +50,24 @@ const defaultDisplayItems = {
   ],
 } as DisplayItems;
 
+const defaultFolderData = {
+  displayItems: defaultDisplayItems,
+};
+
 export type ListView = 'list' | 'grid';
 
 export type ListPageProps = {
-  isRoot?: boolean;
+  startFolder?: string;
 };
 
-function ListPage({ isRoot }: ListPageProps) {
+// function ListPage({ isRoot }: ListPageProps) {
+function ListPage({ startFolder }: ListPageProps) {
   const { pathname } = useLocation();
+  const path = startFolder ?? pathname;
 
-  const { folderPath, fileName } = usePathMeta(pathname);
+  const { folderPath, fileName } = usePathMeta(path);
 
-  const resolvedIsRoot = isRoot || pathname === '/';
+  // const resolvedIsRoot = isRoot || folderPath === '/';
 
   console.log('folderPath', folderPath, 'fileName', fileName);
 
@@ -112,14 +126,14 @@ function ListPage({ isRoot }: ListPageProps) {
 
   // Sync document title with path
   useEffect(() => {
-    document.title = `Carp ${pathname ? `- ${pathname}` : ''}`;
-  }, [pathname]);
+    document.title = `Carp ${path ? `- ${path}` : ''}`;
+  }, [path]);
 
   const folderData =
     data?.type === EntryType.ENTRY_TYPE_FOLDER &&
-    (data?.folder?.displayItems?.data ?? []).length > 0
-      ? data
-      : { folder: { displayItems: defaultDisplayItems } };
+    (data?.folder?.displayItems?.data?.length ?? 0) > 0
+      ? data.folder
+      : defaultFolderData;
 
   // const fileData =
   //   currentFileData?.type !== EntryType.ENTRY_TYPE_FOLDER
@@ -133,7 +147,7 @@ function ListPage({ isRoot }: ListPageProps) {
 
   // TODO: now scrolling triggers the view re-rendering, why???
   // because the
-  const { displayItems } = folderData.folder;
+  const { displayItems } = folderData;
   console.log('displayItems', displayItems);
 
   if (!displayItems) {
@@ -142,13 +156,6 @@ function ListPage({ isRoot }: ListPageProps) {
 
   return (
     <>
-      {resolvedIsRoot && (
-        <NonIdealState
-          className={styles.welcomeState}
-          title="Welcome to Carp"
-          description="This is a self-hosted personal media server. To get started, please configure the root folder in the settings."
-        />
-      )}
       <LoadingBoundary isLoading={isLoading} error={error}>
         <BoxCol className={styles.listPage}>
           <AutoSizer>
@@ -180,10 +187,26 @@ function ListPage({ isRoot }: ListPageProps) {
           </AutoSizer>
         </BoxCol>
         <Viewer
-          file={fileName ? pathname : undefined}
+          fileName={fileName}
+          filePath={fileName ? path : null}
           parentFolderPath={folderPath}
+          // parentFolderData={folderData}
         />
+        <Outlet />
       </LoadingBoundary>
+    </>
+  );
+}
+
+function Home() {
+  return (
+    <>
+      <NonIdealState
+        className={styles.welcomeState}
+        title="Welcome to Carp"
+        description="This is a self-hosted personal media server. To get started, please configure the root folder in the settings."
+      />
+      <ListPage startFolder="/~/" />
     </>
   );
 }
@@ -193,8 +216,8 @@ function App() {
     <BoxCol className="app-container">
       <Header />
       <Routes>
-        <Route path="/" element={<ListPage isRoot />} />
-        <Route path=":path/*" element={<ListPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/~/*" element={<ListPage />} />
       </Routes>
     </BoxCol>
   );

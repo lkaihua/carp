@@ -21,7 +21,7 @@ export function getPathMeta(path: string): PathMeta {
   if (isFolder) {
     return { folderPath: `/${segments.join('/')}/`, fileName: null };
   } else {
-    const fileName = segments.pop()!;
+    const fileName = segments.pop() || null;
     const folderPath = segments.length > 0 ? `/${segments.join('/')}/` : '/';
     return { folderPath, fileName };
   }

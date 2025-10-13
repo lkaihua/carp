@@ -51,8 +51,8 @@ const Row = memo(({ index, style, data }: RowProps) => {
   return (
     <div className="list-item" style={style}>
       <div className="list-item-link-container">
-        {item.urlString ? (
-          <Link to={item.urlString} className="list-item-link">
+        {item.relativeUrl ? (
+          <Link to={item.relativeUrl} className="list-item-link">
             {content}
           </Link>
         ) : (

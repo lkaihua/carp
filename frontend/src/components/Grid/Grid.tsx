@@ -27,7 +27,7 @@ import { getIconForType } from '../../utils/getIconForType';
 import { BoxCol } from '../BoxCol/BoxCol';
 import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
 import { getPathMeta, joinPath } from '../../utils/path';
-import { preview } from 'vite';
+import { css } from '@emotion/css';
 
 interface CellProps {
   columnIndex: number;
@@ -108,11 +108,12 @@ const CellPreview = memo(
       );
     } else {
       cover = (
-        <Link to={previewFilePath} className="grid-cover-image-link">
+        <Link to={previewFilePath} className={styles.coverImageContainer}>
+          <Icon icon="zoom-in" size={16} className={styles.coverImageIcon} />
           <img
             src={joinPath(serverBaseUrl, previewFilePath)}
             alt="Cover"
-            height={160}
+            className={styles.coverImage}
           />
         </Link>
       );
@@ -143,24 +144,27 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
   const index = rowIndex * columnCount + columnIndex;
   const item = itemData?.at(index);
   const isFolder = item?.entryType === EntryType.ENTRY_TYPE_FOLDER;
-  const filePath = item?.fullUrl;
+  const relativeUrl = item?.relativeUrl;
+  const fullUrl = item?.fullUrl;
+
+  console.log(relativeUrl, fullUrl, item?.urlString);
 
   // Request the metadata only if the target is FOLDER
   const {
     data: newItemData,
     isLoading,
     error,
-  } = usePathData(isFolder ? filePath : undefined);
+  } = usePathData(isFolder ? relativeUrl : null);
 
   const previewFilePath = match(item)
     .with({ entryType: EntryType.ENTRY_TYPE_FOLDER }, (folder) =>
       newItemData?.type == EntryType.ENTRY_TYPE_FOLDER &&
       (newItemData?.folder?.coverImages?.data ?? []).length > 0
-        ? joinPath(filePath, newItemData?.folder?.coverImages?.data.at(0))
+        ? joinPath(relativeUrl, newItemData?.folder?.coverImages?.data.at(0))
         : '',
     )
-    .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => filePath)
-    .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, () => filePath)
+    .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => relativeUrl)
+    .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, () => relativeUrl)
     .otherwise(() => '');
 
   const icon = getIconForType(item?.entryType);
@@ -169,12 +173,12 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
       previewFilePath && (
         <CellPreview
           previewFilePath={previewFilePath}
-          linkFilePath={filePath}
+          linkFilePath={relativeUrl}
           linkTitle={item?.firstName}
           linkIcon={icon}
         />
       ),
-    [previewFilePath, filePath, item, icon],
+    [previewFilePath, relativeUrl, item, icon],
   );
 
   if (!item) {
@@ -272,3 +276,25 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
     );
   },
 );
+
+const styles = {
+  coverImageContainer: css`
+    display: flex;
+    position: relative;
+    background-color: aliceblue;
+  `,
+  coverImageIcon: css`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0);
+    padding: 5px;
+    border-radius: 3px;
+  `,
+  coverImage: css`
+    height: 160px;
+    max-width: 100%;
+    object-fit: contain;
+  `,
+};

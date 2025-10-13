@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import './Drawer.css';
 import { BoxCol } from '../BoxCol/BoxCol';
 import { PropsWithChildren, useCallback } from 'react';
-
-const DRAWER_HEIGHT = '80%';
+import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';
+import { css } from '@emotion/css';
 
 export interface Props {
   src?: string;
@@ -36,10 +36,14 @@ export function Drawer({
     }
   }, [navigate, onCloseNavigateTo]);
 
+  // breadcrumb height: 50px
+  // minus extra space to show the breadcrumb and the most top cells
+  const size = window.innerHeight - 150;
+
   return (
     <BlueprintDrawer
       position="bottom"
-      size={DRAWER_HEIGHT}
+      size={`${size}px`}
       title={title}
       usePortal
       icon={icon}
@@ -48,7 +52,35 @@ export function Drawer({
       className="drawer-container"
       transitionDuration={0}
     >
-      <BoxCol className="drawer-content">{children}</BoxCol>
+      <BoxCol className={styles.drawerContent}>{children}</BoxCol>
+      <BoxCol className={styles.drawerFooter}>
+        <Button onClick={onClose}>Close</Button>
+      </BoxCol>
     </BlueprintDrawer>
   );
 }
+
+const styles = {
+  drawerContent: css`
+    flex: 1 1 auto;
+    justify-content: space-between;
+    align-items: center;
+    overflow: scroll;
+  `,
+  drawerFooter: css`
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+  `,
+};
+
+// .drawer-container {
+//   .bp6-drawer-header {
+//     height: 50px; /* aligned with navbar */
+//   }
+// }
+// .drawer-content {
+//   flex: 1 1 auto;
+//   justify-content: center;
+//   align-items: center;
+//   overflow: scroll;
+// }
