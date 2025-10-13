@@ -2,10 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 
 	"github.com/lkaihua/carp/src/packages/myhttp"
 	"github.com/lkaihua/carp/src/packages/utils"
@@ -30,7 +28,7 @@ func main() {
 	flag.Parse()
 
 	rootDir = *directory
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/~/", indexHandler)
 
 	ipAddress := utils.GetOutboundIP()
 
@@ -39,11 +37,11 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
-func serveFile(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("[serveFile]", r.URL.Path)
-	filePath := r.URL.Path
-	myhttp.ServeFile(w, r, rootDir+filePath)
-}
+// func serveFile(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Println("[serveFile]", r.URL.Path)
+// 	filePath := r.URL.Path
+// 	myhttp.ServeFile(w, r, rootDir+filePath)
+// }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -52,14 +50,16 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "HEAD, GET, POST, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
-		if _, ok := queries["file"]; ok {
-			serveFile(w, r)
-			log.Printf("Serving file: %s", r.URL.Path)
-			return
-		}
-	}
+	// if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
+	// 	if _, ok := queries["file"]; ok {
+	// 		serveFile(w, r)
+	// 		log.Printf("Serving file: %s", r.URL.Path)
+	// 		return
+	// 	}
+	// }
 
-	log.Printf("Serving: %s", rootDir+r.URL.Path)
-	myhttp.ServeFile(w, r, rootDir+r.URL.Path)
+	path := r.URL.Path[3:] // trim off leading /~/
+
+	log.Printf("Serving: %s", rootDir+path)
+	myhttp.ServeFile(w, r, rootDir+path)
 }

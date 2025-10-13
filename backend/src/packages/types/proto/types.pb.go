@@ -132,17 +132,21 @@ func (ViewCategory) EnumDescriptor() ([]byte, []int) {
 }
 
 type DisplayItem struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	EntryType     EntryType              `protobuf:"varint,2,opt,name=entryType,proto3,enum=types.EntryType" json:"entryType,omitempty"`
-	UrlString     string                 `protobuf:"bytes,3,opt,name=urlString,proto3" json:"urlString,omitempty"`
-	FirstName     string                 `protobuf:"bytes,4,opt,name=firstName,proto3" json:"firstName,omitempty"`
-	LastName      string                 `protobuf:"bytes,5,opt,name=lastName,proto3" json:"lastName,omitempty"`
-	ModTime       string                 `protobuf:"bytes,6,opt,name=modTime,proto3" json:"modTime,omitempty"`
-	ModTimeUnix   int64                  `protobuf:"varint,7,opt,name=modTimeUnix,proto3" json:"modTimeUnix,omitempty"`
-	Size          string                 `protobuf:"bytes,8,opt,name=size,proto3" json:"size,omitempty"`
-	SizeInt       int64                  `protobuf:"varint,9,opt,name=sizeInt,proto3" json:"sizeInt,omitempty"`
-	FullUrl       string                 `protobuf:"bytes,10,opt,name=fullUrl,proto3" json:"fullUrl,omitempty"`
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Name      string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	EntryType EntryType              `protobuf:"varint,2,opt,name=entryType,proto3,enum=types.EntryType" json:"entryType,omitempty"`
+	// item name safe string for url usage, encoded.
+	UrlString   string `protobuf:"bytes,3,opt,name=urlString,proto3" json:"urlString,omitempty"`
+	FirstName   string `protobuf:"bytes,4,opt,name=firstName,proto3" json:"firstName,omitempty"`
+	LastName    string `protobuf:"bytes,5,opt,name=lastName,proto3" json:"lastName,omitempty"`
+	ModTime     string `protobuf:"bytes,6,opt,name=modTime,proto3" json:"modTime,omitempty"`
+	ModTimeUnix int64  `protobuf:"varint,7,opt,name=modTimeUnix,proto3" json:"modTimeUnix,omitempty"`
+	Size        string `protobuf:"bytes,8,opt,name=size,proto3" json:"size,omitempty"`
+	SizeInt     int64  `protobuf:"varint,9,opt,name=sizeInt,proto3" json:"sizeInt,omitempty"`
+	// http://192.168.1.192:5173/folder/name.webp
+	FullUrl string `protobuf:"bytes,10,opt,name=fullUrl,proto3" json:"fullUrl,omitempty"`
+	// /folder/name.webp
+	RelativeUrl   string `protobuf:"bytes,11,opt,name=relativeUrl,proto3" json:"relativeUrl,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -243,6 +247,13 @@ func (x *DisplayItem) GetSizeInt() int64 {
 func (x *DisplayItem) GetFullUrl() string {
 	if x != nil {
 		return x.FullUrl
+	}
+	return ""
+}
+
+func (x *DisplayItem) GetRelativeUrl() string {
+	if x != nil {
+		return x.RelativeUrl
 	}
 	return ""
 }
@@ -483,7 +494,7 @@ var File_proto_types_proto protoreflect.FileDescriptor
 
 const file_proto_types_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/types.proto\x12\x05types\"\xad\x02\n" +
+	"\x11proto/types.proto\x12\x05types\"\xcf\x02\n" +
 	"\vDisplayItem\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12.\n" +
 	"\tentryType\x18\x02 \x01(\x0e2\x10.types.EntryTypeR\tentryType\x12\x1c\n" +
@@ -495,7 +506,8 @@ const file_proto_types_proto_rawDesc = "" +
 	"\x04size\x18\b \x01(\tR\x04size\x12\x18\n" +
 	"\asizeInt\x18\t \x01(\x03R\asizeInt\x12\x18\n" +
 	"\afullUrl\x18\n" +
-	" \x01(\tR\afullUrl\"\xa7\x01\n" +
+	" \x01(\tR\afullUrl\x12 \n" +
+	"\vrelativeUrl\x18\v \x01(\tR\vrelativeUrl\"\xa7\x01\n" +
 	"\tItemCount\x12\x1a\n" +
 	"\bcountAll\x18\x01 \x01(\x05R\bcountAll\x12\x1e\n" +
 	"\n" +
