@@ -27,6 +27,7 @@
 #### 2025-10-13
 
 - [ ] Separate Home and ListPage default
+- [x] Complete a plan of non-prod and prod port usage. Updated the serving folder path in `https://{IP}:{PORT}/~/` url.
 
 #### 2025-09-15
 
