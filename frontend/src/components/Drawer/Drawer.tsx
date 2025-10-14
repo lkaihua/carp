@@ -26,15 +26,15 @@ export function Drawer({
   icon = <Media />,
 }: PropsWithChildren<Props>) {
   const navigate = useNavigate();
-  if (!src) {
-    return null;
-  }
-  const title = name ?? decodeURIComponent(src.split('/').pop() ?? '');
   const onClose = useCallback(() => {
     if (onCloseNavigateTo) {
       navigate(onCloseNavigateTo);
     }
   }, [navigate, onCloseNavigateTo]);
+  // if (!src) {
+  //   return null;
+  // }
+  const title = name ?? decodeURIComponent(src?.split('/').pop() ?? '');
 
   // breadcrumb height: 50px
   // minus extra space to show the breadcrumb and the most top cells
@@ -47,7 +47,7 @@ export function Drawer({
       title={title}
       usePortal
       icon={icon}
-      isOpen
+      isOpen={!!src}
       onClose={onClose}
       className="drawer-container"
       transitionDuration={0}

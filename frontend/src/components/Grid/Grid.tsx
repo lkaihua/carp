@@ -109,7 +109,7 @@ const CellPreview = memo(
     } else {
       cover = (
         <Link to={previewFilePath} className={styles.coverImageContainer}>
-          <Icon icon="zoom-in" size={16} className={styles.coverImageIcon} />
+          <Icon icon="eye-open" size={16} className={styles.coverImageIcon} />
           <img
             src={joinPath(serverBaseUrl, previewFilePath)}
             alt="Cover"
@@ -288,9 +288,9 @@ const styles = {
     bottom: 0;
     right: 0;
     z-index: 10;
-    background: rgba(255, 255, 255, 0);
+    background: rgba(255, 255, 255, 0.5);
     padding: 5px;
-    border-radius: 3px;
+    border-radius: 3px 0 3px 0;
   `,
   coverImage: css`
     height: 160px;

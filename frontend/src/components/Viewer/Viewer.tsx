@@ -83,23 +83,25 @@ export const Viewer: React.FC<ViewerProps> = memo(
     //   );
     // }, [parentFolderData]);
 
-    if (!fileName) {
-      return null;
-    }
+    // if (!fileName) {
+    //   return null;
+    // }
 
     return (
       <Drawer src={fileName} onCloseNavigateTo={parentFolderPath} icon={icon}>
-        <LoadingBoundary isLoading={isLoading} error={error}>
-          {data?.url && (
-            <Content
-              item={{
-                src: data.url,
-                entryType: data?.type,
-                filename: fileName,
-              }}
-            />
-          )}
-        </LoadingBoundary>
+        {!!fileName && (
+          <LoadingBoundary isLoading={isLoading} error={error}>
+            {data?.url && (
+              <Content
+                item={{
+                  src: data.url,
+                  entryType: data?.type,
+                  filename: fileName,
+                }}
+              />
+            )}
+          </LoadingBoundary>
+        )}
       </Drawer>
     );
   },

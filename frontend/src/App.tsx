@@ -154,6 +154,10 @@ function ListPage({ startFolder }: ListPageProps) {
     return null;
   }
 
+  // setInterval(() => {
+  //   console.log(document.activeElement);
+  // }, 500);
+
   return (
     <>
       <LoadingBoundary isLoading={isLoading} error={error}>
