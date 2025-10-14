@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 import { getIconForType } from '../../utils/getIconForType';
 import { Box } from '../Box/Box';
 import { useDebounce } from '@uidotdev/usehooks';
-
-import './List.css';
+import { css } from '@emotion/css';
 import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
 
 interface RowProps {
@@ -22,11 +21,11 @@ const Row = memo(({ index, style, data }: RowProps) => {
 
   const content = (
     <EntityTitle
-      title={<span className="list-item-title">{item.firstName}</span>}
+      title={<span className={styles.listItemTitle}>{item.firstName}</span>}
       icon={icon}
       ellipsize
       subtitle={
-        <Box gap={10} className="list-item-subtitle">
+        <Box gap={10} className={styles.listItemSubtitle}>
           {item.lastName !== '/' && (
             <>
               <code>{item.lastName}</code>
@@ -49,10 +48,10 @@ const Row = memo(({ index, style, data }: RowProps) => {
     />
   );
   return (
-    <div className="list-item" style={style}>
-      <div className="list-item-link-container">
+    <div className={styles.listItem} style={style}>
+      <div className={styles.listItemLinkContainer}>
         {item.relativeUrl ? (
-          <Link to={item.relativeUrl} className="list-item-link">
+          <Link to={item.relativeUrl} className={styles.listItemLink}>
             {content}
           </Link>
         ) : (
@@ -108,7 +107,7 @@ export const List = forwardRef<FixedSizeList, ListProps>(
     return (
       <FixedSizeList
         ref={ref}
-        className="list-container"
+        className={styles.listContainer}
         width={width}
         height={height}
         itemData={itemData}
@@ -122,3 +121,39 @@ export const List = forwardRef<FixedSizeList, ListProps>(
     );
   },
 );
+
+const styles = {
+  listItem: css``,
+  listItemLinkContainer: css`
+    margin: 5px 6px;
+    padding-inline: 12px;
+    align-items: center;
+    height: 40px;
+    display: flex;
+    flex: 1 1 auto;
+
+    .bp6-entity-title {
+      gap: 12px;
+    }
+
+    .bp6-entity-title-icon-container .bp6-icon {
+      color: black;
+    }
+  `,
+  listItemLink: css`
+    &:hover {
+      text-decoration: none;
+
+      .list-item-title {
+        text-decoration: underline;
+      }
+    }
+  `,
+  listItemIcon: css`
+    color: black;
+    display: none;
+  `,
+  listItemSubtitle: css``,
+  listItemTitle: css``,
+  listContainer: css``,
+};

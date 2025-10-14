@@ -12,6 +12,7 @@ export function Photo({ src, name }: { src: string; name?: string }) {
 
 const styles = {
   photoImg: css`
+    min-width: 100px;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;

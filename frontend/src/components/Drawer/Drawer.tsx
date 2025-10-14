@@ -5,7 +5,6 @@ import {
 import { Media } from '@blueprintjs/icons';
 import { useNavigate } from 'react-router-dom';
 
-import './Drawer.css';
 import { BoxCol } from '../BoxCol/BoxCol';
 import { PropsWithChildren, useCallback } from 'react';
 import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';

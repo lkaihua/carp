@@ -22,7 +22,7 @@ import { serverBaseUrl, usePathData } from '../../utils/usePathData';
 import { match } from 'ts-pattern';
 import ReactPlayer from 'react-player';
 
-import './Grid.css';
+// Styles moved from Grid.css below
 import { getIconForType } from '../../utils/getIconForType';
 import { BoxCol } from '../BoxCol/BoxCol';
 import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
@@ -76,7 +76,7 @@ const CellPreview = memo(
       previewFilePath.toLowerCase().endsWith('.mov')
     ) {
       cover = (
-        <Link to={previewFilePath} className="grid-cover-video-link">
+        <Link to={previewFilePath} className={styles.gridCoverVideoLink}>
           {/* <video
             ref={videoRef}
             src={serverBaseUrl + previewFilePath}
@@ -102,7 +102,7 @@ const CellPreview = memo(
             ellipsize
             title={getPathMeta(previewFilePath).fileName || ''}
             icon="video"
-            className="grid-cover-title"
+            className={styles.gridCoverTitle}
           />
         </Link>
       );
@@ -121,14 +121,13 @@ const CellPreview = memo(
 
     return (
       <>
-        <BoxCol className="grid-cover-media-container">{cover}</BoxCol>
-        <BoxCol className="grid-cover-title-container">
+        <BoxCol className={styles.gridCoverMediaContainer}>{cover}</BoxCol>
+        <BoxCol className={styles.gridCoverTitleContainer}>
           <Link to={linkFilePath}>
             <EntityTitle
               ellipsize
               title={linkTitle}
               icon={linkIcon ?? 'folder-close'}
-              className="grid-cover-title"
             />
           </Link>
         </BoxCol>
@@ -147,7 +146,7 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
   const relativeUrl = item?.relativeUrl;
   const fullUrl = item?.fullUrl;
 
-  console.log(relativeUrl, fullUrl, item?.urlString);
+  // console.log(relativeUrl, fullUrl, item?.urlString);
 
   // Request the metadata only if the target is FOLDER
   const {
@@ -187,7 +186,7 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
 
   const content = (
     <EntityTitle
-      className="grid-item-entity-title"
+      className={styles.gridItemEntityTitle}
       title={item.firstName}
       subtitle={isFolder ? '' : item.lastName}
       ellipsize
@@ -196,7 +195,7 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
 
   const fallback = (
     <NonIdealState
-      className="grid-item-title"
+      className={styles.gridItemTitle}
       iconSize={NonIdealStateIconSize.STANDARD}
       icon={icon}
       title={
@@ -213,11 +212,11 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
 
   // TODO: click the folder to open it, now the preview takes to much space
   return (
-    <div style={style} className="cell-container">
+    <div style={style} className={styles.cellContainer}>
       {isLoading ? (
         <Spinner />
       ) : cover ? (
-        <div className="cover-container">{cover}</div>
+        <div className={styles.coverContainer}>{cover}</div>
       ) : (
         fallback
       )}
@@ -260,7 +259,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
     return (
       <FixedSizeGrid
         ref={ref}
-        className="grid-container"
+        className={styles.gridContainer}
         width={width}
         height={height}
         columnCount={columnCount}
@@ -278,6 +277,66 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(
 );
 
 const styles = {
+  gridContainer: css`
+    width: 100%;
+    table-layout: fixed;
+  `,
+  gridCoverTitle: css`
+    justify-content: center;
+  `,
+  gridItemEntityTitle: css`
+    font-size: 14px;
+    font-weight: normal;
+  `,
+  cellContainer: css`
+    border-right: 1px solid var(--bp3-border-color, #d8dde6);
+    border-bottom: 1px solid var(--bp3-border-color, #d8dde6);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+  coverContainer: css`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    justify-content: space-around;
+  `,
+  gridItemTitle: css`
+    padding: 5px;
+    pointer-events: none;
+    .bp6-non-ideal-state-text {
+      max-width: 100%;
+    }
+    .grid-item-entity-title {
+      font-size: 14px;
+      font-weight: normal;
+    }
+    .grid-item-link {
+      pointer-events: auto;
+      .bp6-entity-title-title-and-tags {
+        justify-content: center;
+      }
+    }
+  `,
+  gridCoverMediaContainer: css`
+    align-items: center;
+    img,
+    video {
+      border-radius: 4px;
+      overflow: hidden;
+    }
+  `,
+  gridCoverTitleContainer: css`
+    padding-inline: 5px;
+    .grid-cover-title {
+      justify-content: center;
+    }
+  `,
+  gridCoverVideoLink: css`
+    display: flex;
+  `,
   coverImageContainer: css`
     display: flex;
     position: relative;
@@ -285,15 +344,16 @@ const styles = {
   `,
   coverImageIcon: css`
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
     z-index: 10;
     background: rgba(255, 255, 255, 0.5);
     padding: 5px;
-    border-radius: 3px 0 3px 0;
+    border-radius: 0 3px 0 3px;
   `,
   coverImage: css`
-    height: 160px;
+    /* height: 160px; */
+    max-height: 100%;
     max-width: 100%;
     object-fit: contain;
   `,
