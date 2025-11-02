@@ -102,7 +102,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 		// size := d.Size
 		// fmt.Println(name, "-", modTime, "-", size)
 		var firstName, lastName string
-		var entryType types.EntryType
+		entryType := types.EntryType_ENTRY_TYPE_DEFAULT
 
 		if d.IsFolder {
 			lastName = "/"

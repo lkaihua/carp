@@ -1,10 +1,10 @@
 package mytemplate
 
 import (
-	"encoding/json"
 	"net/http"
 
 	types "github.com/lkaihua/carp/src/packages/types/proto"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 const MAX_COVER_IMAGE_COUNT = 4
@@ -63,10 +63,28 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 			CountPhoto: int32(countPhoto),
 			CountMusic: int32(countMusic),
 		},
-		CoverImages: &types.CoverImages{Data: coverImages},
+		CoverImages:  &types.CoverImages{Data: coverImages},
 		DisplayItems: &types.DisplayItems{Data: entries},
 	}
 
+	m := protojson.MarshalOptions{
+		EmitUnpopulated: true,
+		UseEnumNumbers:  true,
+		UseProtoNames:   true,
+	}
+
+	b, err := m.Marshal(&contentData)
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(&contentData)
+
+	// Note: instead of using json.NewEncoder, we use protojson to
+	// marshal protobuf message to JSON
+	// Otherwise, fields with default values will be omitted
+	//// json.NewEncoder(w).Encode(&contentData)
+
+	w.Write(b)
 }
