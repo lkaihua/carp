@@ -20,7 +20,7 @@ export function LoadingBoundary({
   if (isLoading) {
     return (
       <NonIdealState
-        layout={'horizontal'}
+        layout={'vertical'}
         icon={<Spinner />}
         iconSize={NonIdealStateIconSize.STANDARD}
         title="Loading ..."
@@ -32,7 +32,7 @@ export function LoadingBoundary({
   if (error) {
     return (
       <NonIdealState
-        layout={'horizontal'}
+        layout={'vertical'}
         icon={<Issue size={NonIdealStateIconSize.STANDARD} />}
         title="Error"
         description={error.message}

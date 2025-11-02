@@ -4,7 +4,6 @@ import {
   Breadcrumbs,
   Button,
   ButtonGroup,
-  EntityTitle,
   Navbar,
   NavbarGroup,
 } from '@blueprintjs/core';
@@ -14,6 +13,7 @@ import { css } from '@emotion/css';
 
 import { BreadcrumbProps, Icon } from '@blueprintjs/core';
 import logoMono from '../../assets/logo-mono.png';
+import { HEADER_NAV_HEIGHT } from '../../constants/layout';
 
 export function Header() {
   const { pathname } = useLocation();
@@ -25,25 +25,30 @@ export function Header() {
 
   const items = generateBreadcrumbs(segments);
   return (
-    <Navbar className="navbar">
-      <NavbarGroup className="navbar-header-group">
+    <Navbar className={styles.navbar}>
+      <NavbarGroup
+        className={styles.navBarBreadcrumbsContainer}
+        align={Alignment.LEFT}
+      >
         <Breadcrumbs
-          className="header-breadcrumbs"
           items={items}
           minVisibleItems={1}
-          breadcrumbRenderer={(props) => (
-            <Link to={props.href ?? '/'}>
-              <EntityTitle
-                icon={props.icon}
-                title={props.text as string}
-                ellipsize
-              />
-            </Link>
-          )}
+          // breadcrumbRenderer={(props) => (
+          //   <Link to={props.href ?? '/'}>
+          //     <EntityTitle
+          //       icon={props.icon}
+          //       title={props.text as string}
+          //       ellipsize
+          //     />
+          //   </Link>
+          // )}
         />
       </NavbarGroup>
 
-      <NavbarGroup className="navbar-group-options" align={Alignment.END}>
+      <NavbarGroup
+        className={styles.navbarViewSelectorContainer}
+        align={Alignment.END}
+      >
         <ButtonGroup>
           <Button
             intent="none"
@@ -67,13 +72,12 @@ function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
   const crumbs: BreadcrumbProps[] = [];
 
   let cumulativePath = '/';
-
-  // Add "Home" root
-  crumbs.push({
+  const homeCrumb: BreadcrumbProps = {
     text: '',
     href: '/',
     icon: <img src={logoMono} className={styles.logo} alt="logo" />,
-  });
+  };
+  crumbs.push(homeCrumb);
 
   // Add path segments
   segments.forEach((segment, index) => {
@@ -84,10 +88,11 @@ function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
       text: decodeURIComponent(segment),
       href: cumulativePath,
       current: isCurrent,
-      icon: (
-        <Icon icon={isCurrent ? 'folder-open' : 'folder-close'} color="black" />
-      ),
-    });
+      // todo: the current folder icon should be its type
+      // icon: (
+      //   <Icon icon={isCurrent ? 'folder-open' : 'folder-close'} color="black" />
+      // ),
+    } as BreadcrumbProps);
   });
 
   return crumbs;
@@ -97,5 +102,25 @@ const styles = {
   logo: css`
     width: 24px;
     height: 24px;
+    // fix the gap distance with the empty node of blank text.
+    margin-right: -7px;
+  `,
+  navbar: css`
+    min-height: ${HEADER_NAV_HEIGHT}px;
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    overflow: scroll;
+  `,
+  navBarBreadcrumbsContainer: css`
+    flex: 1 1 auto;
+    min-width: 40px;
+  `,
+  navbarViewSelectorContainer: css`
+    display: flex;
+    flex: 0 0 auto;
+    width: 60px;
   `,
 };

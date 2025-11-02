@@ -2,16 +2,19 @@ import {
   Drawer as BlueprintDrawer,
   DrawerProps,
 } from '@blueprintjs/core/lib/esm/components/drawer/drawer';
-import { Media } from '@blueprintjs/icons';
+import { Divide, Media } from '@blueprintjs/icons';
 import { useNavigate } from 'react-router-dom';
 
-import { BoxCol } from '../BoxCol/BoxCol';
+import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
 import { PropsWithChildren, useCallback } from 'react';
 import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';
 import { css } from '@emotion/css';
+import { HEADER_NAV_HEIGHT } from '../../constants/layout';
+import { FlexBox } from '../FlexBox/FlexBox';
+import { Colors, Divider } from '@blueprintjs/core';
 
 export interface Props {
-  src?: string;
+  src: string;
   name?: string;
   icon?: DrawerProps['icon'];
   onCloseNavigateTo?: string;
@@ -30,14 +33,10 @@ export function Drawer({
       navigate(onCloseNavigateTo);
     }
   }, [navigate, onCloseNavigateTo]);
-  // if (!src) {
-  //   return null;
-  // }
-  const title = name ?? decodeURIComponent(src?.split('/').pop() ?? '');
 
-  // breadcrumb height: 50px
-  // minus extra space to show the breadcrumb and the most top cells
-  const size = window.innerHeight - 150;
+  const title = name ?? decodeURIComponent(src.split('/').pop() ?? '');
+
+  const size = window.innerHeight - HEADER_NAV_HEIGHT;
 
   return (
     <BlueprintDrawer
@@ -51,35 +50,41 @@ export function Drawer({
       className="drawer-container"
       transitionDuration={0}
     >
-      <BoxCol className={styles.drawerContent}>{children}</BoxCol>
-      <BoxCol className={styles.drawerFooter}>
-        <Button onClick={onClose}>Close</Button>
-      </BoxCol>
+      <FlexBox className={styles.drawerContainer}>
+        <FlexCol className={styles.drawerContent}>{children}</FlexCol>
+        <FlexCol className={styles.drawerFooter}>
+          <Button className={styles.drawerFooterCloseButton} onClick={onClose}>
+            Close
+          </Button>
+        </FlexCol>
+      </FlexBox>
     </BlueprintDrawer>
   );
 }
 
 const styles = {
+  drawerContainer: css`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  `,
   drawerContent: css`
     flex: 1 1 auto;
     justify-content: space-between;
     align-items: center;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
   `,
   drawerFooter: css`
-    padding: 12px 16px;
-    border-top: 1px solid #eee;
+    flex: 0 0 auto;
+    height: 50px;
+    justify-content: center;
+    border-top: 1px solid ${Colors.LIGHT_GRAY3};
+  `,
+  drawerFooterCloseButton: css`
+    margin-inline: 10px;
   `,
 };
-
-// .drawer-container {
-//   .bp6-drawer-header {
-//     height: 50px; /* aligned with navbar */
-//   }
-// }
-// .drawer-content {
-//   flex: 1 1 auto;
-//   justify-content: center;
-//   align-items: center;
-//   overflow: scroll;
-// }

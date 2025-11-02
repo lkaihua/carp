@@ -10,31 +10,44 @@ import {
 
 import {
   Card,
+  CardList,
+  CompoundTag,
+  H6,
   NonIdealState,
   NonIdealStateIconSize,
+  Section,
+  SectionCard,
   Spinner,
+  Tag,
+  Text,
 } from '@blueprintjs/core';
-import { Issue } from '@blueprintjs/icons';
-import { DisplayItem, DisplayItems, EntryType } from './types/proto/types';
 
+import hexToRgba from 'hex-to-rgba';
+
+import {
+  DisplayItem,
+  DisplayItems,
+  EntryType,
+  FolderContentData,
+} from './types/proto/types';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { useLocalStorage } from 'usehooks-ts';
 import './App.css';
-import { BoxCol } from './components/BoxCol/BoxCol';
+import { FlexCol } from './components/FlexBoxCol/FlexBoxCol';
 import { Viewer } from './components/Viewer/Viewer';
 import { Grid } from './components/Grid/Grid';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
 import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
-import { FolderData, PathData, usePathData } from './utils/usePathData';
+import { usePathData } from './utils/usePathData';
 import { usePathMeta } from './utils/usePathMeta';
 import { joinPath } from './utils/path';
 import { LoadingBoundary } from './components/LoadingBoundary/LoadingBoundary';
 import { css } from '@emotion/css';
 import { Colors } from '@blueprintjs/core';
-
-const rowHeight = 50;
+import { FlexBox } from './components/FlexBox/FlexBox';
+import { LIST_ROW_HEIGHT } from './constants/layout';
 
 const defaultDisplayItems = {
   data: [
@@ -49,10 +62,6 @@ const defaultDisplayItems = {
     },
   ],
 } as DisplayItems;
-
-const defaultFolderData = {
-  displayItems: defaultDisplayItems,
-};
 
 export type ListView = 'list' | 'grid';
 
@@ -129,11 +138,11 @@ function ListPage({ startFolder }: ListPageProps) {
     document.title = `Carp ${path ? `- ${path}` : ''}`;
   }, [path]);
 
-  const folderData =
+  const folderContentData =
     data?.type === EntryType.ENTRY_TYPE_FOLDER &&
-    (data?.folder?.displayItems?.data?.length ?? 0) > 0
-      ? data.folder
-      : defaultFolderData;
+    (data?.data?.displayItems?.data?.length ?? 0) > 0
+      ? data.data
+      : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
   // const fileData =
   //   currentFileData?.type !== EntryType.ENTRY_TYPE_FOLDER
@@ -146,8 +155,7 @@ function ListPage({ startFolder }: ListPageProps) {
   // console.log('current fileData', fileData);
 
   // TODO: now scrolling triggers the view re-rendering, why???
-  // because the
-  const { displayItems } = folderData;
+  const { displayItems } = folderContentData;
   console.log('displayItems', displayItems);
 
   if (!displayItems) {
@@ -161,7 +169,7 @@ function ListPage({ startFolder }: ListPageProps) {
   return (
     <>
       <LoadingBoundary isLoading={isLoading} error={error}>
-        <BoxCol className={styles.listPage}>
+        <FlexCol className={styles.listPage}>
           <AutoSizer>
             {({ height, width }) =>
               activeView === 'list' ? (
@@ -169,7 +177,7 @@ function ListPage({ startFolder }: ListPageProps) {
                   width={width}
                   height={height}
                   itemData={displayItems.data}
-                  rowHeight={rowHeight}
+                  rowHeight={LIST_ROW_HEIGHT}
                   ref={listRef}
                   // onItemsRendered={() => setItemsRendered(true)}
                   // setActiveVerticalPos={setActiveVerticalPos}
@@ -189,12 +197,12 @@ function ListPage({ startFolder }: ListPageProps) {
               )
             }
           </AutoSizer>
-        </BoxCol>
+        </FlexCol>
         <Viewer
           fileName={fileName}
           filePath={fileName ? path : null}
           parentFolderPath={folderPath}
-          // parentFolderData={folderData}
+          parentFolderData={folderContentData}
         />
         <Outlet />
       </LoadingBoundary>
@@ -205,25 +213,107 @@ function ListPage({ startFolder }: ListPageProps) {
 function Home() {
   return (
     <>
-      <NonIdealState
+      {/* <NonIdealState
         className={styles.welcomeState}
-        title="Welcome to Carp"
-        description="This is a self-hosted personal media server. To get started, please configure the root folder in the settings."
-      />
-      <ListPage startFolder="/~/" />
+        title="Hello!"
+        description="To get started, please configure the root folder in the settings."
+      /> */}
+
+      <Section
+        title="Server Info"
+        collapsible={true}
+        style={{ overflow: 'unset' }}
+        icon="server"
+      >
+        <SectionCard padded>
+          <div className={styles.serverInfoList}>
+            <CompoundTag
+              fill
+              minimal
+              size="large"
+              leftContent="LAN IP"
+              icon="globe-network"
+            >
+              192.168.1.100
+            </CompoundTag>
+
+            <Section
+              className={styles.qrCodeSection}
+              title="QR code"
+              collapsible={true}
+              collapseProps={{ defaultIsOpen: false }}
+              titleRenderer={() => (
+                <CompoundTag
+                  fill
+                  minimal
+                  size="large"
+                  leftContent="QR code"
+                  icon="mobile-phone"
+                >
+                  <Text>Scan on mobile</Text>
+                </CompoundTag>
+              )}
+            >
+              <SectionCard>This is the QR code image</SectionCard>
+            </Section>
+
+            <CompoundTag
+              fill
+              minimal
+              size="large"
+              leftContent="Server started"
+              icon="cloud-tick"
+            >
+              xxxx-xx-xx (5 minutes ago)
+            </CompoundTag>
+            <CompoundTag
+              fill
+              minimal
+              size="large"
+              leftContent="Local folder"
+              icon="folder-open"
+            >
+              /Users/admin/Downloads/
+            </CompoundTag>
+          </div>
+        </SectionCard>
+      </Section>
+
+      <Section
+        title="Root Folder"
+        collapsible={true}
+        icon="home"
+        titleRenderer={() => (
+          <FlexBox
+            style={{ alignItems: 'center', justifyContent: 'center' }}
+            gap={10}
+          >
+            <H6 style={{ marginBottom: 0 }}>Root Folder</H6>
+            <Link to="/~/">
+              <FlexBox gap={5}>
+                <Tag minimal icon="folder-shared-open" size="large">
+                  <code>~</code>
+                </Tag>
+              </FlexBox>
+            </Link>
+          </FlexBox>
+        )}
+      >
+        <ListPage startFolder="/~/" />
+      </Section>
     </>
   );
 }
 
 function App() {
   return (
-    <BoxCol className="app-container">
+    <FlexCol className="app-container">
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/~/*" element={<ListPage />} />
       </Routes>
-    </BoxCol>
+    </FlexCol>
   );
 }
 
@@ -240,6 +330,26 @@ const styles = {
     height: calc(100dvh - 50px);
     /* 50px for header */
     overflow: hidden;
+  `,
+  serverInfoList: css`
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  `,
+
+  qrCodeSection: css`
+    &&& .bp6-section-header {
+      padding-left: 0;
+      min-height: unset;
+      background-color: ${hexToRgba(Colors.GRAY1, 0.1)};
+
+      .bp6-section-header-left {
+        padding-block: 0;
+      }
+      .bp6-compound-tag-right {
+        background-color: unset;
+      }
+    }
   `,
 };
 

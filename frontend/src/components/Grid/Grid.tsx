@@ -12,10 +12,12 @@ import {
   Card,
   EntityTitle,
   Icon,
+  Text,
   IconName,
   NonIdealState,
   NonIdealStateIconSize,
   Spinner,
+  Tag,
 } from '@blueprintjs/core';
 import { Link, useLocation } from 'react-router-dom';
 import { serverBaseUrl, usePathData } from '../../utils/usePathData';
@@ -24,10 +26,11 @@ import ReactPlayer from 'react-player';
 
 // Styles moved from Grid.css below
 import { getIconForType } from '../../utils/getIconForType';
-import { BoxCol } from '../BoxCol/BoxCol';
+import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
 import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
 import { getPathMeta, joinPath } from '../../utils/path';
 import { css } from '@emotion/css';
+import { Video } from '../Viewer/Video';
 
 interface CellProps {
   columnIndex: number;
@@ -47,37 +50,36 @@ interface CellPreviewProps {
   linkTitle: string;
   linkIcon?: IconName;
 }
-const CellPreview = memo(
-  ({
-    previewFilePath,
-    linkFilePath,
-    linkTitle,
-    linkIcon,
-  }: CellPreviewProps) => {
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const handleVideoReady = () => {
-      const video = videoRef.current;
-      if (!video) return;
+const CellPreview = memo(function CellPreviewComponent({
+  previewFilePath,
+  linkFilePath,
+  linkTitle,
+  linkIcon,
+}: CellPreviewProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const handleVideoReady = () => {
+    const video = videoRef.current;
+    if (!video) return;
 
-      const handleTimeUpdate = () => {
-        if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
-          video.currentTime = 0.5;
-          video.play();
-        }
-      };
-
-      video.addEventListener('timeupdate', handleTimeUpdate);
+    const handleTimeUpdate = () => {
+      if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
+        video.currentTime = 0.5;
+        video.play();
+      }
     };
 
-    // TODO: use better way to determine if it's a video or image
-    let cover;
-    if (
-      previewFilePath.toLowerCase().endsWith('.mp4') ||
-      previewFilePath.toLowerCase().endsWith('.mov')
-    ) {
-      cover = (
-        <Link to={previewFilePath} className={styles.gridCoverVideoLink}>
-          {/* <video
+    video.addEventListener('timeupdate', handleTimeUpdate);
+  };
+
+  // TODO: use better way to determine if it's a video or image
+  let cover;
+  if (
+    previewFilePath.toLowerCase().endsWith('.mp4') ||
+    previewFilePath.toLowerCase().endsWith('.mov')
+  ) {
+    cover = (
+      <Link to={previewFilePath} className={styles.gridCoverVideoLink}>
+        {/* <video
             ref={videoRef}
             src={serverBaseUrl + previewFilePath}
             controls={false}
@@ -90,7 +92,7 @@ const CellPreview = memo(
             style={{ maxHeight: '100%' }}
             // onLoadedMetadata={handleVideoReady}
           /> */}
-          {/* <ReactPlayer
+        {/* <ReactPlayer
             // todo: get this src correct
             src={joinPath(serverBaseUrl, previewFilePath)}
             controls={true}
@@ -98,45 +100,70 @@ const CellPreview = memo(
             muted={false}
             autoPlay={false}
           /> */}
-          <EntityTitle
-            ellipsize
-            title={getPathMeta(previewFilePath).fileName || ''}
-            icon="video"
-            className={styles.gridCoverTitle}
-          />
-        </Link>
-      );
-    } else {
-      cover = (
-        <Link to={previewFilePath} className={styles.coverImageContainer}>
-          <Icon icon="eye-open" size={16} className={styles.coverImageIcon} />
-          <img
-            src={joinPath(serverBaseUrl, previewFilePath)}
-            alt="Cover"
-            className={styles.coverImage}
-          />
-        </Link>
-      );
-    }
 
-    return (
-      <>
-        <BoxCol className={styles.gridCoverMediaContainer}>{cover}</BoxCol>
-        <BoxCol className={styles.gridCoverTitleContainer}>
-          <Link to={linkFilePath}>
-            <EntityTitle
-              ellipsize
-              title={linkTitle}
-              icon={linkIcon ?? 'folder-close'}
-            />
-          </Link>
-        </BoxCol>
-      </>
+        {/* <ReactPlayer
+          // todo: get this src correct
+          src={joinPath(serverBaseUrl, previewFilePath)}
+          controls={true}
+          style={{ height: '100%', width: '100%' }}
+          muted={false}
+          autoPlay={false}
+        /> */}
+
+        {/* 
+        // todo: backend should return the preview full url and 
+        if the file is under 1 minute, returns a directPlayPreview flag
+         */}
+
+        <Video src={joinPath(serverBaseUrl, previewFilePath)} />
+
+        {/* <EntityTitle
+          ellipsize
+          title={getPathMeta(previewFilePath).fileName || ''}
+          icon="video"
+          className={styles.gridCoverTitle}
+        /> */}
+      </Link>
     );
-  },
-);
+  } else {
+    cover = (
+      <Link to={previewFilePath} className={styles.coverImageContainer}>
+        <Tag className={styles.coverImageIcon}>
+          <Icon icon="eye-open" size={16} />
+          <Text>{linkTitle}</Text>
+        </Tag>
+        <img
+          src={joinPath(serverBaseUrl, previewFilePath)}
+          alt="Cover"
+          className={styles.coverImage}
+        />
+      </Link>
+    );
+  }
 
-const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
+  return (
+    <>
+      <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
+      <FlexCol className={styles.gridCoverTitleContainer}>
+        <Link to={linkFilePath}>
+          {linkTitle}
+          {/* <EntityTitle
+            ellipsize
+            title={linkTitle}
+            icon={linkIcon ?? 'folder-close'}
+          /> */}
+        </Link>
+      </FlexCol>
+    </>
+  );
+});
+
+const Cell = memo(function CellComponent({
+  columnIndex,
+  rowIndex,
+  style,
+  data,
+}: CellProps) {
   const { itemData, columnCount } = data;
 
   // Calculate the 1D index from row/column
@@ -158,8 +185,8 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
   const previewFilePath = match(item)
     .with({ entryType: EntryType.ENTRY_TYPE_FOLDER }, (folder) =>
       newItemData?.type == EntryType.ENTRY_TYPE_FOLDER &&
-      (newItemData?.folder?.coverImages?.data ?? []).length > 0
-        ? joinPath(relativeUrl, newItemData?.folder?.coverImages?.data.at(0))
+      (newItemData?.data?.coverImages?.data ?? []).length > 0
+        ? joinPath(relativeUrl, newItemData?.data?.coverImages?.data.at(0))
         : '',
     )
     .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => relativeUrl)
@@ -169,14 +196,14 @@ const Cell = memo(({ columnIndex, rowIndex, style, data }: CellProps) => {
   const icon = getIconForType(item?.entryType);
   const cover = useMemo(
     () =>
-      previewFilePath && (
+      previewFilePath && relativeUrl ? (
         <CellPreview
           previewFilePath={previewFilePath}
           linkFilePath={relativeUrl}
-          linkTitle={item?.firstName}
+          linkTitle={item.name}
           linkIcon={icon}
         />
-      ),
+      ) : null,
     [previewFilePath, relativeUrl, item, icon],
   );
 
@@ -235,46 +262,44 @@ interface GridProps {
   setActiveVerticalPos?: (rowIndex: number) => void;
 }
 
-export const Grid = forwardRef<FixedSizeGrid, GridProps>(
-  (
-    {
-      width = 300,
-      height = 900,
-      columnCount = 3,
-      columnWidth = 100,
-      rowHeight = 30,
-      itemData,
-      onItemsRendered,
-      setActiveVerticalPos,
-    }: GridProps,
-    ref,
-  ) => {
-    const totalItems = itemData.length;
+export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
+  {
+    width = 300,
+    height = 900,
+    columnCount = 3,
+    columnWidth = 100,
+    rowHeight = 30,
+    itemData,
+    onItemsRendered,
+    setActiveVerticalPos,
+  }: GridProps,
+  ref,
+) {
+  const totalItems = itemData.length;
 
-    const { handleScroll } = useDebouncedScrollOffset((offset) => {
-      // console.log('Grid scroll finished at:', offset);
-      setActiveVerticalPos?.(offset);
-    });
+  const { handleScroll } = useDebouncedScrollOffset((offset) => {
+    // console.log('Grid scroll finished at:', offset);
+    setActiveVerticalPos?.(offset);
+  });
 
-    return (
-      <FixedSizeGrid
-        ref={ref}
-        className={styles.gridContainer}
-        width={width}
-        height={height}
-        columnCount={columnCount}
-        rowCount={Math.ceil(totalItems / columnCount)}
-        columnWidth={columnWidth}
-        rowHeight={rowHeight}
-        itemData={{ itemData, columnCount }} // Todo: use memo for better performance
-        onItemsRendered={() => onItemsRendered?.()}
-        onScroll={({ scrollTop }) => handleScroll(scrollTop)}
-      >
-        {Cell}
-      </FixedSizeGrid>
-    );
-  },
-);
+  return (
+    <FixedSizeGrid
+      ref={ref}
+      className={styles.gridContainer}
+      width={width}
+      height={height}
+      columnCount={columnCount}
+      rowCount={Math.ceil(totalItems / columnCount)}
+      columnWidth={columnWidth}
+      rowHeight={rowHeight}
+      itemData={{ itemData, columnCount }} // Todo: use memo for better performance
+      onItemsRendered={() => onItemsRendered?.()}
+      onScroll={({ scrollTop }) => handleScroll(scrollTop)}
+    >
+      {Cell}
+    </FixedSizeGrid>
+  );
+});
 
 const styles = {
   gridContainer: css`
@@ -301,7 +326,7 @@ const styles = {
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    justify-content: space-around;
+    /* justify-content: space-around; */
   `,
   gridItemTitle: css`
     padding: 5px;
@@ -322,11 +347,11 @@ const styles = {
   `,
   gridCoverMediaContainer: css`
     align-items: center;
-    img,
+    /* img,
     video {
       border-radius: 4px;
       overflow: hidden;
-    }
+    } */
   `,
   gridCoverTitleContainer: css`
     padding-inline: 5px;
@@ -349,7 +374,7 @@ const styles = {
     z-index: 10;
     background: rgba(255, 255, 255, 0.5);
     padding: 5px;
-    border-radius: 0 3px 0 3px;
+    border-bottom-left-radius: 5px;
   `,
   coverImage: css`
     /* height: 160px; */

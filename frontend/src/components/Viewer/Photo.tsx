@@ -1,16 +1,20 @@
-import { Media } from '@blueprintjs/icons';
-
 import { css } from '@emotion/css';
+import { FlexBox } from '../FlexBox/FlexBox';
 
 export function Photo({ src, name }: { src: string; name?: string }) {
   return (
-    <div>
+    <FlexBox className={styles.photoContainer}>
       <img className={styles.photoImg} src={src} alt={name ?? src} />
-    </div>
+    </FlexBox>
   );
 }
 
 const styles = {
+  photoContainer: css`
+    flex: 1 1 auto;
+    justify-content: center;
+    align-items: center;
+  `,
   photoImg: css`
     min-width: 100px;
     max-width: 100%;

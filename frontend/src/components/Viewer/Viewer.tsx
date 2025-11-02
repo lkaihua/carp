@@ -2,22 +2,20 @@ import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Photo } from './Photo';
 import { Video } from './Video';
 import { FolderData, PathData, usePathData } from '../../utils/usePathData';
-import { EntryType } from '../../types/proto/types';
+import { EntryType, FolderContentData } from '../../types/proto/types';
 import { Button, NonIdealState } from '@blueprintjs/core';
 import { LoadingBoundary } from '../LoadingBoundary/LoadingBoundary';
 import { match } from 'ts-pattern';
 import { data } from 'react-router-dom';
 import { Drawer } from '../Drawer/Drawer';
 import { Media as MediaIcon, Video as VideoIcon } from '@blueprintjs/icons';
-import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
 import { css } from '@emotion/css';
 
 interface ViewerProps {
-  fileName: string | null;
   filePath: string | null;
+  fileName: string | null;
   parentFolderPath?: string;
-  parentFolderData?: FolderData;
+  parentFolderData?: FolderContentData;
 }
 
 interface MediaItem {
@@ -26,96 +24,75 @@ interface MediaItem {
   filename?: string;
 }
 
-export const Viewer: React.FC<ViewerProps> = memo(
-  ({ fileName, filePath, parentFolderPath, parentFolderData }) => {
-    // fetch file meta
+const Content = ({ item }: { item: MediaItem }) =>
+  match(item)
+    .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, (video) => (
+      <Video src={video.src} />
+    ))
+    .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, (image) => (
+      <Photo src={image.src} />
+    ))
+    .otherwise(() => null);
 
-    // todo: we can either use the parent folder data to know the file type
-    // or fetch the file meta directly
-    // there is no need to fetch both
-    // it's possible that we only have the file path passed in
-    // and we only preview it without loading the parent folder data
-    // as the playlist / carousel.
-    const { data, isLoading, error } = usePathData(filePath);
+export const Viewer: React.FC<ViewerProps> = memo(function ViewComponent({
+  fileName,
+  filePath,
+  parentFolderPath,
+  parentFolderData,
+}) {
+  // fetch file meta
 
-    // console.log('Viewer data', { file, data, isLoading, error });
-    console.log('fileName', fileName);
-    console.log('data', data);
-    console.log('parentFolderData', parentFolderData);
+  // todo: we can either use the parent folder data to know the file type
+  // or fetch the file meta directly
+  // there is no need to fetch both
+  //
+  // it's possible that we only have the file path passed in
+  // and we only preview it without loading the parent folder data
+  // as the playlist / carousel.
 
-    const Content = ({ item }: { item: MediaItem }) =>
-      match(item)
-        .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, (video) => (
-          <Video src={video.src} />
-        ))
-        .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, (image) => (
-          <Photo src={image.src} />
-        ))
-        .otherwise(() => null);
+  // in order to have prev/next navigation, we need the parent folder data anyway
 
-    const icon = match(data)
-      .with({ type: EntryType.ENTRY_TYPE_VIDEO }, () => <VideoIcon />)
-      .with({ type: EntryType.ENTRY_TYPE_IMAGE }, () => <MediaIcon />)
-      .otherwise(() => null);
+  const { data, isLoading, error } = usePathData(filePath);
 
-    // from the parent folder data, find the current active index,
-    // create prev/next buttons to navigate the url
-    // and make sure the folder list does not get re-rendered
+  console.log('fileName', fileName);
+  console.log('filePath', filePath);
+  console.log('data', data);
+  console.log('parentFolderData', parentFolderData);
 
-    // const myImages: MediaItem[] = useMemo(() => {
-    //   return (
-    //     parentFolderData?.folder.displayItems?.data.reduce<MediaItem[]>(
-    //       (acc, item) => {
-    //         if (
-    //           item.entryType === EntryType.ENTRY_TYPE_IMAGE ||
-    //           item.entryType === EntryType.ENTRY_TYPE_VIDEO
-    //         ) {
-    //           acc.push({
-    //             src: item.fullUrl,
-    //             filename: item.firstName,
-    //             entryType: item.entryType,
-    //           });
-    //         }
-    //         return acc;
-    //       },
-    //       [],
-    //     ) ?? []
-    //   );
-    // }, [parentFolderData]);
+  // todo: based on fileName and parentFolderData
+  // we can find the index of the current file
+  // and the create prev/next navigation to the prev and next file
 
-    // if (!fileName) {
-    //   return null;
-    // }
+  const icon = match(data)
+    .with({ type: EntryType.ENTRY_TYPE_VIDEO }, () => <VideoIcon />)
+    .with({ type: EntryType.ENTRY_TYPE_IMAGE }, () => <MediaIcon />)
+    .otherwise(() => null);
 
-    return (
-      <Drawer src={fileName} onCloseNavigateTo={parentFolderPath} icon={icon}>
-        {!!fileName && (
-          <LoadingBoundary isLoading={isLoading} error={error}>
-            {data?.url && (
-              <Content
-                item={{
-                  src: data.url,
-                  entryType: data?.type,
-                  filename: fileName,
-                }}
-              />
-            )}
-          </LoadingBoundary>
-        )}
-      </Drawer>
-    );
-  },
-);
+  // from the parent folder data, find the current active index,
+  // create prev/next buttons to navigate the url
+  // the single source of truth is the URL path.
 
-const styles = {
-  swiper: css`
-    width: 100%;
-    max-height: 500px;
-  `,
-  swiperSlide: css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  `,
-};
+  if (!fileName || data?.type == EntryType.ENTRY_TYPE_FOLDER) {
+    return null;
+  }
+
+  return (
+    <Drawer src={fileName} onCloseNavigateTo={parentFolderPath} icon={icon}>
+      {!!fileName && (
+        <LoadingBoundary isLoading={isLoading} error={error}>
+          {data?.url && (
+            <Content
+              item={{
+                src: data.url,
+                entryType: data?.type,
+                filename: fileName,
+              }}
+            />
+          )}
+        </LoadingBoundary>
+      )}
+    </Drawer>
+  );
+});
+
+const styles = {};

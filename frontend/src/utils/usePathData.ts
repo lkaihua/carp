@@ -18,7 +18,7 @@ export const serverBaseUrl = `${serverProtocol}${window.location.hostname}:${ser
 
 export type FolderData = {
   type: EntryType.ENTRY_TYPE_FOLDER;
-  folder: FolderContentData;
+  data: FolderContentData;
 };
 
 export type PathData =
@@ -71,7 +71,7 @@ export function usePathData(
           const result = await jsonRes.json();
           return {
             type: EntryType.ENTRY_TYPE_FOLDER,
-            folder: result,
+            data: result,
           } as const;
         } catch (err) {
           throw new Error(`Failed to fetch or parse JSON: ${err}`);
@@ -102,7 +102,7 @@ export function usePathData(
         }
       }
 
-      if (!!contentType) {
+      if (contentType) {
         throw new Error(`Unsupported content type: ${contentType} `);
       }
       throw new Error('No content found');
