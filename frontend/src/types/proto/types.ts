@@ -114,7 +114,7 @@ export function viewCategoryToJSON(object: ViewCategory): string {
 export interface DisplayItem {
   name: string;
   entryType: EntryType;
-  /** item name safe string for url usage, encoded. */
+  /** item name safe string for url usage, encoded. e.g. `README.MD` */
   urlString: string;
   firstName: string;
   lastName: string;
@@ -122,9 +122,9 @@ export interface DisplayItem {
   modTimeUnix: number;
   size: string;
   sizeInt: number;
-  /** http://192.168.1.192:5173/folder/name.webp */
+  /** Full URL of the item. domain and port included. Useful for file access. e.g. `http://192.168.1.192:8100/README.MD` */
   fullUrl: string;
-  /** /folder/name.webp */
+  /** Relative URL of the item. domain and port excluded. Useful for navigation. e.g. `/README.MD` */
   relativeUrl: string;
 }
 
@@ -144,11 +144,21 @@ export interface CoverImages {
   data: string[];
 }
 
+export interface CoverVideo {
+  url: string;
+  sizeInt: number;
+}
+
+export interface CoverVideos {
+  data: CoverVideo[];
+}
+
 export interface FolderContentData {
   displayItems?: DisplayItems | undefined;
   viewCategory?: ViewCategory | undefined;
   itemCount?: ItemCount | undefined;
   coverImages?: CoverImages | undefined;
+  coverVideos?: CoverVideos | undefined;
 }
 
 function createBaseDisplayItem(): DisplayItem {
@@ -623,8 +633,148 @@ export const CoverImages: MessageFns<CoverImages> = {
   },
 };
 
+function createBaseCoverVideo(): CoverVideo {
+  return { url: "", sizeInt: 0 };
+}
+
+export const CoverVideo: MessageFns<CoverVideo> = {
+  encode(message: CoverVideo, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.url !== "") {
+      writer.uint32(10).string(message.url);
+    }
+    if (message.sizeInt !== 0) {
+      writer.uint32(16).int64(message.sizeInt);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CoverVideo {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCoverVideo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.url = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.sizeInt = longToNumber(reader.int64());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CoverVideo {
+    return {
+      url: isSet(object.url) ? globalThis.String(object.url) : "",
+      sizeInt: isSet(object.sizeInt) ? globalThis.Number(object.sizeInt) : 0,
+    };
+  },
+
+  toJSON(message: CoverVideo): unknown {
+    const obj: any = {};
+    if (message.url !== "") {
+      obj.url = message.url;
+    }
+    if (message.sizeInt !== 0) {
+      obj.sizeInt = Math.round(message.sizeInt);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CoverVideo>, I>>(base?: I): CoverVideo {
+    return CoverVideo.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CoverVideo>, I>>(object: I): CoverVideo {
+    const message = createBaseCoverVideo();
+    message.url = object.url ?? "";
+    message.sizeInt = object.sizeInt ?? 0;
+    return message;
+  },
+};
+
+function createBaseCoverVideos(): CoverVideos {
+  return { data: [] };
+}
+
+export const CoverVideos: MessageFns<CoverVideos> = {
+  encode(message: CoverVideos, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.data) {
+      CoverVideo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CoverVideos {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCoverVideos();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.data.push(CoverVideo.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CoverVideos {
+    return { data: globalThis.Array.isArray(object?.data) ? object.data.map((e: any) => CoverVideo.fromJSON(e)) : [] };
+  },
+
+  toJSON(message: CoverVideos): unknown {
+    const obj: any = {};
+    if (message.data?.length) {
+      obj.data = message.data.map((e) => CoverVideo.toJSON(e));
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CoverVideos>, I>>(base?: I): CoverVideos {
+    return CoverVideos.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CoverVideos>, I>>(object: I): CoverVideos {
+    const message = createBaseCoverVideos();
+    message.data = object.data?.map((e) => CoverVideo.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseFolderContentData(): FolderContentData {
-  return { displayItems: undefined, viewCategory: undefined, itemCount: undefined, coverImages: undefined };
+  return {
+    displayItems: undefined,
+    viewCategory: undefined,
+    itemCount: undefined,
+    coverImages: undefined,
+    coverVideos: undefined,
+  };
 }
 
 export const FolderContentData: MessageFns<FolderContentData> = {
@@ -640,6 +790,9 @@ export const FolderContentData: MessageFns<FolderContentData> = {
     }
     if (message.coverImages !== undefined) {
       CoverImages.encode(message.coverImages, writer.uint32(34).fork()).join();
+    }
+    if (message.coverVideos !== undefined) {
+      CoverVideos.encode(message.coverVideos, writer.uint32(42).fork()).join();
     }
     return writer;
   },
@@ -683,6 +836,14 @@ export const FolderContentData: MessageFns<FolderContentData> = {
           message.coverImages = CoverImages.decode(reader, reader.uint32());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.coverVideos = CoverVideos.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -698,6 +859,7 @@ export const FolderContentData: MessageFns<FolderContentData> = {
       viewCategory: isSet(object.viewCategory) ? viewCategoryFromJSON(object.viewCategory) : undefined,
       itemCount: isSet(object.itemCount) ? ItemCount.fromJSON(object.itemCount) : undefined,
       coverImages: isSet(object.coverImages) ? CoverImages.fromJSON(object.coverImages) : undefined,
+      coverVideos: isSet(object.coverVideos) ? CoverVideos.fromJSON(object.coverVideos) : undefined,
     };
   },
 
@@ -714,6 +876,9 @@ export const FolderContentData: MessageFns<FolderContentData> = {
     }
     if (message.coverImages !== undefined) {
       obj.coverImages = CoverImages.toJSON(message.coverImages);
+    }
+    if (message.coverVideos !== undefined) {
+      obj.coverVideos = CoverVideos.toJSON(message.coverVideos);
     }
     return obj;
   },
@@ -732,6 +897,9 @@ export const FolderContentData: MessageFns<FolderContentData> = {
       : undefined;
     message.coverImages = (object.coverImages !== undefined && object.coverImages !== null)
       ? CoverImages.fromPartial(object.coverImages)
+      : undefined;
+    message.coverVideos = (object.coverVideos !== undefined && object.coverVideos !== null)
+      ? CoverVideos.fromPartial(object.coverVideos)
       : undefined;
     return message;
   },

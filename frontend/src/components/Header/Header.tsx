@@ -28,7 +28,7 @@ export function Header() {
     <Navbar className={styles.navbar}>
       <NavbarGroup
         className={styles.navBarBreadcrumbsContainer}
-        align={Alignment.LEFT}
+        align={Alignment.START}
       >
         <Breadcrumbs
           items={items}
@@ -102,8 +102,6 @@ const styles = {
   logo: css`
     width: 24px;
     height: 24px;
-    // fix the gap distance with the empty node of blank text.
-    margin-right: -7px;
   `,
   navbar: css`
     min-height: ${HEADER_NAV_HEIGHT}px;
@@ -117,6 +115,7 @@ const styles = {
   navBarBreadcrumbsContainer: css`
     flex: 1 1 auto;
     min-width: 40px;
+    overflow: hidden;
   `,
   navbarViewSelectorContainer: css`
     display: flex;

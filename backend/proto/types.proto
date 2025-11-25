@@ -52,9 +52,19 @@ message CoverImages {
   repeated string data = 1;
 }
 
+message CoverVideo {
+  string url = 1;
+  int64 sizeInt = 2;
+}
+
+message CoverVideos {
+  repeated CoverVideo data = 1;
+}
+
 message FolderContentData {
   optional DisplayItems displayItems = 1;
   optional ViewCategory viewCategory = 2;
   optional ItemCount itemCount = 3;
   optional CoverImages coverImages = 4;
+  optional CoverVideos coverVideos = 5;
 }

@@ -8,17 +8,25 @@ import (
 )
 
 const MAX_COVER_IMAGE_COUNT = 4
+const MAX_COVER_VIDEO_COUNT = 4
 
 func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem) {
 
 	countAll := len(entries)
 	countTypeMap := make(map[types.EntryType]int)
 	coverImages := []string{}
+	coverVideos := []*types.CoverVideo{}
 
 	for _, v := range entries {
 		countTypeMap[v.EntryType] += 1
-		if (v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE || v.EntryType == types.EntryType_ENTRY_TYPE_VIDEO) && len(coverImages) < MAX_COVER_IMAGE_COUNT {
-			coverImages = append(coverImages, v.UrlString)
+		if v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE && len(coverImages) < MAX_COVER_IMAGE_COUNT {
+			coverImages = append(coverImages, v.FullUrl)
+		}
+		if v.EntryType == types.EntryType_ENTRY_TYPE_VIDEO && len(coverVideos) < MAX_COVER_VIDEO_COUNT {
+			coverVideos = append(coverVideos, &types.CoverVideo{
+				Url:     v.FullUrl,
+				SizeInt: v.SizeInt,
+			})
 		}
 	}
 	countImage := countTypeMap[types.EntryType_ENTRY_TYPE_IMAGE]
@@ -64,6 +72,7 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 			CountMusic: int32(countMusic),
 		},
 		CoverImages:  &types.CoverImages{Data: coverImages},
+		CoverVideos:  &types.CoverVideos{Data: coverVideos},
 		DisplayItems: &types.DisplayItems{Data: entries},
 	}
 

@@ -1,11 +1,10 @@
-import { ElementRef, useEffect, useMemo, useRef, useState } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import {
   Link,
   Outlet,
   Route,
   Routes,
   useLocation,
-  useParams,
 } from 'react-router-dom';
 
 import {
@@ -13,11 +12,8 @@ import {
   CardList,
   CompoundTag,
   H6,
-  NonIdealState,
-  NonIdealStateIconSize,
   Section,
   SectionCard,
-  Spinner,
   Tag,
   Text,
 } from '@blueprintjs/core';
@@ -25,7 +21,6 @@ import {
 import hexToRgba from 'hex-to-rgba';
 
 import {
-  DisplayItem,
   DisplayItems,
   EntryType,
   FolderContentData,
@@ -39,7 +34,7 @@ import { Viewer } from './components/Viewer/Viewer';
 import { Grid } from './components/Grid/Grid';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
-import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
+import { List } from './components/List/List';
 import { usePathData } from './utils/usePathData';
 import { usePathMeta } from './utils/usePathMeta';
 import { joinPath } from './utils/path';
@@ -69,25 +64,17 @@ export type ListPageProps = {
   startFolder?: string;
 };
 
-// function ListPage({ isRoot }: ListPageProps) {
 function ListPage({ startFolder }: ListPageProps) {
   const { pathname } = useLocation();
   const path = startFolder ?? pathname;
 
   const { folderPath, fileName } = usePathMeta(path);
 
-  // const resolvedIsRoot = isRoot || folderPath === '/';
-
   console.log('folderPath', folderPath, 'fileName', fileName);
-
-  // const isFolder = pathname.endsWith('/');
-  // const segments = pathname.split('/').filter(Boolean); // removes empty strings
-  // const currentPath = `${segments.join('/')}${isFolder ? '/' : ''}`;
 
   const [itemsRendered, setItemsRendered] = useState(false);
 
-  // `/photos/test.jpg` -> folder `/photos/`, file `test.jpg` -> list `/photos/` folder, and then toggle on the preview if needed
-  // `/photos/` -> folder `/photos/`, file `null`
+
 
   const [activeView, setActiveView] = useLocalStorage<ListView>(
     'activeView',
@@ -99,10 +86,8 @@ function ListPage({ startFolder }: ListPageProps) {
     {},
   );
 
-  // const [activeVerticalPos, setActiveVerticalPos] = useActiveVerticalPos(
-  //   `${currentPath}::${activeView}`, // distinguish between list and grid views
-  //   0,
-  // );
+    {},
+  );
 
   const listRef = useRef<ElementRef<typeof List>>(null);
   const gridRef = useRef<ElementRef<typeof Grid>>(null);
@@ -112,26 +97,6 @@ function ListPage({ startFolder }: ListPageProps) {
   const { data, isLoading, error } = usePathData(folderPath);
 
   // TODO: Persist last scroll position for the folder view
-  // useEffect(() => {
-  // A true itemsRendered flag makes sure container ref is ready
-  // if (itemsRendered && activeVerticalPos > 0) {
-  //   if (activeView === 'list' && listRef.current) {
-  //     requestAnimationFrame(() =>
-  //       listRef.current.scrollTo(activeVerticalPos),
-  //     );
-  //   } else if (activeView === 'grid' && gridRef.current) {
-  //     requestAnimationFrame(() =>
-  //       gridRef.current.scrollTo({
-  //         scrollTop: activeVerticalPos,
-  //       }),
-  //     );
-  //   }
-  // }
-  // }, [currentFolderPath, activeView]);
-
-  // useEffect(() => {
-  //   console.log('activeVerticalPos', activeVerticalPos);
-  // }, [activeVerticalPos]);
 
   // Sync document title with path
   useEffect(() => {
@@ -144,15 +109,7 @@ function ListPage({ startFolder }: ListPageProps) {
       ? data.data
       : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
-  // const fileData =
-  //   currentFileData?.type !== EntryType.ENTRY_TYPE_FOLDER
-  //     ? currentFileData
-  //     : null;
-
-  // console.log('current folder', currentFolderPath);
-  // console.log('current path', currentPath);
-  // console.log('current folderData', folderData);
-  // console.log('current fileData', fileData);
+      : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
   // TODO: now scrolling triggers the view re-rendering, why???
   const { displayItems } = folderContentData;
@@ -161,10 +118,6 @@ function ListPage({ startFolder }: ListPageProps) {
   if (!displayItems) {
     return null;
   }
-
-  // setInterval(() => {
-  //   console.log(document.activeElement);
-  // }, 500);
 
   return (
     <>
@@ -179,8 +132,6 @@ function ListPage({ startFolder }: ListPageProps) {
                   itemData={displayItems.data}
                   rowHeight={LIST_ROW_HEIGHT}
                   ref={listRef}
-                  // onItemsRendered={() => setItemsRendered(true)}
-                  // setActiveVerticalPos={setActiveVerticalPos}
                 />
               ) : (
                 <Grid
@@ -189,10 +140,8 @@ function ListPage({ startFolder }: ListPageProps) {
                   itemData={displayItems.data}
                   columnWidth={Math.floor(width / 3)}
                   columnCount={3}
-                  rowHeight={200}
+                  rowHeight={Math.floor(height / 3)}
                   ref={gridRef}
-                  // onItemsRendered={() => setItemsRendered(true)}
-                  // setActiveVerticalPos={setActiveVerticalPos}
                 />
               )
             }
@@ -213,12 +162,6 @@ function ListPage({ startFolder }: ListPageProps) {
 function Home() {
   return (
     <>
-      {/* <NonIdealState
-        className={styles.welcomeState}
-        title="Hello!"
-        description="To get started, please configure the root folder in the settings."
-      /> */}
-
       <Section
         title="Server Info"
         collapsible={true}

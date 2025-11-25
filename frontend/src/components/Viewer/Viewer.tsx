@@ -77,7 +77,12 @@ export const Viewer: React.FC<ViewerProps> = memo(function ViewComponent({
   }
 
   return (
-    <Drawer src={fileName} onCloseNavigateTo={parentFolderPath} icon={icon}>
+    <Drawer
+      src={fileName}
+      filePath={data?.url}
+      onCloseNavigateTo={parentFolderPath}
+      icon={icon}
+    >
       {!!fileName && (
         <LoadingBoundary isLoading={isLoading} error={error}>
           {data?.url && (

@@ -1,30 +1,26 @@
 // import './Video.css'
 import ReactPlayer from 'react-player';
 
-export function Video({ src }: { src: string }) {
-  /* 
-  <video
-    src={src}
-    controls
-    autoPlay={true}
-    muted={false}
-    width="100%"
-    style={{ maxHeight: '100%' }}
-  /> 
-  */
+interface VideoProps {
+  src: string;
+  controls?: boolean;
+  autoPlay?: boolean;
+}
 
+export function Video({ src, controls = true, autoPlay = true }: VideoProps) {
   return (
     <ReactPlayer
       src={src}
-      controls={true}
+      controls={controls}
       style={{
         width: 'auto',
         height: '100%',
         maxHeight: '100%',
         maxWidth: '100%',
+        backgroundColor: 'black',
       }}
       muted={true}
-      autoPlay={true}
+      autoPlay={autoPlay}
       loop
       playsInline
     />

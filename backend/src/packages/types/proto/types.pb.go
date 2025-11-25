@@ -135,7 +135,7 @@ type DisplayItem struct {
 	state     protoimpl.MessageState `protogen:"open.v1"`
 	Name      string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	EntryType EntryType              `protobuf:"varint,2,opt,name=entryType,proto3,enum=types.EntryType" json:"entryType,omitempty"`
-	// item name safe string for url usage, encoded.
+	// item name safe string for url usage, encoded. e.g. `README.MD`
 	UrlString   string `protobuf:"bytes,3,opt,name=urlString,proto3" json:"urlString,omitempty"`
 	FirstName   string `protobuf:"bytes,4,opt,name=firstName,proto3" json:"firstName,omitempty"`
 	LastName    string `protobuf:"bytes,5,opt,name=lastName,proto3" json:"lastName,omitempty"`
@@ -143,9 +143,9 @@ type DisplayItem struct {
 	ModTimeUnix int64  `protobuf:"varint,7,opt,name=modTimeUnix,proto3" json:"modTimeUnix,omitempty"`
 	Size        string `protobuf:"bytes,8,opt,name=size,proto3" json:"size,omitempty"`
 	SizeInt     int64  `protobuf:"varint,9,opt,name=sizeInt,proto3" json:"sizeInt,omitempty"`
-	// http://192.168.1.192:5173/folder/name.webp
+	// Full URL of the item. domain and port included. Useful for file access. e.g. `http://192.168.1.192:8100/README.MD`
 	FullUrl string `protobuf:"bytes,10,opt,name=fullUrl,proto3" json:"fullUrl,omitempty"`
-	// /folder/name.webp
+	// Relative URL of the item. domain and port excluded. Useful for navigation. e.g. `/README.MD`
 	RelativeUrl   string `protobuf:"bytes,11,opt,name=relativeUrl,proto3" json:"relativeUrl,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -422,19 +422,116 @@ func (x *CoverImages) GetData() []string {
 	return nil
 }
 
+type CoverVideo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Url           string                 `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	SizeInt       int64                  `protobuf:"varint,2,opt,name=sizeInt,proto3" json:"sizeInt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoverVideo) Reset() {
+	*x = CoverVideo{}
+	mi := &file_proto_types_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoverVideo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoverVideo) ProtoMessage() {}
+
+func (x *CoverVideo) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_types_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoverVideo.ProtoReflect.Descriptor instead.
+func (*CoverVideo) Descriptor() ([]byte, []int) {
+	return file_proto_types_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CoverVideo) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *CoverVideo) GetSizeInt() int64 {
+	if x != nil {
+		return x.SizeInt
+	}
+	return 0
+}
+
+type CoverVideos struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Data          []*CoverVideo          `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CoverVideos) Reset() {
+	*x = CoverVideos{}
+	mi := &file_proto_types_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CoverVideos) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CoverVideos) ProtoMessage() {}
+
+func (x *CoverVideos) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_types_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CoverVideos.ProtoReflect.Descriptor instead.
+func (*CoverVideos) Descriptor() ([]byte, []int) {
+	return file_proto_types_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CoverVideos) GetData() []*CoverVideo {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type FolderContentData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DisplayItems  *DisplayItems          `protobuf:"bytes,1,opt,name=displayItems,proto3,oneof" json:"displayItems,omitempty"`
 	ViewCategory  *ViewCategory          `protobuf:"varint,2,opt,name=viewCategory,proto3,enum=types.ViewCategory,oneof" json:"viewCategory,omitempty"`
 	ItemCount     *ItemCount             `protobuf:"bytes,3,opt,name=itemCount,proto3,oneof" json:"itemCount,omitempty"`
 	CoverImages   *CoverImages           `protobuf:"bytes,4,opt,name=coverImages,proto3,oneof" json:"coverImages,omitempty"`
+	CoverVideos   *CoverVideos           `protobuf:"bytes,5,opt,name=coverVideos,proto3,oneof" json:"coverVideos,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *FolderContentData) Reset() {
 	*x = FolderContentData{}
-	mi := &file_proto_types_proto_msgTypes[4]
+	mi := &file_proto_types_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -446,7 +543,7 @@ func (x *FolderContentData) String() string {
 func (*FolderContentData) ProtoMessage() {}
 
 func (x *FolderContentData) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_types_proto_msgTypes[4]
+	mi := &file_proto_types_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -459,7 +556,7 @@ func (x *FolderContentData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FolderContentData.ProtoReflect.Descriptor instead.
 func (*FolderContentData) Descriptor() ([]byte, []int) {
-	return file_proto_types_proto_rawDescGZIP(), []int{4}
+	return file_proto_types_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *FolderContentData) GetDisplayItems() *DisplayItems {
@@ -486,6 +583,13 @@ func (x *FolderContentData) GetItemCount() *ItemCount {
 func (x *FolderContentData) GetCoverImages() *CoverImages {
 	if x != nil {
 		return x.CoverImages
+	}
+	return nil
+}
+
+func (x *FolderContentData) GetCoverVideos() *CoverVideos {
+	if x != nil {
+		return x.CoverVideos
 	}
 	return nil
 }
@@ -525,17 +629,25 @@ const file_proto_types_proto_rawDesc = "" +
 	"\fDisplayItems\x12&\n" +
 	"\x04data\x18\x01 \x03(\v2\x12.types.DisplayItemR\x04data\"!\n" +
 	"\vCoverImages\x12\x12\n" +
-	"\x04data\x18\x01 \x03(\tR\x04data\"\xbf\x02\n" +
+	"\x04data\x18\x01 \x03(\tR\x04data\"8\n" +
+	"\n" +
+	"CoverVideo\x12\x10\n" +
+	"\x03url\x18\x01 \x01(\tR\x03url\x12\x18\n" +
+	"\asizeInt\x18\x02 \x01(\x03R\asizeInt\"4\n" +
+	"\vCoverVideos\x12%\n" +
+	"\x04data\x18\x01 \x03(\v2\x11.types.CoverVideoR\x04data\"\x8a\x03\n" +
 	"\x11FolderContentData\x12<\n" +
 	"\fdisplayItems\x18\x01 \x01(\v2\x13.types.DisplayItemsH\x00R\fdisplayItems\x88\x01\x01\x12<\n" +
 	"\fviewCategory\x18\x02 \x01(\x0e2\x13.types.ViewCategoryH\x01R\fviewCategory\x88\x01\x01\x123\n" +
 	"\titemCount\x18\x03 \x01(\v2\x10.types.ItemCountH\x02R\titemCount\x88\x01\x01\x129\n" +
-	"\vcoverImages\x18\x04 \x01(\v2\x12.types.CoverImagesH\x03R\vcoverImages\x88\x01\x01B\x0f\n" +
+	"\vcoverImages\x18\x04 \x01(\v2\x12.types.CoverImagesH\x03R\vcoverImages\x88\x01\x01\x129\n" +
+	"\vcoverVideos\x18\x05 \x01(\v2\x12.types.CoverVideosH\x04R\vcoverVideos\x88\x01\x01B\x0f\n" +
 	"\r_displayItemsB\x0f\n" +
 	"\r_viewCategoryB\f\n" +
 	"\n" +
 	"_itemCountB\x0e\n" +
-	"\f_coverImages*\xa6\x01\n" +
+	"\f_coverImagesB\x0e\n" +
+	"\f_coverVideos*\xa6\x01\n" +
 	"\tEntryType\x12\x16\n" +
 	"\x12ENTRY_TYPE_DEFAULT\x10\x00\x12\x15\n" +
 	"\x11ENTRY_TYPE_FOLDER\x10\x01\x12\x14\n" +
@@ -562,7 +674,7 @@ func file_proto_types_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_types_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_proto_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_proto_types_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_proto_types_proto_goTypes = []any{
 	(EntryType)(0),            // 0: types.EntryType
 	(ViewCategory)(0),         // 1: types.ViewCategory
@@ -570,20 +682,24 @@ var file_proto_types_proto_goTypes = []any{
 	(*ItemCount)(nil),         // 3: types.ItemCount
 	(*DisplayItems)(nil),      // 4: types.DisplayItems
 	(*CoverImages)(nil),       // 5: types.CoverImages
-	(*FolderContentData)(nil), // 6: types.FolderContentData
+	(*CoverVideo)(nil),        // 6: types.CoverVideo
+	(*CoverVideos)(nil),       // 7: types.CoverVideos
+	(*FolderContentData)(nil), // 8: types.FolderContentData
 }
 var file_proto_types_proto_depIdxs = []int32{
 	0, // 0: types.DisplayItem.entryType:type_name -> types.EntryType
 	2, // 1: types.DisplayItems.data:type_name -> types.DisplayItem
-	4, // 2: types.FolderContentData.displayItems:type_name -> types.DisplayItems
-	1, // 3: types.FolderContentData.viewCategory:type_name -> types.ViewCategory
-	3, // 4: types.FolderContentData.itemCount:type_name -> types.ItemCount
-	5, // 5: types.FolderContentData.coverImages:type_name -> types.CoverImages
-	6, // [6:6] is the sub-list for method output_type
-	6, // [6:6] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	6, // 2: types.CoverVideos.data:type_name -> types.CoverVideo
+	4, // 3: types.FolderContentData.displayItems:type_name -> types.DisplayItems
+	1, // 4: types.FolderContentData.viewCategory:type_name -> types.ViewCategory
+	3, // 5: types.FolderContentData.itemCount:type_name -> types.ItemCount
+	5, // 6: types.FolderContentData.coverImages:type_name -> types.CoverImages
+	7, // 7: types.FolderContentData.coverVideos:type_name -> types.CoverVideos
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_proto_types_proto_init() }
@@ -591,14 +707,14 @@ func file_proto_types_proto_init() {
 	if File_proto_types_proto != nil {
 		return
 	}
-	file_proto_types_proto_msgTypes[4].OneofWrappers = []any{}
+	file_proto_types_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_types_proto_rawDesc), len(file_proto_types_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

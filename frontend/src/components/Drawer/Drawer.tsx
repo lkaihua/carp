@@ -11,10 +11,11 @@ import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';
 import { css } from '@emotion/css';
 import { HEADER_NAV_HEIGHT } from '../../constants/layout';
 import { FlexBox } from '../FlexBox/FlexBox';
-import { Colors, Divider } from '@blueprintjs/core';
+import { Colors, Divider, H2, H4, H5, H6 } from '@blueprintjs/core';
 
 export interface Props {
   src: string;
+  filePath?: string; // could be any existing file
   name?: string;
   icon?: DrawerProps['icon'];
   onCloseNavigateTo?: string;
@@ -23,6 +24,7 @@ export interface Props {
 export function Drawer({
   children,
   src,
+  filePath,
   name,
   onCloseNavigateTo,
   icon = <Media />,
@@ -42,7 +44,18 @@ export function Drawer({
     <BlueprintDrawer
       position="bottom"
       size={`${size}px`}
-      title={title}
+      title={
+        <FlexBox
+          style={{ justifyContent: 'space-between', alignItems: 'center' }}
+        >
+          <H5>{title}</H5>
+          {!!filePath && (
+            <a href={filePath} download={name}>
+              <Button minimal icon="download" title="Download" />
+            </a>
+          )}
+        </FlexBox>
+      }
       usePortal
       icon={icon}
       isOpen={!!src}

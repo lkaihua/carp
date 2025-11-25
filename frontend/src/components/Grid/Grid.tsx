@@ -31,6 +31,7 @@ import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
 import { getPathMeta, joinPath } from '../../utils/path';
 import { css } from '@emotion/css';
 import { Video } from '../Viewer/Video';
+import { FlexBox } from '../FlexBox/FlexBox';
 
 interface CellProps {
   columnIndex: number;
@@ -44,116 +45,82 @@ interface CellProps {
 
 const VIDEO_PREVIEW_SECONDS = 5;
 
+const PREVIEW_FILE_LIMIT = 10 * 1024 * 1024;
+
+export interface PreviewFile {
+  type: 'video' | 'image';
+  url?: string;
+}
 interface CellPreviewProps {
-  previewFilePath: string;
-  linkFilePath: string;
-  linkTitle: string;
-  linkIcon?: IconName;
+  previewFile: PreviewFile;
+  link: string;
+  title: string;
+  icon: IconName;
 }
 const CellPreview = memo(function CellPreviewComponent({
-  previewFilePath,
-  linkFilePath,
-  linkTitle,
-  linkIcon,
+  previewFile,
+  link,
+  title,
+  icon,
 }: CellPreviewProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const handleVideoReady = () => {
-    const video = videoRef.current;
-    if (!video) return;
+  // const videoRef = useRef<HTMLVideoElement | null>(null);
+  // const handleVideoReady = () => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
 
-    const handleTimeUpdate = () => {
-      if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
-        video.currentTime = 0.5;
-        video.play();
-      }
-    };
+  //   const handleTimeUpdate = () => {
+  //     if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
+  //       video.currentTime = 0.5;
+  //       video.play();
+  //     }
+  //   };
 
-    video.addEventListener('timeupdate', handleTimeUpdate);
-  };
+  //   video.addEventListener('timeupdate', handleTimeUpdate);
+  // };
 
-  // TODO: use better way to determine if it's a video or image
   let cover;
-  if (
-    previewFilePath.toLowerCase().endsWith('.mp4') ||
-    previewFilePath.toLowerCase().endsWith('.mov')
-  ) {
-    cover = (
-      <Link to={previewFilePath} className={styles.gridCoverVideoLink}>
-        {/* <video
-            ref={videoRef}
-            src={serverBaseUrl + previewFilePath}
-            controls={false}
-            autoPlay={false}
-            loop={false}
-            playsInline
-            muted
-            height={160}
-            width="100%"
-            style={{ maxHeight: '100%' }}
-            // onLoadedMetadata={handleVideoReady}
-          /> */}
-        {/* <ReactPlayer
-            // todo: get this src correct
-            src={joinPath(serverBaseUrl, previewFilePath)}
-            controls={true}
-            style={{ height: '100%' }}
-            muted={false}
-            autoPlay={false}
-          /> */}
-
-        {/* <ReactPlayer
-          // todo: get this src correct
-          src={joinPath(serverBaseUrl, previewFilePath)}
-          controls={true}
-          style={{ height: '100%', width: '100%' }}
-          muted={false}
-          autoPlay={false}
-        /> */}
-
-        {/* 
-        // todo: backend should return the preview full url and 
-        if the file is under 1 minute, returns a directPlayPreview flag
-         */}
-
-        <Video src={joinPath(serverBaseUrl, previewFilePath)} />
-
-        {/* <EntityTitle
-          ellipsize
-          title={getPathMeta(previewFilePath).fileName || ''}
-          icon="video"
-          className={styles.gridCoverTitle}
-        /> */}
-      </Link>
-    );
-  } else {
-    cover = (
-      <Link to={previewFilePath} className={styles.coverImageContainer}>
-        <Tag className={styles.coverImageIcon}>
-          <Icon icon="eye-open" size={16} />
-          <Text>{linkTitle}</Text>
-        </Tag>
-        <img
-          src={joinPath(serverBaseUrl, previewFilePath)}
-          alt="Cover"
-          className={styles.coverImage}
-        />
-      </Link>
-    );
+  if (previewFile.url) {
+    if (previewFile.type === 'video') {
+      cover = (
+        // <Link to={link} className={styles.gridCoverVideoLink}>
+        //   <Video src={previewFile.url} isAutoPlayOn />
+        // </Link>
+        <Link to={link} className={styles.coverImageContainer}>
+          <FlexBox>
+            <Tag className={styles.coverImageIcon} icon={icon}>
+              <Text>{title}</Text>
+            </Tag>
+            <Video src={previewFile.url} controls={false} />
+          </FlexBox>
+        </Link>
+      );
+    } else if (previewFile.type === 'image') {
+      cover = (
+        <Link to={link} className={styles.coverImageContainer}>
+          <FlexBox>
+            <Tag className={styles.coverImageIcon} icon={icon}>
+              <Text>{title}</Text>
+            </Tag>
+            <img
+              src={previewFile.url}
+              alt="Cover"
+              className={styles.coverImage}
+            />
+          </FlexBox>
+        </Link>
+      );
+    }
   }
 
   return (
     <>
-      <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
-      <FlexCol className={styles.gridCoverTitleContainer}>
-        <Link to={linkFilePath}>
-          {linkTitle}
-          {/* <EntityTitle
-            ellipsize
-            title={linkTitle}
-            icon={linkIcon ?? 'folder-close'}
-          /> */}
+      {/* <FlexCol className={styles.gridCoverTitleContainer}>
+        <Link to={link}>
+          <Icon icon={icon} size={16} />
+          {title}
         </Link>
-      </FlexCol>
+      </FlexCol> */}
+      <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
     </>
   );
 });
@@ -182,29 +149,59 @@ const Cell = memo(function CellComponent({
     error,
   } = usePathData(isFolder ? relativeUrl : null);
 
-  const previewFilePath = match(item)
-    .with({ entryType: EntryType.ENTRY_TYPE_FOLDER }, (folder) =>
-      newItemData?.type == EntryType.ENTRY_TYPE_FOLDER &&
-      (newItemData?.data?.coverImages?.data ?? []).length > 0
-        ? joinPath(relativeUrl, newItemData?.data?.coverImages?.data.at(0))
-        : '',
+  const previewFile: PreviewFile | undefined = match(item)
+    .with({ entryType: EntryType.ENTRY_TYPE_FOLDER }, () => {
+      if (newItemData?.type == EntryType.ENTRY_TYPE_FOLDER) {
+        // find the first playable video
+        const maybeVideo = newItemData?.data?.coverVideos?.data.find(
+          (video) => video.sizeInt <= PREVIEW_FILE_LIMIT,
+        );
+        if (maybeVideo) {
+          return {
+            type: 'video' as const,
+            url: maybeVideo.url,
+          };
+        }
+
+        const maybeImage = newItemData?.data?.coverImages?.data.at(0);
+        if (maybeImage) {
+          return {
+            type: 'image' as const,
+            url: maybeImage,
+          };
+        }
+
+        // Todo: add support for the case that not all video / image files are able to display in <video><img> tag
+        return undefined;
+      }
+      return undefined;
+    })
+    .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => ({
+      type: 'image' as const,
+      url: fullUrl,
+    }))
+    .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, () =>
+      (item?.sizeInt ?? 0) <= PREVIEW_FILE_LIMIT
+        ? {
+            type: 'video' as const,
+            url: fullUrl,
+          }
+        : undefined,
     )
-    .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => relativeUrl)
-    .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, () => relativeUrl)
-    .otherwise(() => '');
+    .otherwise(() => undefined);
 
   const icon = getIconForType(item?.entryType);
   const cover = useMemo(
     () =>
-      previewFilePath && relativeUrl ? (
+      previewFile && relativeUrl ? (
         <CellPreview
-          previewFilePath={previewFilePath}
-          linkFilePath={relativeUrl}
-          linkTitle={item.name}
-          linkIcon={icon}
+          previewFile={previewFile}
+          link={relativeUrl}
+          title={item.name}
+          icon={icon}
         />
       ) : null,
-    [previewFilePath, relativeUrl, item, icon],
+    [previewFile, relativeUrl, item, icon],
   );
 
   if (!item) {
@@ -373,8 +370,9 @@ const styles = {
     right: 0;
     z-index: 10;
     background: rgba(255, 255, 255, 0.5);
+    color: #444;
     padding: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 0;
   `,
   coverImage: css`
     /* height: 160px; */
