@@ -71,7 +71,7 @@ const CellPreview = memo(function CellPreviewComponent({
     if (previewFile.type === 'video') {
       cover = (
         <Link to={link} className={styles.coverImageContainer}>
-          <FlexBox style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <FlexBox className={styles.coverBody}>
             <Tag className={styles.coverImageIcon} icon={icon}>
               <Text>{title}</Text>
             </Tag>
@@ -82,7 +82,7 @@ const CellPreview = memo(function CellPreviewComponent({
     } else if (previewFile.type === 'image') {
       cover = (
         <Link to={link} className={styles.coverImageContainer}>
-          <FlexBox>
+          <FlexBox className={styles.coverBody}>
             <Tag className={styles.coverImageIcon} icon={icon}>
               <Text>{title}</Text>
             </Tag>
@@ -98,9 +98,7 @@ const CellPreview = memo(function CellPreviewComponent({
   }
 
   return (
-    <>
-      <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
-    </>
+    <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
   );
 });
 
@@ -314,8 +312,8 @@ const styles = {
     display: flex;
     flex-direction: column;
     height: 100%;
+    width: 100%;
     overflow: hidden;
-
   `,
   gridItemTitle: css`
     padding: 5px;
@@ -335,8 +333,8 @@ const styles = {
     }
   `,
   gridCoverMediaContainer: css`
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
     align-items: center;
   `,
   gridCoverTitleContainer: css`
@@ -354,6 +352,15 @@ const styles = {
     background-color: aliceblue;
     width: 100%;
     height: 100%;
+  `,
+  coverBody: css`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
   `,
   coverImageIcon: css`
     position: absolute;
