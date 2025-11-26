@@ -64,7 +64,7 @@ interface ListProps {
   itemData: DisplayItem[];
   rowHeight: number;
   onItemsRendered?: () => void;
-  setActiveVerticalPos?: (rowIndex: number) => void;
+  onScrollFinish?: (rowIndex: number) => void;
 }
 
 export const List = forwardRef<FixedSizeList, ListProps>(function ListComponent(
@@ -74,16 +74,15 @@ export const List = forwardRef<FixedSizeList, ListProps>(function ListComponent(
     itemData,
     rowHeight,
     onItemsRendered,
-    setActiveVerticalPos,
+    onScrollFinish,
   }: ListProps,
   ref,
 ) {
 
-  console.log('List render with items:', itemData.length);
+  // console.log('List render with items:', itemData.length);
 
   const { handleScroll } = useDebouncedScrollOffset((offset) => {
-
-    setActiveVerticalPos?.(offset);
+    onScrollFinish?.(offset);
   });
 
   return (

@@ -233,7 +233,7 @@ interface GridProps {
   rowHeight?: number;
   isSquare?: boolean;
   onItemsRendered?: () => void;
-  setActiveVerticalPos?: (rowIndex: number) => void;
+  onScrollFinish?: (rowIndex: number) => void;
 }
 
 export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
@@ -245,7 +245,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
     rowHeight = 30,
     itemData,
     onItemsRendered,
-    setActiveVerticalPos,
+    onScrollFinish,
   }: GridProps,
   ref,
 ) {
@@ -253,7 +253,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
 
   const { handleScroll } = useDebouncedScrollOffset((offset) => {
     // console.log('Grid scroll finished at:', offset);
-    setActiveVerticalPos?.(offset);
+    onScrollFinish?.(offset);
   });
 
   const [ratio] = useCellMediaRatio();

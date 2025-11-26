@@ -25,7 +25,6 @@ import {
 } from './types/proto/types';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
-import { useLocalStorage } from 'usehooks-ts';
 import './App.css';
 import { FlexCol } from './components/FlexBoxCol/FlexBoxCol';
 import { Viewer } from './components/Viewer/Viewer';
@@ -41,6 +40,8 @@ import { css } from '@emotion/css';
 import { Colors } from '@blueprintjs/core';
 import { FlexBox } from './components/FlexBox/FlexBox';
 import { LIST_ROW_HEIGHT } from './constants/layout';
+import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
+import { useActiveView } from './utils/useActiveView';
 
 const defaultDisplayItems = {
   data: [
@@ -56,8 +57,6 @@ const defaultDisplayItems = {
   ],
 } as DisplayItems;
 
-export type ListView = 'list' | 'grid';
-
 export type ListPageProps = {
   startFolder?: string;
 };
@@ -68,14 +67,9 @@ function ListPage({ startFolder }: ListPageProps) {
 
   const { folderPath, fileName } = usePathMeta(path);
 
-  console.log('folderPath', folderPath, 'fileName', fileName);
+  // console.log('folderPath', folderPath, 'fileName', fileName);
 
-
-  const [activeView] = useLocalStorage<ListView>(
-    'activeView',
-    'grid',
-  );
-
+  const [activeView] = useActiveView();
 
   const listRef = useRef<ElementRef<typeof List>>(null);
   const gridRef = useRef<ElementRef<typeof Grid>>(null);
@@ -83,8 +77,6 @@ function ListPage({ startFolder }: ListPageProps) {
   // There are two meta data to fetch:
   // 1. always fetch the folder
   const { data, isLoading, error } = usePathData(folderPath);
-
-  // TODO: Persist last scroll position for the folder view
 
   // Sync document title with path
   useEffect(() => {
@@ -97,14 +89,16 @@ function ListPage({ startFolder }: ListPageProps) {
       ? data.data
       : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
-
-
-  // TODO: now scrolling triggers the view re-rendering, why???
   const { displayItems } = folderContentData;
-  console.log('displayItems', displayItems);
+  // console.log('displayItems', displayItems);
 
-  const [isSquare, setIsSquare] = useState(false);
+  const [activeVerticalPos, setActiveVerticalPos] = useActiveVerticalPos(path, activeView);
+  const hasRestoredScrollPos = useRef(false);
 
+  // Reset the restoration flag when path or view changes
+  useEffect(() => {
+    hasRestoredScrollPos.current = false;
+  }, [path, activeView]);
 
   if (!displayItems) {
     return null;
@@ -123,6 +117,15 @@ function ListPage({ startFolder }: ListPageProps) {
                   itemData={displayItems.data}
                   rowHeight={LIST_ROW_HEIGHT}
                   ref={listRef}
+                  onItemsRendered={() => {
+                    if (!hasRestoredScrollPos.current && activeVerticalPos > 0) {
+                      requestAnimationFrame(() => {
+                        listRef.current?.scrollTo(activeVerticalPos);
+                        hasRestoredScrollPos.current = true;
+                      });
+                    }
+                  }}
+                  onScrollFinish={setActiveVerticalPos}
                 />
               ) : (
                 <Grid
@@ -134,6 +137,15 @@ function ListPage({ startFolder }: ListPageProps) {
                   rowHeight={Math.floor(height / 3)}
                   ref={gridRef}
                   isSquare={true}
+                  onItemsRendered={() => {
+                    if (!hasRestoredScrollPos.current && activeVerticalPos > 0) {
+                      requestAnimationFrame(() => {
+                        gridRef.current?.scrollTo({ scrollTop: activeVerticalPos });
+                        hasRestoredScrollPos.current = true;
+                      })
+                    }
+                  }}
+                  onScrollFinish={setActiveVerticalPos}
                 />
               )
             }
