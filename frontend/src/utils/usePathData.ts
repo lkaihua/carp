@@ -39,7 +39,7 @@ export function usePathData(
   return useQuery<PathData, Error>({
     queryKey: ['list', relativePath],
     queryFn: async () => {
-      // console.log(pathname, serverBaseUrl);
+
       // todo: we can get rid of the server base url I think with fullUrl passed back
       // only for the first folder request, we need to use the server base url actually
 

@@ -1,15 +1,15 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo } from 'react';
 import { Photo } from './Photo';
 import { Video } from './Video';
-import { FolderData, PathData, usePathData } from '../../utils/usePathData';
+import { usePathData } from '../../utils/usePathData';
 import { EntryType, FolderContentData } from '../../types/proto/types';
-import { Button, NonIdealState } from '@blueprintjs/core';
+
 import { LoadingBoundary } from '../LoadingBoundary/LoadingBoundary';
 import { match } from 'ts-pattern';
-import { data } from 'react-router-dom';
+
 import { Drawer } from '../Drawer/Drawer';
 import { Media as MediaIcon, Video as VideoIcon } from '@blueprintjs/icons';
-import { css } from '@emotion/css';
+
 
 interface ViewerProps {
   filePath: string | null;
@@ -100,4 +100,4 @@ export const Viewer: React.FC<ViewerProps> = memo(function ViewComponent({
   );
 });
 
-const styles = {};
+

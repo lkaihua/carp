@@ -2,7 +2,7 @@ import {
   Drawer as BlueprintDrawer,
   DrawerProps,
 } from '@blueprintjs/core/lib/esm/components/drawer/drawer';
-import { Divide, Media } from '@blueprintjs/icons';
+import { Media } from '@blueprintjs/icons';
 import { useNavigate } from 'react-router-dom';
 
 import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
@@ -11,7 +11,7 @@ import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';
 import { css } from '@emotion/css';
 import { HEADER_NAV_HEIGHT } from '../../constants/layout';
 import { FlexBox } from '../FlexBox/FlexBox';
-import { Colors, Divider, H2, H4, H5, H6 } from '@blueprintjs/core';
+import { Colors, H5 } from '@blueprintjs/core';
 
 export interface Props {
   src: string;

@@ -8,8 +8,6 @@ import {
 } from 'react-router-dom';
 
 import {
-  Card,
-  CardList,
   CompoundTag,
   H6,
   Section,
@@ -34,10 +32,10 @@ import { Viewer } from './components/Viewer/Viewer';
 import { Grid } from './components/Grid/Grid';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
-import { List } from './components/List/List';
+
 import { usePathData } from './utils/usePathData';
 import { usePathMeta } from './utils/usePathMeta';
-import { joinPath } from './utils/path';
+
 import { LoadingBoundary } from './components/LoadingBoundary/LoadingBoundary';
 import { css } from '@emotion/css';
 import { Colors } from '@blueprintjs/core';
@@ -72,22 +70,12 @@ function ListPage({ startFolder }: ListPageProps) {
 
   console.log('folderPath', folderPath, 'fileName', fileName);
 
-  const [itemsRendered, setItemsRendered] = useState(false);
 
-
-
-  const [activeView, setActiveView] = useLocalStorage<ListView>(
+  const [activeView] = useLocalStorage<ListView>(
     'activeView',
     'grid',
   );
 
-  const [activeVerticalPos, setActiveVerticalPos] = useLocalStorage(
-    'activeVerticalPos',
-    {},
-  );
-
-    {},
-  );
 
   const listRef = useRef<ElementRef<typeof List>>(null);
   const gridRef = useRef<ElementRef<typeof Grid>>(null);
@@ -109,11 +97,14 @@ function ListPage({ startFolder }: ListPageProps) {
       ? data.data
       : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
-      : ({ displayItems: defaultDisplayItems } as FolderContentData);
+
 
   // TODO: now scrolling triggers the view re-rendering, why???
   const { displayItems } = folderContentData;
   console.log('displayItems', displayItems);
+
+  const [isSquare, setIsSquare] = useState(false);
+
 
   if (!displayItems) {
     return null;
@@ -142,6 +133,7 @@ function ListPage({ startFolder }: ListPageProps) {
                   columnCount={3}
                   rowHeight={Math.floor(height / 3)}
                   ref={gridRef}
+                  isSquare={true}
                 />
               )
             }

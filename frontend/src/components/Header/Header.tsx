@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Alignment,
   Breadcrumbs,
@@ -7,13 +7,14 @@ import {
   Navbar,
   NavbarGroup,
 } from '@blueprintjs/core';
-import { useLocalStorage } from 'usehooks-ts';
 
 import { css } from '@emotion/css';
 
-import { BreadcrumbProps, Icon } from '@blueprintjs/core';
+import { BreadcrumbProps } from '@blueprintjs/core';
 import logoMono from '../../assets/logo-mono.png';
 import { HEADER_NAV_HEIGHT } from '../../constants/layout';
+import { useActiveView } from '../../utils/useActiveView';
+import { useCellMediaRatio } from '../../utils/useCellMediaRatio';
 
 export function Header() {
   const { pathname } = useLocation();
@@ -21,7 +22,8 @@ export function Header() {
   // which does not provide the folder cover images
   const segments = pathname.split('/').filter(Boolean); // removes empty strings
 
-  const [value, setValue] = useLocalStorage<string>('activeView', 'list');
+  const [value, setValue] = useActiveView();
+  const [ratio, setRatio] = useCellMediaRatio();
 
   const items = generateBreadcrumbs(segments);
   return (
@@ -33,15 +35,6 @@ export function Header() {
         <Breadcrumbs
           items={items}
           minVisibleItems={1}
-          // breadcrumbRenderer={(props) => (
-          //   <Link to={props.href ?? '/'}>
-          //     <EntityTitle
-          //       icon={props.icon}
-          //       title={props.text as string}
-          //       ellipsize
-          //     />
-          //   </Link>
-          // )}
         />
       </NavbarGroup>
 
@@ -49,6 +42,14 @@ export function Header() {
         className={styles.navbarViewSelectorContainer}
         align={Alignment.END}
       >
+        { value === 'grid' ? <ButtonGroup>
+          <Button
+            intent="none"
+            icon={ratio === 'square' ? "square" : "rectangle"}
+            onClick={() => setRatio(prev => prev === 'square' ? 'ratio' : 'square')}
+          />
+        </ButtonGroup> : null}
+
         <ButtonGroup>
           <Button
             intent="none"
@@ -89,9 +90,7 @@ function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
       href: cumulativePath,
       current: isCurrent,
       // todo: the current folder icon should be its type
-      // icon: (
-      //   <Icon icon={isCurrent ? 'folder-open' : 'folder-close'} color="black" />
-      // ),
+
     } as BreadcrumbProps);
   });
 
@@ -120,6 +119,6 @@ const styles = {
   navbarViewSelectorContainer: css`
     display: flex;
     flex: 0 0 auto;
-    width: 60px;
+    gap: 10px;
   `,
 };

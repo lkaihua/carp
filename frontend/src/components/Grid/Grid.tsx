@@ -1,37 +1,36 @@
 import {
   forwardRef,
   memo,
-  useEffect,
-  useLayoutEffect,
   useMemo,
-  useRef,
+  useState,
 } from 'react';
-import { FixedSizeGrid, GridOnScrollProps } from 'react-window';
+import { FixedSizeGrid } from 'react-window';
 import { DisplayItem, EntryType } from '../../types/proto/types';
 import {
-  Card,
   EntityTitle,
-  Icon,
   Text,
   IconName,
   NonIdealState,
   NonIdealStateIconSize,
   Spinner,
   Tag,
+  Button,
+  ButtonGroup,
 } from '@blueprintjs/core';
-import { Link, useLocation } from 'react-router-dom';
-import { serverBaseUrl, usePathData } from '../../utils/usePathData';
+import { Link } from 'react-router-dom';
+import { usePathData } from '../../utils/usePathData';
 import { match } from 'ts-pattern';
-import ReactPlayer from 'react-player';
+
 
 // Styles moved from Grid.css below
 import { getIconForType } from '../../utils/getIconForType';
 import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
 import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
-import { getPathMeta, joinPath } from '../../utils/path';
+
 import { css } from '@emotion/css';
 import { Video } from '../Viewer/Video';
 import { FlexBox } from '../FlexBox/FlexBox';
+import { useCellMediaRatio } from '../../utils/useCellMediaRatio';
 
 interface CellProps {
   columnIndex: number;
@@ -40,10 +39,11 @@ interface CellProps {
   data: {
     itemData: DisplayItem[];
     columnCount: number;
+    isSquare: boolean;
   };
 }
 
-const VIDEO_PREVIEW_SECONDS = 5;
+
 
 const PREVIEW_FILE_LIMIT = 10 * 1024 * 1024;
 
@@ -56,41 +56,26 @@ interface CellPreviewProps {
   link: string;
   title: string;
   icon: IconName;
+  isSquare: boolean;
 }
 const CellPreview = memo(function CellPreviewComponent({
   previewFile,
   link,
   title,
   icon,
+  isSquare,
 }: CellPreviewProps) {
-  // const videoRef = useRef<HTMLVideoElement | null>(null);
-  // const handleVideoReady = () => {
-  //   const video = videoRef.current;
-  //   if (!video) return;
-
-  //   const handleTimeUpdate = () => {
-  //     if (video.currentTime >= VIDEO_PREVIEW_SECONDS) {
-  //       video.currentTime = 0.5;
-  //       video.play();
-  //     }
-  //   };
-
-  //   video.addEventListener('timeupdate', handleTimeUpdate);
-  // };
 
   let cover;
   if (previewFile.url) {
     if (previewFile.type === 'video') {
       cover = (
-        // <Link to={link} className={styles.gridCoverVideoLink}>
-        //   <Video src={previewFile.url} isAutoPlayOn />
-        // </Link>
         <Link to={link} className={styles.coverImageContainer}>
-          <FlexBox>
+          <FlexBox style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Tag className={styles.coverImageIcon} icon={icon}>
               <Text>{title}</Text>
             </Tag>
-            <Video src={previewFile.url} controls={false} />
+            <Video src={previewFile.url} controls={false} isSquare={isSquare} />
           </FlexBox>
         </Link>
       );
@@ -104,7 +89,7 @@ const CellPreview = memo(function CellPreviewComponent({
             <img
               src={previewFile.url}
               alt="Cover"
-              className={styles.coverImage}
+              className={styles.coverImage(isSquare)}
             />
           </FlexBox>
         </Link>
@@ -114,12 +99,6 @@ const CellPreview = memo(function CellPreviewComponent({
 
   return (
     <>
-      {/* <FlexCol className={styles.gridCoverTitleContainer}>
-        <Link to={link}>
-          <Icon icon={icon} size={16} />
-          {title}
-        </Link>
-      </FlexCol> */}
       <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
     </>
   );
@@ -131,7 +110,7 @@ const Cell = memo(function CellComponent({
   style,
   data,
 }: CellProps) {
-  const { itemData, columnCount } = data;
+  const { itemData, columnCount, isSquare } = data;
 
   // Calculate the 1D index from row/column
   const index = rowIndex * columnCount + columnIndex;
@@ -140,13 +119,11 @@ const Cell = memo(function CellComponent({
   const relativeUrl = item?.relativeUrl;
   const fullUrl = item?.fullUrl;
 
-  // console.log(relativeUrl, fullUrl, item?.urlString);
 
   // Request the metadata only if the target is FOLDER
   const {
     data: newItemData,
     isLoading,
-    error,
   } = usePathData(isFolder ? relativeUrl : null);
 
   const previewFile: PreviewFile | undefined = match(item)
@@ -199,9 +176,10 @@ const Cell = memo(function CellComponent({
           link={relativeUrl}
           title={item.name}
           icon={icon}
+          isSquare={isSquare}
         />
       ) : null,
-    [previewFile, relativeUrl, item, icon],
+    [previewFile, relativeUrl, item, icon, isSquare],
   );
 
   if (!item) {
@@ -255,6 +233,7 @@ interface GridProps {
   columnCount?: number;
   columnWidth?: number;
   rowHeight?: number;
+  isSquare?: boolean;
   onItemsRendered?: () => void;
   setActiveVerticalPos?: (rowIndex: number) => void;
 }
@@ -279,6 +258,9 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
     setActiveVerticalPos?.(offset);
   });
 
+  const [ratio] = useCellMediaRatio();
+  const isSquare = ratio === 'square';
+
   return (
     <FixedSizeGrid
       ref={ref}
@@ -289,7 +271,7 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
       rowCount={Math.ceil(totalItems / columnCount)}
       columnWidth={columnWidth}
       rowHeight={rowHeight}
-      itemData={{ itemData, columnCount }} // Todo: use memo for better performance
+      itemData={{ itemData, columnCount, isSquare }} // Todo: use memo for better performance
       onItemsRendered={() => onItemsRendered?.()}
       onScroll={({ scrollTop }) => handleScroll(scrollTop)}
     >
@@ -299,6 +281,16 @@ export const Grid = forwardRef<FixedSizeGrid, GridProps>(function GridComponent(
 });
 
 const styles = {
+  container: css`
+    height: 100%;
+    width: 100%;
+  `,
+  toolbar: css`
+    height: 40px;
+    padding: 5px;
+    justify-content: flex-end;
+    border-bottom: 1px solid var(--bp3-border-color, #d8dde6);
+  `,
   gridContainer: css`
     width: 100%;
     table-layout: fixed;
@@ -323,7 +315,7 @@ const styles = {
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    /* justify-content: space-around; */
+
   `,
   gridItemTitle: css`
     padding: 5px;
@@ -343,12 +335,9 @@ const styles = {
     }
   `,
   gridCoverMediaContainer: css`
+  width: 100%;
+  height: 100%;
     align-items: center;
-    /* img,
-    video {
-      border-radius: 4px;
-      overflow: hidden;
-    } */
   `,
   gridCoverTitleContainer: css`
     padding-inline: 5px;
@@ -363,6 +352,8 @@ const styles = {
     display: flex;
     position: relative;
     background-color: aliceblue;
+    width: 100%;
+    height: 100%;
   `,
   coverImageIcon: css`
     position: absolute;
@@ -374,10 +365,11 @@ const styles = {
     padding: 5px;
     border-radius: 0;
   `,
-  coverImage: css`
-    /* height: 160px; */
+  coverImage: (isSquare: boolean) => css`
     max-height: 100%;
     max-width: 100%;
-    object-fit: contain;
+    object-fit: ${isSquare ? 'cover' : 'contain'};
+    width: ${isSquare ? '100%' : 'auto'};
+    height: ${isSquare ? '100%' : 'auto'};
   `,
 };

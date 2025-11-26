@@ -5,16 +5,17 @@ interface VideoProps {
   src: string;
   controls?: boolean;
   autoPlay?: boolean;
+  isSquare?: boolean;
 }
 
-export function Video({ src, controls = true, autoPlay = true }: VideoProps) {
+export function Video({ src, controls = true, autoPlay = true, isSquare = false }: VideoProps) {
   return (
     <ReactPlayer
       src={src}
       controls={controls}
       style={{
-        width: 'auto',
-        height: '100%',
+        width: isSquare ? '100%' : 'auto',
+        height: isSquare ? '100%' : 'auto',
         maxHeight: '100%',
         maxWidth: '100%',
         backgroundColor: 'black',
