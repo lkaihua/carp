@@ -28,9 +28,9 @@ import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
 import { useDebouncedScrollOffset } from '../../utils/useDebouncedScrollOffset';
 
 import { css } from '@emotion/css';
-import { Video } from '../Viewer/Video';
 import { FlexBox } from '../FlexBox/FlexBox';
 import { useCellMediaRatio } from '../../utils/useCellMediaRatio';
+import { LazyVideo } from './LazyVideo';
 
 interface CellProps {
   columnIndex: number;
@@ -75,7 +75,7 @@ const CellPreview = memo(function CellPreviewComponent({
             <Tag className={styles.coverImageIcon} icon={icon}>
               <Text>{title}</Text>
             </Tag>
-            <Video src={previewFile.url} controls={false} isSquare={isSquare} />
+            <LazyVideo src={previewFile.url} controls={false} isSquare={isSquare} />
           </FlexBox>
         </Link>
       );

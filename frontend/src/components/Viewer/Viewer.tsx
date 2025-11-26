@@ -27,7 +27,7 @@ interface MediaItem {
 const Content = ({ item }: { item: MediaItem }) =>
   match(item)
     .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, (video) => (
-      <Video src={video.src} />
+      <Video src={video.src} autoPlay={true}/>
     ))
     .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, (image) => (
       <Photo src={image.src} />

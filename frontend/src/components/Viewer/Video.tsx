@@ -8,7 +8,8 @@ interface VideoProps {
   isSquare?: boolean;
 }
 
-export function Video({ src, controls = true, autoPlay = true, isSquare = false }: VideoProps) {
+export function Video(props: VideoProps) {
+  const { src, controls = true, autoPlay = false, isSquare = false } = props;
   return (
     <ReactPlayer
       src={src}
