@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Video } from '../Viewer/Video';
 import { Icon } from '@blueprintjs/core';
-import { FlexBox } from '../FlexBox/FlexBox';
+import { css } from '@emotion/css';
 
 interface LazyVideoProps {
   src: string;
@@ -61,32 +61,42 @@ export function LazyVideo({ src, controls = false, isSquare = false }: LazyVideo
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div ref={containerRef} className={styles.container}>
       {isVisible ? (
-      // Use key to force complete remount when video becomes visible again
-      <Video 
-        key={`${src}-${mountKey}`}
-        src={src} 
-        controls={controls} 
-        isSquare={isSquare} 
-        autoPlay={false}
-      />
-    ) : (
-      // Placeholder while not visible
-      <div style={{ 
-        width: '100%', 
-        height: '100%', 
-        backgroundColor: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#666',
-        fontSize: '12px'
-      }}>
-        <Icon icon="play" />
-      </div>
+        // Use key to force complete remount when video becomes visible again
+        <Video 
+          key={`${src}-${mountKey}`}
+          src={src} 
+          controls={controls} 
+          isSquare={isSquare} 
+          autoPlay={false}
+        />
+      ) : (
+        // Placeholder while not visible
+        <div className={styles.placeholder}>
+          <Icon icon="play" />
+        </div>
       )}
     </div>
   );
-  
 }
+
+const styles = {
+  container: css`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+  placeholder: css`
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 12px;
+  `,
+};
