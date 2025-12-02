@@ -28,19 +28,19 @@ export function LazyVideo({ src, controls = false, isSquare = false }: LazyVideo
       (entries) => {
         entries.forEach((entry) => {
           const nowVisible = entry.isIntersecting;
-          
+
           // If transitioning from visible to not visible, force remount next time
           if (wasVisibleRef.current && !nowVisible) {
             setMountKey(prev => prev + 1);
           }
-          
+
           wasVisibleRef.current = nowVisible;
           setIsVisible(nowVisible);
         });
       },
       {
         // Start loading when video is within 200px of viewport
-        rootMargin: '200px',
+        rootMargin: '100px',
         threshold: 0,
       }
     );
@@ -64,12 +64,12 @@ export function LazyVideo({ src, controls = false, isSquare = false }: LazyVideo
     <div ref={containerRef} className={styles.container}>
       {isVisible ? (
         // Use key to force complete remount when video becomes visible again
-        <Video 
+        <Video
           key={`${src}-${mountKey}`}
-          src={src} 
-          controls={controls} 
-          isSquare={isSquare} 
-          autoPlay={false}
+          src={src}
+          controls={controls}
+          isSquare={isSquare}
+          autoPlay={true}
         />
       ) : (
         // Placeholder while not visible

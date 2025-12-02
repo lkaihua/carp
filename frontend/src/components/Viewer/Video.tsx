@@ -15,11 +15,9 @@ export function Video(props: VideoProps) {
       src={src}
       controls={controls}
       style={{
-        width: isSquare ? '100%' : 'auto',
-        height: isSquare ? '100%' : 'auto',
-        maxHeight: '100%',
-        maxWidth: '100%',
-        backgroundColor: 'black',
+        width: '100%',
+        height: '100%',
+        objectFit: isSquare ? 'cover' : 'contain',
       }}
       muted={true}
       autoPlay={autoPlay}

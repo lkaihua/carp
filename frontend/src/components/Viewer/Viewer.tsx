@@ -6,6 +6,7 @@ import { EntryType, FolderContentData } from '../../types/proto/types';
 
 import { LoadingBoundary } from '../LoadingBoundary/LoadingBoundary';
 import { match } from 'ts-pattern';
+import { css } from '@emotion/css';
 
 import { Drawer } from '../Drawer/Drawer';
 import { Media as MediaIcon, Video as VideoIcon } from '@blueprintjs/icons';
@@ -27,10 +28,14 @@ interface MediaItem {
 const Content = ({ item }: { item: MediaItem }) =>
   match(item)
     .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, (video) => (
-      <Video src={video.src} autoPlay={true}/>
+      <div className={styles.container}>
+        <Video src={video.src} autoPlay={true} />
+      </div>
     ))
     .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, (image) => (
-      <Photo src={image.src} />
+      <div className={styles.container}>
+        <Photo src={image.src} />
+      </div>
     ))
     .otherwise(() => null);
 
@@ -100,4 +105,12 @@ export const Viewer: React.FC<ViewerProps> = memo(function ViewComponent({
   );
 });
 
-
+const styles = {
+  container: css`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
+}

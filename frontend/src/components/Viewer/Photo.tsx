@@ -11,6 +11,8 @@ export function Photo({ src, name }: { src: string; name?: string }) {
 
 const styles = {
   photoContainer: css`
+    width: 100%;
+    height: 100%;
     flex: 1 1 auto;
     justify-content: center;
     align-items: center;

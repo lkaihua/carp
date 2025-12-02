@@ -8,6 +8,8 @@ import {
 } from 'react-router-dom';
 
 import {
+  Card,
+  CardList,
   CompoundTag,
   H6,
   Section,
@@ -34,6 +36,7 @@ import { List } from './components/List/List';
 
 import { usePathData } from './utils/usePathData';
 import { usePathMeta } from './utils/usePathMeta';
+import { useServerInfo } from './utils/useServerInfo';
 
 import { LoadingBoundary } from './components/LoadingBoundary/LoadingBoundary';
 import { css } from '@emotion/css';
@@ -42,6 +45,8 @@ import { FlexBox } from './components/FlexBox/FlexBox';
 import { LIST_ROW_HEIGHT } from './constants/layout';
 import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
 import { useActiveView } from './utils/useActiveView';
+import { formatStartTime } from './utils/time';
+import { ChevronRight } from '@blueprintjs/icons';
 
 const defaultDisplayItems = {
   data: [
@@ -85,7 +90,7 @@ function ListPage({ startFolder }: ListPageProps) {
 
   const folderContentData =
     data?.type === EntryType.ENTRY_TYPE_FOLDER &&
-    (data?.data?.displayItems?.data?.length ?? 0) > 0
+      (data?.data?.displayItems?.data?.length ?? 0) > 0
       ? data.data
       : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
@@ -164,8 +169,43 @@ function ListPage({ startFolder }: ListPageProps) {
 }
 
 function Home() {
+  const { data: serverInfo } = useServerInfo();
+
   return (
     <>
+      <Section
+        title="Root Folder"
+        icon="home"
+        titleRenderer={() => (
+          <FlexBox
+            style={{ alignItems: 'center', justifyContent: 'center' }}
+            gap={10}
+          >
+            <H6 style={{ marginBottom: 0 }}>Root Folder</H6>
+          </FlexBox>
+        )}
+      >
+        <SectionCard padded>
+          <Link to="/~/" className={styles.homeLink}>
+            <FlexBox gap={5} style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+              <CompoundTag
+                fill
+                minimal
+                size="large"
+                leftContent="~"
+                icon="folder-shared-open"
+              >
+                <FlexBox gap={5} style={{ alignItems: 'center', justifyContent: 'space-between', paddingRight: '10px' }}>
+                  <Text className={styles.tipText}>Start from here</Text>
+                  <ChevronRight style={{ color: Colors.GRAY2 }} />
+                </FlexBox>
+              </CompoundTag>
+            </FlexBox>
+          </Link>
+        </SectionCard>
+      </Section>
+
+
       <Section
         title="Server Info"
         collapsible={true}
@@ -181,7 +221,7 @@ function Home() {
               leftContent="LAN IP"
               icon="globe-network"
             >
-              192.168.1.100
+              {serverInfo?.ipAddress || 'Loading...'}
             </CompoundTag>
 
             <Section
@@ -197,11 +237,13 @@ function Home() {
                   leftContent="QR code"
                   icon="mobile-phone"
                 >
-                  <Text>Scan on mobile</Text>
+                  <Text className={styles.tipText}>Scan on mobile</Text>
                 </CompoundTag>
               )}
             >
-              <SectionCard>This is the QR code image</SectionCard>
+              <SectionCard>
+                <img src="http://localhost:8100/qr/?url=http://192.168.1.100:8100" alt="QR Code" width={200} />
+              </SectionCard>
             </Section>
 
             <CompoundTag
@@ -211,7 +253,7 @@ function Home() {
               leftContent="Server started"
               icon="cloud-tick"
             >
-              xxxx-xx-xx (5 minutes ago)
+              {serverInfo?.startTime ? formatStartTime(serverInfo.startTime) : 'Loading...'}
             </CompoundTag>
             <CompoundTag
               fill
@@ -220,33 +262,10 @@ function Home() {
               leftContent="Local folder"
               icon="folder-open"
             >
-              /Users/admin/Downloads/
+              {serverInfo?.localFolder || 'Loading...'}
             </CompoundTag>
           </div>
         </SectionCard>
-      </Section>
-
-      <Section
-        title="Root Folder"
-        collapsible={true}
-        icon="home"
-        titleRenderer={() => (
-          <FlexBox
-            style={{ alignItems: 'center', justifyContent: 'center' }}
-            gap={10}
-          >
-            <H6 style={{ marginBottom: 0 }}>Root Folder</H6>
-            <Link to="/~/">
-              <FlexBox gap={5}>
-                <Tag minimal icon="folder-shared-open" size="large">
-                  <code>~</code>
-                </Tag>
-              </FlexBox>
-            </Link>
-          </FlexBox>
-        )}
-      >
-        <ListPage startFolder="/~/" />
       </Section>
     </>
   );
@@ -265,6 +284,15 @@ function App() {
 }
 
 const styles = {
+  homeLink: css`
+    &:hover {
+      text-decoration: none;
+    }
+  `,
+  tipText: css`
+    font-style: italic;
+    color: ${Colors.BLUE3};
+  `,
   welcomeState: css`
     background-color: ${Colors.LIGHT_GRAY5};
     && {
@@ -285,6 +313,10 @@ const styles = {
   `,
 
   qrCodeSection: css`
+    &.bp6-section-collapsed {
+      box-shadow: none;
+    }
+
     &&& .bp6-section-header {
       padding-left: 0;
       min-height: unset;

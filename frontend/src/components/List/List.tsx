@@ -29,12 +29,9 @@ const Row = memo(function RowComponent({ index, style, data }: RowProps) {
 
   const navigate = useNavigate();
 
-
-
   return (
     <div style={style}>
       <CardList>
-
         <Card
           className={styles.listItem}
           interactive={true}

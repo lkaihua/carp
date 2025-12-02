@@ -65,11 +65,11 @@ export function Drawer({
     >
       <FlexBox className={styles.drawerContainer}>
         <FlexCol className={styles.drawerContent}>{children}</FlexCol>
-        <FlexCol className={styles.drawerFooter}>
+        {/* <FlexCol className={styles.drawerFooter}>
           <Button className={styles.drawerFooterCloseButton} onClick={onClose}>
             Close
           </Button>
-        </FlexCol>
+        </FlexCol> */}
       </FlexBox>
     </BlueprintDrawer>
   );

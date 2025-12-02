@@ -4,6 +4,7 @@ import {
   Breadcrumbs,
   Button,
   ButtonGroup,
+  Colors,
   Navbar,
   NavbarGroup,
 } from '@blueprintjs/core';
@@ -15,6 +16,7 @@ import logoMono from '../../assets/logo-mono.png';
 import { HEADER_NAV_HEIGHT } from '../../constants/layout';
 import { useActiveView } from '../../utils/useActiveView';
 import { useCellMediaRatio } from '../../utils/useCellMediaRatio';
+import hexToRgba from 'hex-to-rgba';
 
 export function Header() {
   const { pathname } = useLocation();
@@ -30,7 +32,6 @@ export function Header() {
     <Navbar className={styles.navbar}>
       <NavbarGroup
         className={styles.navBarBreadcrumbsContainer}
-        align={Alignment.START}
       >
         <Breadcrumbs
           items={items}
@@ -40,9 +41,8 @@ export function Header() {
 
       <NavbarGroup
         className={styles.navbarViewSelectorContainer}
-        align={Alignment.END}
       >
-        { value === 'grid' ? <ButtonGroup>
+        {value === 'grid' ? <ButtonGroup>
           <Button
             intent="none"
             icon={ratio === 'square' ? "square" : "rectangle"}
@@ -109,16 +109,18 @@ const styles = {
     gap: 10px;
     justify-content: space-between;
     align-items: center;
-    overflow: scroll;
+    overflow: hidden;
+    box-shadow: 0px 0px 0 1px ${hexToRgba(Colors.GRAY1, 0.2)};
   `,
   navBarBreadcrumbsContainer: css`
     flex: 1 1 auto;
     min-width: 40px;
-    overflow: hidden;
   `,
   navbarViewSelectorContainer: css`
     display: flex;
     flex: 0 0 auto;
     gap: 10px;
+    padding-left: 3px;
+    background-color: ${hexToRgba(Colors.WHITE, 0.9)};
   `,
 };
