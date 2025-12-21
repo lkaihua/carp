@@ -30,25 +30,22 @@ export function Header() {
   const items = generateBreadcrumbs(segments);
   return (
     <Navbar className={styles.navbar}>
-      <NavbarGroup
-        className={styles.navBarBreadcrumbsContainer}
-      >
-        <Breadcrumbs
-          items={items}
-          minVisibleItems={1}
-        />
+      <NavbarGroup className={styles.navBarBreadcrumbsContainer}>
+        <Breadcrumbs items={items} minVisibleItems={1} />
       </NavbarGroup>
 
-      <NavbarGroup
-        className={styles.navbarViewSelectorContainer}
-      >
-        {value === 'grid' ? <ButtonGroup>
-          <Button
-            intent="none"
-            icon={ratio === 'square' ? "square" : "rectangle"}
-            onClick={() => setRatio(prev => prev === 'square' ? 'ratio' : 'square')}
-          />
-        </ButtonGroup> : null}
+      <NavbarGroup className={styles.navbarViewSelectorContainer}>
+        {value === 'grid' ? (
+          <ButtonGroup>
+            <Button
+              intent="none"
+              icon={ratio === 'square' ? 'square' : 'rectangle'}
+              onClick={() =>
+                setRatio((prev) => (prev === 'square' ? 'ratio' : 'square'))
+              }
+            />
+          </ButtonGroup>
+        ) : null}
 
         <ButtonGroup>
           <Button
@@ -76,7 +73,7 @@ function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
   const homeCrumb: BreadcrumbProps = {
     text: '',
     href: '/',
-    icon: <img src={logoMono} className={styles.logo} alt="logo" />,
+    icon: <img src={logoMono} width="24" height="24" alt="logo" />,
   };
   crumbs.push(homeCrumb);
 
@@ -90,7 +87,6 @@ function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
       href: cumulativePath,
       current: isCurrent,
       // todo: the current folder icon should be its type
-
     } as BreadcrumbProps);
   });
 
@@ -98,10 +94,6 @@ function generateBreadcrumbs(segments: string[]): BreadcrumbProps[] {
 }
 
 const styles = {
-  logo: css`
-    width: 24px;
-    height: 24px;
-  `,
   navbar: css`
     min-height: ${HEADER_NAV_HEIGHT}px;
     display: flex;

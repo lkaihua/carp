@@ -9,9 +9,9 @@ import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
 import { PropsWithChildren, useCallback } from 'react';
 import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';
 import { css } from '@emotion/css';
-import { HEADER_NAV_HEIGHT } from '../../constants/layout';
+
 import { FlexBox } from '../FlexBox/FlexBox';
-import { Colors, H5 } from '@blueprintjs/core';
+import { Colors, H5, Classes } from '@blueprintjs/core';
 
 export interface Props {
   src: string;
@@ -38,7 +38,8 @@ export function Drawer({
 
   const title = name ?? decodeURIComponent(src.split('/').pop() ?? '');
 
-  const size = window.innerHeight - HEADER_NAV_HEIGHT;
+  // const size = window.innerHeight - HEADER_NAV_HEIGHT;
+  const size = window.innerHeight * 0.5; // 50% of viewport height
 
   return (
     <BlueprintDrawer
@@ -51,16 +52,18 @@ export function Drawer({
           <H5>{title}</H5>
           {!!filePath && (
             <a href={filePath} download={name}>
-              <Button minimal icon="download" title="Download" />
+              <Button minimal icon="share" title="Get the file link" />
             </a>
           )}
         </FlexBox>
       }
       usePortal
+      enforceFocus
+      autoFocus
       icon={icon}
       isOpen={!!src}
       onClose={onClose}
-      className="drawer-container"
+      className={`drawer-container ${Classes.DARK}`}
       transitionDuration={0}
     >
       <FlexBox className={styles.drawerContainer}>

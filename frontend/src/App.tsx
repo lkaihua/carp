@@ -1,17 +1,14 @@
 import { ElementRef, useEffect, useRef, useState } from 'react';
-import {
-  Link,
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-} from 'react-router-dom';
+import { Link, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 import {
   Card,
   CardList,
   CompoundTag,
   H6,
+  Icon,
+  NonIdealState,
+  NonIdealStateIconSize,
   Section,
   SectionCard,
   Tag,
@@ -42,11 +39,13 @@ import { LoadingBoundary } from './components/LoadingBoundary/LoadingBoundary';
 import { css } from '@emotion/css';
 import { Colors } from '@blueprintjs/core';
 import { FlexBox } from './components/FlexBox/FlexBox';
-import { LIST_ROW_HEIGHT } from './constants/layout';
+import { HEADER_NAV_HEIGHT, LIST_ROW_HEIGHT } from './constants/layout';
 import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
 import { useActiveView } from './utils/useActiveView';
 import { formatStartTime } from './utils/time';
 import { ChevronRight } from '@blueprintjs/icons';
+
+import logoMono from '../src/assets/logo-mono.png';
 
 const defaultDisplayItems = {
   data: [
@@ -90,14 +89,17 @@ function ListPage({ startFolder }: ListPageProps) {
 
   const folderContentData =
     data?.type === EntryType.ENTRY_TYPE_FOLDER &&
-      (data?.data?.displayItems?.data?.length ?? 0) > 0
+    (data?.data?.displayItems?.data?.length ?? 0) > 0
       ? data.data
       : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
   const { displayItems } = folderContentData;
   // console.log('displayItems', displayItems);
 
-  const [activeVerticalPos, setActiveVerticalPos] = useActiveVerticalPos(path, activeView);
+  const [activeVerticalPos, setActiveVerticalPos] = useActiveVerticalPos(
+    path,
+    activeView,
+  );
   const hasRestoredScrollPos = useRef(false);
 
   // Reset the restoration flag when path or view changes
@@ -111,6 +113,7 @@ function ListPage({ startFolder }: ListPageProps) {
 
   return (
     <>
+      <Header />
       <LoadingBoundary isLoading={isLoading} error={error}>
         <FlexCol className={styles.listPage}>
           <AutoSizer>
@@ -123,7 +126,10 @@ function ListPage({ startFolder }: ListPageProps) {
                   rowHeight={LIST_ROW_HEIGHT}
                   ref={listRef}
                   onItemsRendered={() => {
-                    if (!hasRestoredScrollPos.current && activeVerticalPos > 0) {
+                    if (
+                      !hasRestoredScrollPos.current &&
+                      activeVerticalPos > 0
+                    ) {
                       requestAnimationFrame(() => {
                         listRef.current?.scrollTo(activeVerticalPos);
                         hasRestoredScrollPos.current = true;
@@ -143,11 +149,16 @@ function ListPage({ startFolder }: ListPageProps) {
                   ref={gridRef}
                   isSquare={true}
                   onItemsRendered={() => {
-                    if (!hasRestoredScrollPos.current && activeVerticalPos > 0) {
+                    if (
+                      !hasRestoredScrollPos.current &&
+                      activeVerticalPos > 0
+                    ) {
                       requestAnimationFrame(() => {
-                        gridRef.current?.scrollTo({ scrollTop: activeVerticalPos });
+                        gridRef.current?.scrollTo({
+                          scrollTop: activeVerticalPos,
+                        });
                         hasRestoredScrollPos.current = true;
-                      })
+                      });
                     }
                   }}
                   onScrollFinish={setActiveVerticalPos}
@@ -174,43 +185,45 @@ function Home() {
   return (
     <>
       <Section
-        title="Root Folder"
-        icon="home"
+        title="Start"
+        icon={<img src={logoMono} width="20" height="20" alt="logo" />}
         titleRenderer={() => (
           <FlexBox
             style={{ alignItems: 'center', justifyContent: 'center' }}
             gap={10}
           >
-            <H6 style={{ marginBottom: 0 }}>Root Folder</H6>
+            <H6 style={{ marginBottom: 0 }}>Start</H6>
           </FlexBox>
         )}
       >
         <SectionCard padded>
-          <Link to="/~/" className={styles.homeLink}>
-            <FlexBox gap={5} style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-              <CompoundTag
-                fill
-                minimal
-                size="large"
-                leftContent="~"
-                icon="folder-shared-open"
-              >
-                <FlexBox gap={5} style={{ alignItems: 'center', justifyContent: 'space-between', paddingRight: '10px' }}>
-                  <Text className={styles.tipText}>Start from here</Text>
-                  <ChevronRight style={{ color: Colors.GRAY2 }} />
-                </FlexBox>
-              </CompoundTag>
-            </FlexBox>
-          </Link>
+          <Card interactive={true} className={styles.homeLinkCard}>
+            <Link to="/~/" className={styles.homeLink}>
+              <NonIdealState
+                layout="horizontal"
+                iconSize={NonIdealStateIconSize.SMALL}
+                icon={
+                  <Icon
+                    icon="folder-shared-open"
+                    size={32}
+                    color={Colors.BLACK}
+                  />
+                }
+                title={<Text className={styles.tipText}>~</Text>}
+                description={
+                  <Text className={styles.tipText}>Root Folder</Text>
+                }
+              />
+            </Link>
+            c
+          </Card>
         </SectionCard>
       </Section>
-
-
       <Section
         title="Server Info"
         collapsible={true}
         style={{ overflow: 'unset' }}
-        icon="server"
+        icon={<Icon icon="server" size={16} color={Colors.BLACK} />}
       >
         <SectionCard padded>
           <div className={styles.serverInfoList}>
@@ -242,7 +255,11 @@ function Home() {
               )}
             >
               <SectionCard>
-                <img src="http://localhost:8100/qr/?url=http://192.168.1.100:8100" alt="QR Code" width={200} />
+                <img
+                  src="http://localhost:8100/qr/?url=http://192.168.1.100:8100"
+                  alt="QR Code"
+                  width={200}
+                />
               </SectionCard>
             </Section>
 
@@ -250,10 +267,12 @@ function Home() {
               fill
               minimal
               size="large"
-              leftContent="Server started"
+              leftContent="Started"
               icon="cloud-tick"
             >
-              {serverInfo?.startTime ? formatStartTime(serverInfo.startTime) : 'Loading...'}
+              {serverInfo?.startTime
+                ? formatStartTime(serverInfo.startTime)
+                : 'Loading...'}
             </CompoundTag>
             <CompoundTag
               fill
@@ -274,7 +293,6 @@ function Home() {
 function App() {
   return (
     <FlexCol className="app-container">
-      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/~/*" element={<ListPage />} />
@@ -289,6 +307,9 @@ const styles = {
       text-decoration: none;
     }
   `,
+  homeLinkCard: css`
+    max-width: 33%;
+  `,
   tipText: css`
     font-style: italic;
     color: ${Colors.BLUE3};
@@ -302,8 +323,8 @@ const styles = {
   listPage: css`
     flex: 1 1 auto;
     width: 100%;
-    height: calc(100dvh - 50px);
     /* 50px for header */
+    height: calc(100dvh - ${HEADER_NAV_HEIGHT}px);
     overflow: hidden;
   `,
   serverInfoList: css`

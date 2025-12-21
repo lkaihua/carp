@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  memo,
-  useMemo,
-  useState,
-} from 'react';
+import { forwardRef, memo, useMemo, useState } from 'react';
 import { FixedSizeGrid } from 'react-window';
 import { DisplayItem, EntryType } from '../../types/proto/types';
 import {
@@ -16,11 +11,12 @@ import {
   Tag,
   Button,
   ButtonGroup,
+  Icon,
+  Colors,
 } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
 import { usePathData } from '../../utils/usePathData';
 import { match } from 'ts-pattern';
-
 
 // Styles moved from Grid.css below
 import { getIconForType } from '../../utils/getIconForType';
@@ -43,8 +39,6 @@ interface CellProps {
   };
 }
 
-
-
 const PREVIEW_FILE_LIMIT = 10 * 1024 * 1024;
 
 export interface PreviewFile {
@@ -65,7 +59,6 @@ const CellPreview = memo(function CellPreviewComponent({
   icon,
   isSquare,
 }: CellPreviewProps) {
-
   let cover;
   if (previewFile.url) {
     if (previewFile.type === 'video') {
@@ -75,7 +68,11 @@ const CellPreview = memo(function CellPreviewComponent({
             <Tag className={styles.coverImageIcon} icon={icon}>
               <Text>{title}</Text>
             </Tag>
-            <LazyVideo src={previewFile.url} controls={false} isSquare={isSquare} />
+            <LazyVideo
+              src={previewFile.url}
+              controls={false}
+              isSquare={isSquare}
+            />
           </FlexBox>
         </Link>
       );
@@ -97,9 +94,7 @@ const CellPreview = memo(function CellPreviewComponent({
     }
   }
 
-  return (
-    <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>
-  );
+  return <FlexCol className={styles.gridCoverMediaContainer}>{cover}</FlexCol>;
 });
 
 const Cell = memo(function CellComponent({
@@ -117,12 +112,10 @@ const Cell = memo(function CellComponent({
   const relativeUrl = item?.relativeUrl;
   const fullUrl = item?.fullUrl;
 
-
   // Request the metadata only if the target is FOLDER
-  const {
-    data: newItemData,
-    isLoading,
-  } = usePathData(isFolder ? relativeUrl : null);
+  const { data: newItemData, isLoading } = usePathData(
+    isFolder ? relativeUrl : null,
+  );
 
   const previewFile: PreviewFile | undefined = match(item)
     .with({ entryType: EntryType.ENTRY_TYPE_FOLDER }, () => {
@@ -197,7 +190,7 @@ const Cell = memo(function CellComponent({
     <NonIdealState
       className={styles.gridItemTitle}
       iconSize={NonIdealStateIconSize.STANDARD}
-      icon={icon}
+      icon={<Icon icon={icon} size={32} color={Colors.BLACK} />}
       title={
         item.urlString ? (
           <Link to={item.urlString} className="grid-item-link">
