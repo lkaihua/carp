@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Photo } from './Photo';
 import { Video } from './Video';
+import { Text } from './Text';
 import { usePathData } from '../../utils/usePathData';
 import { EntryType, FolderContentData } from '../../types/proto/types';
 
@@ -9,7 +10,7 @@ import { match } from 'ts-pattern';
 import { css } from '@emotion/css';
 
 import { Drawer } from '../Drawer/Drawer';
-import { Media as MediaIcon, Video as VideoIcon } from '@blueprintjs/icons';
+import { Media as MediaIcon, Video as VideoIcon, Document as DocumentIcon } from '@blueprintjs/icons';
 
 
 interface ViewerProps {
@@ -35,6 +36,16 @@ const Content = ({ item }: { item: MediaItem }) =>
     .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, (image) => (
       <div className={styles.container}>
         <Photo src={image.src} />
+      </div>
+    ))
+    .with({ entryType: EntryType.ENTRY_TYPE_TEXT }, (text) => (
+      <div className={styles.container}>
+        <Text src={text.src} filename={text.filename} />
+      </div>
+    ))
+    .with({ entryType: EntryType.ENTRY_TYPE_JSON }, (json) => (
+      <div className={styles.container}>
+        <Text src={json.src} filename={json.filename} />
       </div>
     ))
     .otherwise(() => null);
@@ -71,6 +82,8 @@ export const Viewer: React.FC<ViewerProps> = memo(function ViewComponent({
   const icon = match(data)
     .with({ type: EntryType.ENTRY_TYPE_VIDEO }, () => <VideoIcon />)
     .with({ type: EntryType.ENTRY_TYPE_IMAGE }, () => <MediaIcon />)
+    .with({ type: EntryType.ENTRY_TYPE_TEXT }, () => <DocumentIcon />)
+    .with({ type: EntryType.ENTRY_TYPE_JSON }, () => <DocumentIcon />)
     .otherwise(() => null);
 
   // from the parent folder data, find the current active index,

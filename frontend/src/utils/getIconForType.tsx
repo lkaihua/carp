@@ -12,6 +12,7 @@ export function getIconForType(type?: EntryType): IconName {
     case EntryType.ENTRY_TYPE_MUSIC:
       return 'music';
     case EntryType.ENTRY_TYPE_TEXT:
+    case EntryType.ENTRY_TYPE_JSON:
       return 'document';
     case EntryType.UNRECOGNIZED:
       return 'help';

@@ -6,12 +6,13 @@ import { Media } from '@blueprintjs/icons';
 import { useNavigate } from 'react-router-dom';
 
 import { FlexCol } from '../FlexBoxCol/FlexBoxCol';
-import { PropsWithChildren, useCallback } from 'react';
+import { PropsWithChildren, useCallback, useState } from 'react';
 import { Button } from '@blueprintjs/core/lib/esm/components/button/buttons';
 import { css } from '@emotion/css';
 
 import { FlexBox } from '../FlexBox/FlexBox';
 import { Colors, H5, Classes } from '@blueprintjs/core';
+import { HEADER_NAV_HEIGHT } from '../../constants/layout';
 
 export interface Props {
   src: string;
@@ -38,8 +39,15 @@ export function Drawer({
 
   const title = name ?? decodeURIComponent(src.split('/').pop() ?? '');
 
-  // const size = window.innerHeight - HEADER_NAV_HEIGHT;
-  const size = window.innerHeight * 0.5; // 50% of viewport height
+  const [isMaximized, setIsMaximized] = useState(false);
+  const toggleMaximize = useCallback(
+    () => setIsMaximized((prev) => !prev),
+    [],
+  );
+
+  const size = isMaximized
+    ? window.innerHeight - HEADER_NAV_HEIGHT
+    : window.innerHeight * 0.5;
 
   return (
     <BlueprintDrawer
@@ -51,9 +59,17 @@ export function Drawer({
         >
           <H5>{title}</H5>
           {!!filePath && (
-            <a href={filePath} download={name}>
-              <Button minimal icon="share" title="Get the file link" />
-            </a>
+            <FlexBox>
+              <Button
+                minimal
+                icon={isMaximized ? 'minimize' : 'maximize'}
+                title={isMaximized ? 'Restore size' : 'Maximize'}
+                onClick={toggleMaximize}
+              />
+              <a href={filePath} download={name}>
+                <Button minimal icon="share" title="Open the file" />
+              </a>
+            </FlexBox>
           )}
         </FlexBox>
       }

@@ -30,6 +30,14 @@ export type PathData =
   | {
       type: EntryType.ENTRY_TYPE_IMAGE;
       url: string;
+    }
+  | {
+      type: EntryType.ENTRY_TYPE_TEXT;
+      url: string;
+    }
+  | {
+      type: EntryType.ENTRY_TYPE_JSON;
+      url: string;
     };
 
 export function usePathData(
@@ -39,7 +47,6 @@ export function usePathData(
   return useQuery<PathData, Error>({
     queryKey: ['list', relativePath],
     queryFn: async () => {
-
       // todo: we can get rid of the server base url I think with fullUrl passed back
       // only for the first folder request, we need to use the server base url actually
 
@@ -69,9 +76,17 @@ export function usePathData(
             throw new Error(`GET request failed with status ${jsonRes.status}`);
           }
           const result = await jsonRes.json();
+          // If the JSON result has display_items, it's a folder listing from our backend
+          if (result && result.displayItems) {
+            return {
+              type: EntryType.ENTRY_TYPE_FOLDER,
+              data: result,
+            } as const;
+          }
+          // Otherwise it's a raw JSON file
           return {
-            type: EntryType.ENTRY_TYPE_FOLDER,
-            data: result,
+            type: EntryType.ENTRY_TYPE_JSON,
+            url: baseUrl,
           } as const;
         } catch (err) {
           throw new Error(`Failed to fetch or parse JSON: ${err}`);
@@ -102,7 +117,38 @@ export function usePathData(
         }
       }
 
+      if (
+        contentType.startsWith('text') ||
+        contentType.includes('javascript') ||
+        contentType.includes('typescript') ||
+        contentType.includes('xml')
+      ) {
+        return {
+          type: EntryType.ENTRY_TYPE_TEXT,
+          url: baseUrl,
+        } as const;
+      }
+
       if (contentType) {
+        // Fallback for other text-like things often served as application/octet-stream or similar
+        const extension = relativePath?.split('.').pop()?.toLowerCase();
+        const textExtensions = [
+          'go',
+          'py',
+          'sh',
+          'yml',
+          'yaml',
+          'sql',
+          'rs',
+          'java',
+        ];
+        if (extension && textExtensions.includes(extension)) {
+          return {
+            type: EntryType.ENTRY_TYPE_TEXT,
+            url: baseUrl,
+          } as const;
+        }
+
         throw new Error(`Unsupported content type: ${contentType} `);
       }
       throw new Error('No content found');

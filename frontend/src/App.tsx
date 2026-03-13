@@ -89,12 +89,12 @@ function ListPage({ startFolder }: ListPageProps) {
 
   const folderContentData =
     data?.type === EntryType.ENTRY_TYPE_FOLDER &&
-    (data?.data?.displayItems?.data?.length ?? 0) > 0
+      (data?.data?.displayItems?.data?.length ?? 0) > 0
       ? data.data
       : ({ displayItems: defaultDisplayItems } as FolderContentData);
 
   const { displayItems } = folderContentData;
-  // console.log('displayItems', displayItems);
+  console.log('displayItems', displayItems);
 
   const [activeVerticalPos, setActiveVerticalPos] = useActiveVerticalPos(
     path,
@@ -186,7 +186,7 @@ function Home() {
     <>
       <Section
         title="Start"
-        icon={<img src={logoMono} width="20" height="20" alt="logo" />}
+        icon={<img src={logoMono} width="24" height="24" alt="logo" />}
         titleRenderer={() => (
           <FlexBox
             style={{ alignItems: 'center', justifyContent: 'center' }}
@@ -204,7 +204,7 @@ function Home() {
                 iconSize={NonIdealStateIconSize.SMALL}
                 icon={
                   <Icon
-                    icon="folder-shared-open"
+                    icon="home"
                     size={32}
                     color={Colors.BLACK}
                   />
@@ -215,7 +215,6 @@ function Home() {
                 }
               />
             </Link>
-            c
           </Card>
         </SectionCard>
       </Section>
@@ -308,11 +307,13 @@ const styles = {
     }
   `,
   homeLinkCard: css`
-    max-width: 33%;
+    max-width: 50%;
+    @media (min-width: 768px) {
+      max-width: 33%;
+    }
   `,
   tipText: css`
     font-style: italic;
-    color: ${Colors.BLUE3};
   `,
   welcomeState: css`
     background-color: ${Colors.LIGHT_GRAY5};

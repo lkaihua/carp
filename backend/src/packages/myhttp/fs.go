@@ -69,11 +69,11 @@ type dirEntry struct {
 */
 
 func getFullURL(r *http.Request) string {
-    scheme := "http"
-    if r.TLS != nil {
-        scheme = "https"
-    }
-    return fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+	return fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
 }
 
 func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
@@ -127,6 +127,10 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 				entryType = types.EntryType_ENTRY_TYPE_VIDEO
 			} else if utils.IsMusic(name) {
 				entryType = types.EntryType_ENTRY_TYPE_MUSIC
+			} else if utils.IsJSON(name) {
+				entryType = types.EntryType_ENTRY_TYPE_JSON
+			} else if utils.IsText(name) {
+				entryType = types.EntryType_ENTRY_TYPE_TEXT
 			} else {
 				entryType = types.EntryType_ENTRY_TYPE_DEFAULT
 			}
