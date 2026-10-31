@@ -1,6 +1,15 @@
+import { SHARE_API_PREFIX, SHARE_PAGE_PREFIX } from '../constants/routes';
+
 export interface PathMeta {
   folderPath: string;
   fileName: string | null;
+}
+
+// Translate a browser page URL into the matching Go content URL.
+export function toShareApiPath(pagePath: string): string {
+  return pagePath.startsWith(SHARE_PAGE_PREFIX)
+    ? `${SHARE_API_PREFIX}${pagePath.slice(SHARE_PAGE_PREFIX.length)}`
+    : pagePath;
 }
 
 export function getPathMeta(path: string): PathMeta {

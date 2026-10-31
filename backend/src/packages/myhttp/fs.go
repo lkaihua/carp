@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/lkaihua/carp/src/packages/mytemplate"
+	"github.com/lkaihua/carp/src/packages/routes"
 	types "github.com/lkaihua/carp/src/packages/types/proto"
 	"github.com/lkaihua/carp/src/packages/utils"
 )
@@ -96,7 +97,11 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
 		url := d.Url
-		relativeUrl := path.Join(r.URL.String(), d.Url)
+		/* CARP-COMMENTS
+		 * Folder listings come from /api/share/, but relativeUrl is a React
+		 * page link. Keep fullUrl on the API route for previews and downloads.
+		 */
+		relativeUrl := path.Join(routes.SharePagePrefix, strings.TrimPrefix(r.URL.Path, routes.ShareAPIPrefix), d.Url)
 		fullUrl := fullUrlBase + d.Url
 		// modTime := d.ModTime
 		// size := d.Size
@@ -759,7 +764,10 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name strin
 	// redirect .../index.html to .../
 	// can't use Redirect() because that would make the path absolute,
 	// which would be a problem running under StripPrefix
-	if strings.HasSuffix(r.URL.Path, indexPage) {
+	/* CARP-COMMENTS
+	 * A shared file named index.html is content, not a directory shortcut.
+	 */
+	if !strings.HasPrefix(r.URL.Path, routes.ShareAPIPrefix) && strings.HasSuffix(r.URL.Path, indexPage) {
 		localRedirect(w, r, "./")
 		return
 	}
@@ -808,10 +816,10 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name strin
 		}
 
 		/* CARP-COMMENTS
-		 * A /~/ directory request is for Carp's JSON listing. Do not serve an
+		 * An /api/share/ directory request is for Carp's JSON listing. Do not serve an
 		 * index.html found inside the shared folder in place of that listing.
 		 */
-		if !strings.HasPrefix(r.URL.Path, "/~/") {
+		if !strings.HasPrefix(r.URL.Path, routes.ShareAPIPrefix) {
 			index := strings.TrimSuffix(name, "/") + indexPage
 			ff, err := fs.Open(index)
 			if err == nil {

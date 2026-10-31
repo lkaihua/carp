@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	qrcode "github.com/skip2/go-qrcode"
 
 	"github.com/lkaihua/carp/src/packages/myhttp"
+	"github.com/lkaihua/carp/src/packages/routes"
 	"github.com/lkaihua/carp/src/packages/utils"
 )
 
@@ -57,10 +57,11 @@ func main() {
 
 func newHTTPHandler() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/~/", indexHandler)
-	mux.HandleFunc("/info/", infoHandler)
-	mux.HandleFunc("/qr/", qrHandler)
+	mux.HandleFunc(routes.ShareAPIPrefix, shareHandler)
+	mux.HandleFunc(routes.InfoAPIPrefix, infoHandler)
+	mux.HandleFunc(routes.QRAPIPrefix, qrHandler)
 	if frontendDistDir != "" {
+		mux.HandleFunc(routes.SharePagePrefix, appPageHandler)
 		mux.Handle("/", http.FileServer(http.Dir(frontendDistDir)))
 	}
 	return mux
@@ -79,14 +80,25 @@ func setCORSHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	if frontendDistDir != "" && strings.Contains(r.Header.Get("Accept"), "text/html") {
-		http.ServeFile(w, r, filepath.Join(frontendDistDir, "index.html"))
+func appPageHandler(w http.ResponseWriter, r *http.Request) {
+	index, err := os.Open(filepath.Join(frontendDistDir, "index.html"))
+	if err != nil {
+		http.Error(w, "app page unavailable", http.StatusInternalServerError)
 		return
 	}
+	defer index.Close()
+	info, err := index.Stat()
+	if err != nil {
+		http.Error(w, "app page unavailable", http.StatusInternalServerError)
+		return
+	}
+	http.ServeContent(w, r, "index.html", info.ModTime(), index)
+}
+
+func shareHandler(w http.ResponseWriter, r *http.Request) {
 	setCORSHeaders(w)
 
-	path := r.URL.Path[3:] // trim off leading `/~/`
+	path := r.URL.Path[len(routes.ShareAPIPrefix):]
 
 	log.Printf("Serving: %s", filepath.Join(rootDir, path))
 	myhttp.ServeFile(w, r, filepath.Join(rootDir, path))

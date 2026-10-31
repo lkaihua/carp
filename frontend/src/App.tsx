@@ -46,6 +46,7 @@ import { formatStartTime } from './utils/time';
 import { ChevronRight } from '@blueprintjs/icons';
 
 import logoMono from '../src/assets/logo-mono.png';
+import { QR_API_PREFIX, SHARE_PAGE_PREFIX } from './constants/routes';
 
 const defaultDisplayItems = {
   data: [
@@ -200,7 +201,7 @@ function Home() {
       >
         <SectionCard padded>
           <Card interactive={true} className={styles.homeLinkCard}>
-            <Link to="/~/" className={styles.homeLink}>
+            <Link to={SHARE_PAGE_PREFIX} className={styles.homeLink}>
               <NonIdealState
                 layout="horizontal"
                 iconSize={NonIdealStateIconSize.SMALL}
@@ -242,7 +243,7 @@ function Home() {
               className={styles.qrCodeSection}
               title="QR code"
               collapsible={true}
-              collapseProps={{ defaultIsOpen: false }}
+              collapseProps={{ defaultIsOpen: true }}
               titleRenderer={() => (
                 <CompoundTag
                   fill
@@ -257,7 +258,7 @@ function Home() {
             >
               <SectionCard>
                 <img
-                  src={`${serverBaseUrl}/qr/?url=${encodeURIComponent(shareUrl.href)}`}
+                  src={`${serverBaseUrl}${QR_API_PREFIX}?url=${encodeURIComponent(shareUrl.href)}`}
                   alt="QR Code"
                   width={200}
                 />
@@ -296,7 +297,7 @@ function App() {
     <FlexCol className="app-container">
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/~/*" element={<ListPage />} />
+        <Route path={`${SHARE_PAGE_PREFIX}*`} element={<ListPage />} />
       </Routes>
     </FlexCol>
   );

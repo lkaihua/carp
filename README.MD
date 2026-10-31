@@ -33,7 +33,7 @@ cd frontend
 npm run dev
 ```
 
-Vite forwards folder, server info, and QR requests to Go on port 8100.
+Vite forwards shared folder content, server info, and QR requests to Go on port 8100.
 
 ## Run a share server
 
@@ -44,6 +44,14 @@ go run ./src/main -d "/path/to/my photos" -fd ../frontend/dist
 ```
 
 This serves the app and shared files from Go on **http://localhost:8100/**. Other devices on your network can use the printed LAN address or QR code. Pass `-p 8000` to use another port. Only share a folder you intend other users on the network to read; Carp has no authentication.
+
+## Page URLs and shared content
+
+`/~/...` is a React page for browsing a path inside the shared folder. For example, open `/~/photos/` to browse a `photos` folder. This URL returns the app, including on a direct visit or reload when Go serves the built frontend with `-fd`.
+
+`/api/share/...` is the Go route for that same path's content. A directory URL such as `/api/share/photos/` returns a JSON listing; a file URL such as `/api/share/photos/cat.jpg` returns the file bytes. React requests this route while the address bar stays on `/~/photos/`. In development, Vite proxies `/api/` to Go. Previously, `/~/` also served JSON and files; callers of those URLs need to use `/api/share/` now.
+
+`/api/info/` returns server details as JSON. `/api/qr/?url=...` returns a QR code image for the supplied URL. API endpoint bases begin with `/api/` and end in `/`; Go redirects a request missing the final slash. Vite proxies `/api/` to Go in development. These replace the older `/info/` and `/qr/` URLs.
 
 ## Checks and shared types
 

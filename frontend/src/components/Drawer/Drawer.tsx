@@ -39,7 +39,7 @@ export function Drawer({
 
   const title = name ?? decodeURIComponent(src.split('/').pop() ?? '');
 
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(true);
   const toggleMaximize = useCallback(
     () => setIsMaximized((prev) => !prev),
     [],
@@ -62,6 +62,7 @@ export function Drawer({
             <FlexBox>
               <Button
                 minimal
+                className={styles.maximizeButton}
                 icon={isMaximized ? 'minimize' : 'maximize'}
                 title={isMaximized ? 'Restore size' : 'Maximize'}
                 onClick={toggleMaximize}
@@ -95,6 +96,11 @@ export function Drawer({
 }
 
 const styles = {
+  maximizeButton: css`
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+  `,
   drawerContainer: css`
     display: flex;
     flex-direction: column;

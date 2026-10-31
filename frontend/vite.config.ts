@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { API_PREFIX } from './src/constants/routes'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -7,15 +8,7 @@ export default defineConfig({
   server: {
     host: true,
     proxy: {
-      '/~/': {
-        target: 'http://127.0.0.1:8100',
-        bypass(req) {
-          // Browser navigation belongs to React; data and media belong to Go.
-          if (req.headers.accept?.includes('text/html')) return '/index.html'
-        },
-      },
-      '/info/': 'http://127.0.0.1:8100',
-      '/qr/': 'http://127.0.0.1:8100',
+      [API_PREFIX]: 'http://127.0.0.1:8100',
     },
   },
 })

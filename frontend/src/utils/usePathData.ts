@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { EntryType, FolderContentData } from '../types/proto/types';
 import { isIOS } from 'react-device-detect';
+import { toShareApiPath } from './path';
 
 // Vite proxies API requests in development; the built app uses the same Go origin.
 export const serverBaseUrl = window.location.origin;
@@ -36,12 +37,9 @@ export function usePathData(
   return useQuery<PathData, Error>({
     queryKey: ['list', relativePath],
     queryFn: async () => {
-      // todo: we can get rid of the server base url I think with fullUrl passed back
-      // only for the first folder request, we need to use the server base url actually
-
       const baseUrl = relativePath?.startsWith('http')
         ? relativePath
-        : new URL(relativePath ?? '', serverBaseUrl).href;
+        : new URL(toShareApiPath(relativePath ?? ''), serverBaseUrl).href;
 
       let headRes: Response;
 
