@@ -10,6 +10,7 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "test:ui": "vitest --ui",
     "test:watch": "vitest"
   },

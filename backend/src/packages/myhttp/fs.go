@@ -766,8 +766,11 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name strin
 
 	f, err := fs.Open(name)
 	if err != nil {
-		// msg, code := toHTTPError(err)
-		// http.Error(w, msg, code)
+		/* CARP-COMMENTS
+		 * Report missing or unreadable shared files instead of returning an empty 200 response.
+		 */
+		msg, code := toHTTPError(err)
+		http.Error(w, msg, code)
 		return
 	}
 	defer f.Close()
@@ -804,16 +807,21 @@ func serveFile(w http.ResponseWriter, r *http.Request, fs FileSystem, name strin
 			return
 		}
 
-		// use contents of index.html for directory, if present
-		index := strings.TrimSuffix(name, "/") + indexPage
-		ff, err := fs.Open(index)
-		if err == nil {
-			defer ff.Close()
-			dd, err := ff.Stat()
+		/* CARP-COMMENTS
+		 * A /~/ directory request is for Carp's JSON listing. Do not serve an
+		 * index.html found inside the shared folder in place of that listing.
+		 */
+		if !strings.HasPrefix(r.URL.Path, "/~/") {
+			index := strings.TrimSuffix(name, "/") + indexPage
+			ff, err := fs.Open(index)
 			if err == nil {
-				name = index
-				d = dd
-				f = ff
+				defer ff.Close()
+				dd, err := ff.Stat()
+				if err == nil {
+					name = index
+					d = dd
+					f = ff
+				}
 			}
 		}
 	}

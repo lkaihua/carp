@@ -79,7 +79,6 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 	m := protojson.MarshalOptions{
 		EmitUnpopulated: true,
 		UseEnumNumbers:  true,
-		UseProtoNames:   true,
 	}
 
 	b, err := m.Marshal(&contentData)

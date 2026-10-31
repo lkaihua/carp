@@ -2,19 +2,8 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { EntryType, FolderContentData } from '../types/proto/types';
 import { isIOS } from 'react-device-detect';
 
-// TODO: the server port name should coming from an env variable.
-// Need to resolve this two-port issue sooner or later. Now there are two ports:
-// Dev - 5173 for vite dev, 8100 for the backend server
-// Production - 8000 for all
-//   - https://192.168.1.1:8000/index.html
-//   - https://192.168.1.1:8000/favicon.ico
-//   - https://192.168.1.1:8000/main.js
-//   - https://192.168.1.1:8000/~/example_folder/ - folder meta
-//   - https://192.168.1.1:8000/~/example_folder/test.mp4 - file raw
-
-const serverPort = 8100;
-const serverProtocol = 'http://';
-export const serverBaseUrl = `${serverProtocol}${window.location.hostname}:${serverPort}`;
+// Vite proxies API requests in development; the built app uses the same Go origin.
+export const serverBaseUrl = window.location.origin;
 
 export type FolderData = {
   type: EntryType.ENTRY_TYPE_FOLDER;

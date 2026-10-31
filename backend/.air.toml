@@ -1,5 +1,6 @@
-[build]  
-  full_bin = "go run ./src/main/main.go -d ../example_root/"
+[build]
+  cmd = "go build -o ./tmp/carp ./src/main"
+  bin = "./tmp/carp"
   include_ext = ["go", "tpl", "tmpl", "html"]
   exclude_dir = ["assets", "tmp", "vendor"]
   

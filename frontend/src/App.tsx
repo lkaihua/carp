@@ -31,7 +31,7 @@ import { Grid } from './components/Grid/Grid';
 import { Header } from './components/Header/Header';
 import { List } from './components/List/List';
 
-import { usePathData } from './utils/usePathData';
+import { serverBaseUrl, usePathData } from './utils/usePathData';
 import { usePathMeta } from './utils/usePathMeta';
 import { useServerInfo } from './utils/useServerInfo';
 
@@ -181,6 +181,8 @@ function ListPage({ startFolder }: ListPageProps) {
 
 function Home() {
   const { data: serverInfo } = useServerInfo();
+  const shareUrl = new URL(serverBaseUrl);
+  if (serverInfo?.ipAddress) shareUrl.hostname = serverInfo.ipAddress;
 
   return (
     <>
@@ -204,7 +206,7 @@ function Home() {
                 iconSize={NonIdealStateIconSize.SMALL}
                 icon={
                   <Icon
-                    icon="home"
+                    icon="folder-shared"
                     size={32}
                     color={Colors.BLACK}
                   />
@@ -255,7 +257,7 @@ function Home() {
             >
               <SectionCard>
                 <img
-                  src="http://localhost:8100/qr/?url=http://192.168.1.100:8100"
+                  src={`${serverBaseUrl}/qr/?url=${encodeURIComponent(shareUrl.href)}`}
                   alt="QR Code"
                   width={200}
                 />

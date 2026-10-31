@@ -7,9 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
-	qrterminal "github.com/mdp/qrterminal/v3"
 	qrcode "github.com/skip2/go-qrcode"
 
 	"github.com/lkaihua/carp/src/packages/myhttp"
@@ -18,58 +19,59 @@ import (
 
 var rootDir string
 var startTime time.Time
-var frontendPort string
+var frontendDistDir string
 
-// Let's start a file server that returns the current folder content in JSON format
 func main() {
-	/*
-		Serve is a very simple static file server in go
-		Usage:
-			-p="8100": port to serve on
-			-d=".":    the directory of static files to host
-		Navigating to http://localhost:8100 will display the index.html or directory
-		listing file.
-	*/
-
-	port := flag.String("p", "8100", "port to serve on")
-	// todo: make this configurable
-	frontendPort = "5173"
-	directory := flag.String("d", ".", "the directory of static file to host")
+	port := flag.String("p", envOrDefault("CARP_PORT", "8100"), "port to serve on")
+	sharedDir := flag.String("d", envOrDefault("CARP_SHARE_DIR", "."), "folder to share")
+	frontendDist := flag.String("fd", "", "directory containing the built React app")
 	flag.Parse()
 
-	rootDir = *directory
+	var err error
+	rootDir, err = filepath.Abs(*sharedDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	info, err := os.Stat(rootDir)
+	if err != nil || !info.IsDir() {
+		log.Fatalf("share folder must be an existing directory: %s", rootDir)
+	}
+	if *frontendDist != "" {
+		frontendDistDir, err = filepath.Abs(*frontendDist)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if _, err := os.Stat(filepath.Join(frontendDistDir, "index.html")); err != nil {
+			log.Fatalf("built frontend not found in %s: %v", frontendDistDir, err)
+		}
+	}
 	startTime = time.Now()
-
-	http.HandleFunc("/~/", indexHandler)
-	http.HandleFunc("/info/", infoHandler)
-	http.HandleFunc("/qr/", qrHandler)
 
 	ipAddress := utils.GetOutboundIP()
 	serverURL := fmt.Sprintf("http://%s:%s", ipAddress, *port)
-	frontendURL := fmt.Sprintf("http://%s:%s", ipAddress, frontendPort)
-
-	log.Printf("Serving Folder [%s] on IP [%s] Port [%s]\n", *directory, ipAddress, *port)
+	log.Printf("Serving Folder [%s] on IP [%s] Port [%s]\n", rootDir, ipAddress, *port)
 	log.Printf("Serving %s\n", serverURL)
-	log.Println("Scan QR code to access on mobile:")
 
-	// Configure QR code: smaller size and no white margin
-	config := qrterminal.Config{
-		Level:     qrterminal.M,
-		Writer:    os.Stdout,
-		BlackChar: qrterminal.BLACK,
-		WhiteChar: qrterminal.WHITE,
-		QuietZone: 0,
-	}
-	qrterminal.GenerateWithConfig(frontendURL, config)
-
-	log.Fatal(http.ListenAndServe(":"+*port, nil))
+	log.Fatal(http.ListenAndServe(":"+*port, newHTTPHandler()))
 }
 
-// func serveFile(w http.ResponseWriter, r *http.Request) {
-// 	fmt.Println("[serveFile]", r.URL.Path)
-// 	filePath := r.URL.Path
-// 	myhttp.ServeFile(w, r, rootDir+filePath)
-// }
+func newHTTPHandler() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/~/", indexHandler)
+	mux.HandleFunc("/info/", infoHandler)
+	mux.HandleFunc("/qr/", qrHandler)
+	if frontendDistDir != "" {
+		mux.Handle("/", http.FileServer(http.Dir(frontendDistDir)))
+	}
+	return mux
+}
+
+func envOrDefault(key, fallback string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return fallback
+}
 
 func setCORSHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -78,20 +80,16 @@ func setCORSHeaders(w http.ResponseWriter) {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if frontendDistDir != "" && strings.Contains(r.Header.Get("Accept"), "text/html") {
+		http.ServeFile(w, r, filepath.Join(frontendDistDir, "index.html"))
+		return
+	}
 	setCORSHeaders(w)
-
-	// if queries, err := url.ParseQuery(r.URL.RawQuery); err == nil {
-	// 	if _, ok := queries["file"]; ok {
-	// 		serveFile(w, r)
-	// 		log.Printf("Serving file: %s", r.URL.Path)
-	// 		return
-	// 	}
-	// }
 
 	path := r.URL.Path[3:] // trim off leading `/~/`
 
-	log.Printf("Serving: %s", rootDir+path)
-	myhttp.ServeFile(w, r, rootDir+path)
+	log.Printf("Serving: %s", filepath.Join(rootDir, path))
+	myhttp.ServeFile(w, r, filepath.Join(rootDir, path))
 }
 
 func infoHandler(w http.ResponseWriter, r *http.Request) {

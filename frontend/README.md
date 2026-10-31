@@ -1,6 +1,6 @@
 # Frontend
 
-This folder is the front end package for carp. Starts with `scripts` in `package.json` commands. 
+This folder is the React frontend for Carp. Run `task start-dev` from the repository root to start it with the Go backend and protobuf watcher. Run `npm run dev` here to start only Vite. Run `npm run build` to prepare assets for Go's `-fd` option. See the root README for setup.
 
 ## React + Vite
 

@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  start-dev:
+    desc: Start Air, Vite, and the protobuf watcher together
+    env:
+      CARP_SHARE_DIR: '{{.DIR | default ""}}'
+    cmds:
+      - bash scripts/start-dev.sh
+
+  proto:
+    desc: Regenerate Go and TypeScript types when protobuf inputs change
+    dir: backend
+    sources:
+      - proto/*.proto
+      - scripts/gen.sh
+    generates:
+      - src/packages/types/proto/types.pb.go
+      - ../frontend/src/types/proto/types.ts
+    cmds:
+      - bash scripts/gen.sh
+
+  install-air:
+    desc: Install Air for Go live reload
+    cmds:
+      - go install github.com/air-verse/air@latest

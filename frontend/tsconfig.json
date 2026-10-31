@@ -7,6 +7,7 @@
     "target": "esnext", // modern JS target
     "allowSyntheticDefaultImports": true,
     "types": ["vite/client"], // keep Vite type declarations
+    "skipLibCheck": true,
     "strict": true
   },
   "include": ["src"]
