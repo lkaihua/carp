@@ -69,14 +69,6 @@ type dirEntry struct {
 	}
 */
 
-func getFullURL(r *http.Request) string {
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
-	}
-	return fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI)
-}
-
 func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 	data := []*types.DisplayItem{}
 
@@ -92,17 +84,16 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 
 	// thumbnailMap := make(map[string]string)
 
-	fullUrlBase := getFullURL(r)
-
 	for _, d := range dirData {
 		name := htmlReplacer.Replace(d.Name)
 		url := d.Url
 		/* CARP-COMMENTS
 		 * Folder listings come from /api/share/, but relativeUrl is a React
-		 * page link. Keep fullUrl on the API route for previews and downloads.
+		 * page link. contentUrl stays on the API route and starts at /, so
+		 * previews use the browser's own host even when Vite proxies to Go.
 		 */
 		relativeUrl := path.Join(routes.SharePagePrefix, strings.TrimPrefix(r.URL.Path, routes.ShareAPIPrefix), d.Url)
-		fullUrl := fullUrlBase + d.Url
+		contentUrl := path.Join(r.URL.EscapedPath(), d.Url)
 		// modTime := d.ModTime
 		// size := d.Size
 		// fmt.Println(name, "-", modTime, "-", size)
@@ -115,7 +106,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			entryType = types.EntryType_ENTRY_TYPE_FOLDER
 			url += "/"
 			relativeUrl += "/"
-			fullUrl += "/"
+			contentUrl += "/"
 		} else {
 			// It's still a legal filename without any file extention
 			if lastDotIndex := strings.LastIndex(name, "."); lastDotIndex == -1 {
@@ -148,7 +139,7 @@ func formatDirHtml(w http.ResponseWriter, r *http.Request, dirData []dirEntry) {
 			EntryType:   entryType,
 			UrlString:   url,
 			RelativeUrl: relativeUrl,
-			FullUrl:     fullUrl,
+			ContentUrl:  contentUrl,
 			ModTime:     d.ModTime.Format("2006-01-02 15:04"),
 			ModTimeUnix: d.ModTime.Unix(),
 			Size:        utils.ByteCountSI(d.Size),

@@ -110,7 +110,7 @@ const Cell = memo(function CellComponent({
   const item = itemData?.at(index);
   const isFolder = item?.entryType === EntryType.ENTRY_TYPE_FOLDER;
   const relativeUrl = item?.relativeUrl;
-  const fullUrl = item?.fullUrl;
+  const contentUrl = item?.contentUrl;
 
   // Request the metadata only if the target is FOLDER
   const { data: newItemData, isLoading } = usePathData(
@@ -146,13 +146,13 @@ const Cell = memo(function CellComponent({
     })
     .with({ entryType: EntryType.ENTRY_TYPE_IMAGE }, () => ({
       type: 'image' as const,
-      url: fullUrl,
+      url: contentUrl,
     }))
     .with({ entryType: EntryType.ENTRY_TYPE_VIDEO }, () =>
       (item?.sizeInt ?? 0) <= PREVIEW_FILE_LIMIT
         ? {
             type: 'video' as const,
-            url: fullUrl,
+            url: contentUrl,
           }
         : undefined,
     )

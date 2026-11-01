@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -12,6 +14,7 @@ import (
 
 	qrcode "github.com/skip2/go-qrcode"
 
+	"github.com/lkaihua/carp/src/packages/frontend"
 	"github.com/lkaihua/carp/src/packages/myhttp"
 	"github.com/lkaihua/carp/src/packages/routes"
 	"github.com/lkaihua/carp/src/packages/utils"
@@ -60,11 +63,20 @@ func newHTTPHandler() http.Handler {
 	mux.HandleFunc(routes.ShareAPIPrefix, shareHandler)
 	mux.HandleFunc(routes.InfoAPIPrefix, infoHandler)
 	mux.HandleFunc(routes.QRAPIPrefix, qrHandler)
-	if frontendDistDir != "" {
-		mux.HandleFunc(routes.SharePagePrefix, appPageHandler)
-		mux.Handle("/", http.FileServer(http.Dir(frontendDistDir)))
+	if appFiles := appFileSystem(); appFiles != nil {
+		mux.HandleFunc(routes.SharePagePrefix, appPageHandler(appFiles))
+		mux.Handle("/", http.FileServer(http.FS(appFiles)))
 	}
 	return mux
+}
+
+// -fd overrides embedded assets for local testing. Ordinary development builds
+// have no embedded frontend; the release build tag supplies one.
+func appFileSystem() fs.FS {
+	if frontendDistDir != "" {
+		return os.DirFS(frontendDistDir)
+	}
+	return frontend.Files()
 }
 
 func envOrDefault(key, fallback string) string {
@@ -80,19 +92,16 @@ func setCORSHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 }
 
-func appPageHandler(w http.ResponseWriter, r *http.Request) {
-	index, err := os.Open(filepath.Join(frontendDistDir, "index.html"))
-	if err != nil {
-		http.Error(w, "app page unavailable", http.StatusInternalServerError)
-		return
+func appPageHandler(appFiles fs.FS) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		index, err := fs.ReadFile(appFiles, "index.html")
+		if err != nil {
+			http.Error(w, "app page unavailable", http.StatusInternalServerError)
+			return
+		}
+		// ServeContent avoids ServeFile's redirect for a page named index.html.
+		http.ServeContent(w, r, "index.html", time.Time{}, bytes.NewReader(index))
 	}
-	defer index.Close()
-	info, err := index.Stat()
-	if err != nil {
-		http.Error(w, "app page unavailable", http.StatusInternalServerError)
-		return
-	}
-	http.ServeContent(w, r, "index.html", info.ModTime(), index)
 }
 
 func shareHandler(w http.ResponseWriter, r *http.Request) {

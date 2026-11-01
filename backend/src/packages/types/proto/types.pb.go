@@ -143,9 +143,9 @@ type DisplayItem struct {
 	ModTimeUnix int64  `protobuf:"varint,7,opt,name=modTimeUnix,proto3" json:"modTimeUnix,omitempty"`
 	Size        string `protobuf:"bytes,8,opt,name=size,proto3" json:"size,omitempty"`
 	SizeInt     int64  `protobuf:"varint,9,opt,name=sizeInt,proto3" json:"sizeInt,omitempty"`
-	// Full URL of the item. domain and port included. Useful for file access. e.g. `http://192.168.1.192:8100/README.MD`
-	FullUrl string `protobuf:"bytes,10,opt,name=fullUrl,proto3" json:"fullUrl,omitempty"`
-	// Relative URL of the item. domain and port excluded. Useful for navigation. e.g. `/README.MD`
+	// Root-relative API URL for fetching this item's content. The browser uses its own origin. e.g. `/api/share/README.MD`
+	ContentUrl string `protobuf:"bytes,10,opt,name=contentUrl,proto3" json:"contentUrl,omitempty"`
+	// Root-relative React page URL for navigation. e.g. `/~/README.MD`
 	RelativeUrl   string `protobuf:"bytes,11,opt,name=relativeUrl,proto3" json:"relativeUrl,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -244,9 +244,9 @@ func (x *DisplayItem) GetSizeInt() int64 {
 	return 0
 }
 
-func (x *DisplayItem) GetFullUrl() string {
+func (x *DisplayItem) GetContentUrl() string {
 	if x != nil {
-		return x.FullUrl
+		return x.ContentUrl
 	}
 	return ""
 }
@@ -598,7 +598,7 @@ var File_proto_types_proto protoreflect.FileDescriptor
 
 const file_proto_types_proto_rawDesc = "" +
 	"\n" +
-	"\x11proto/types.proto\x12\x05types\"\xcf\x02\n" +
+	"\x11proto/types.proto\x12\x05types\"\xd5\x02\n" +
 	"\vDisplayItem\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12.\n" +
 	"\tentryType\x18\x02 \x01(\x0e2\x10.types.EntryTypeR\tentryType\x12\x1c\n" +
@@ -608,9 +608,11 @@ const file_proto_types_proto_rawDesc = "" +
 	"\amodTime\x18\x06 \x01(\tR\amodTime\x12 \n" +
 	"\vmodTimeUnix\x18\a \x01(\x03R\vmodTimeUnix\x12\x12\n" +
 	"\x04size\x18\b \x01(\tR\x04size\x12\x18\n" +
-	"\asizeInt\x18\t \x01(\x03R\asizeInt\x12\x18\n" +
-	"\afullUrl\x18\n" +
-	" \x01(\tR\afullUrl\x12 \n" +
+	"\asizeInt\x18\t \x01(\x03R\asizeInt\x12\x1e\n" +
+	"\n" +
+	"contentUrl\x18\n" +
+	" \x01(\tR\n" +
+	"contentUrl\x12 \n" +
 	"\vrelativeUrl\x18\v \x01(\tR\vrelativeUrl\"\xa7\x01\n" +
 	"\tItemCount\x12\x1a\n" +
 	"\bcountAll\x18\x01 \x01(\x05R\bcountAll\x12\x1e\n" +

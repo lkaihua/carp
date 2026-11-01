@@ -11,12 +11,17 @@ import (
 )
 
 func TestShareFolderAndBrowserNavigation(t *testing.T) {
+	previousRoot, previousFrontend := rootDir, frontendDistDir
+	t.Cleanup(func() { rootDir, frontendDistDir = previousRoot, previousFrontend })
 	rootDir = t.TempDir()
 	frontendDistDir = t.TempDir()
 	if err := os.WriteFile(filepath.Join(rootDir, "note.txt"), []byte("shared file"), 0600); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.WriteFile(filepath.Join(rootDir, "index.html"), []byte("shared index"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(rootDir, "photo one.png"), []byte("image bytes"), 0600); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.Mkdir(filepath.Join(rootDir, "photos"), 0700); err != nil {
@@ -76,23 +81,30 @@ func TestShareFolderAndBrowserNavigation(t *testing.T) {
 					Data []struct {
 						Name        string `json:"name"`
 						RelativeURL string `json:"relativeUrl"`
-						FullURL     string `json:"fullUrl"`
+						ContentURL  string `json:"contentUrl"`
 					} `json:"data"`
 				} `json:"displayItems"`
+				CoverImages struct {
+					Data []string `json:"data"`
+				} `json:"coverImages"`
 			}
 			if err := json.Unmarshal(res.Body.Bytes(), &listing); err != nil {
 				t.Fatal(err)
 			}
-			if tc.path == "/api/share/" && (len(listing.DisplayItems.Data) != 3 ||
+			if tc.path == "/api/share/" && (len(listing.DisplayItems.Data) != 4 ||
 				listing.DisplayItems.Data[0].Name != "index.html" ||
 				listing.DisplayItems.Data[1].Name != "note.txt" ||
-				listing.DisplayItems.Data[2].RelativeURL != "/~/photos/" ||
-				listing.DisplayItems.Data[2].FullURL != "http://example.com/api/share/photos/") {
+				listing.DisplayItems.Data[2].RelativeURL != "/~/photo%20one.png" ||
+				listing.DisplayItems.Data[2].ContentURL != "/api/share/photo%20one.png" ||
+				listing.DisplayItems.Data[3].RelativeURL != "/~/photos/" ||
+				listing.DisplayItems.Data[3].ContentURL != "/api/share/photos/" ||
+				len(listing.CoverImages.Data) != 1 ||
+				listing.CoverImages.Data[0] != "/api/share/photo%20one.png") {
 				t.Fatalf("unexpected root listing: %s", res.Body.String())
 			}
 			if tc.path == "/api/share/photos/" && (len(listing.DisplayItems.Data) != 1 ||
 				listing.DisplayItems.Data[0].RelativeURL != "/~/photos/cat.txt" ||
-				listing.DisplayItems.Data[0].FullURL != "http://example.com/api/share/photos/cat.txt") {
+				listing.DisplayItems.Data[0].ContentURL != "/api/share/photos/cat.txt") {
 				t.Fatalf("unexpected nested listing: %s", res.Body.String())
 			}
 		}

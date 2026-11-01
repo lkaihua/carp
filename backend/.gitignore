@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Built frontend output, including src/packages/frontend/dist/.
 dist
 dist-ssr
 *.local

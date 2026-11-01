@@ -122,9 +122,9 @@ export interface DisplayItem {
   modTimeUnix: number;
   size: string;
   sizeInt: number;
-  /** Full URL of the item. domain and port included. Useful for file access. e.g. `http://192.168.1.192:8100/README.MD` */
-  fullUrl: string;
-  /** Relative URL of the item. domain and port excluded. Useful for navigation. e.g. `/README.MD` */
+  /** Root-relative API URL for fetching this item's content. The browser uses its own origin. e.g. `/api/share/README.MD` */
+  contentUrl: string;
+  /** Root-relative React page URL for navigation. e.g. `/~/README.MD` */
   relativeUrl: string;
 }
 
@@ -172,7 +172,7 @@ function createBaseDisplayItem(): DisplayItem {
     modTimeUnix: 0,
     size: "",
     sizeInt: 0,
-    fullUrl: "",
+    contentUrl: "",
     relativeUrl: "",
   };
 }
@@ -206,8 +206,8 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     if (message.sizeInt !== 0) {
       writer.uint32(72).int64(message.sizeInt);
     }
-    if (message.fullUrl !== "") {
-      writer.uint32(82).string(message.fullUrl);
+    if (message.contentUrl !== "") {
+      writer.uint32(82).string(message.contentUrl);
     }
     if (message.relativeUrl !== "") {
       writer.uint32(90).string(message.relativeUrl);
@@ -299,7 +299,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
             break;
           }
 
-          message.fullUrl = reader.string();
+          message.contentUrl = reader.string();
           continue;
         }
         case 11: {
@@ -330,7 +330,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
       modTimeUnix: isSet(object.modTimeUnix) ? globalThis.Number(object.modTimeUnix) : 0,
       size: isSet(object.size) ? globalThis.String(object.size) : "",
       sizeInt: isSet(object.sizeInt) ? globalThis.Number(object.sizeInt) : 0,
-      fullUrl: isSet(object.fullUrl) ? globalThis.String(object.fullUrl) : "",
+      contentUrl: isSet(object.contentUrl) ? globalThis.String(object.contentUrl) : "",
       relativeUrl: isSet(object.relativeUrl) ? globalThis.String(object.relativeUrl) : "",
     };
   },
@@ -364,8 +364,8 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     if (message.sizeInt !== 0) {
       obj.sizeInt = Math.round(message.sizeInt);
     }
-    if (message.fullUrl !== "") {
-      obj.fullUrl = message.fullUrl;
+    if (message.contentUrl !== "") {
+      obj.contentUrl = message.contentUrl;
     }
     if (message.relativeUrl !== "") {
       obj.relativeUrl = message.relativeUrl;
@@ -387,7 +387,7 @@ export const DisplayItem: MessageFns<DisplayItem> = {
     message.modTimeUnix = object.modTimeUnix ?? 0;
     message.size = object.size ?? "";
     message.sizeInt = object.sizeInt ?? 0;
-    message.fullUrl = object.fullUrl ?? "";
+    message.contentUrl = object.contentUrl ?? "";
     message.relativeUrl = object.relativeUrl ?? "";
     return message;
   },

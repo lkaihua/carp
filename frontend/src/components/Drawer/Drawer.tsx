@@ -12,7 +12,10 @@ import { css } from '@emotion/css';
 
 import { FlexBox } from '../FlexBox/FlexBox';
 import { Colors, H5, Classes } from '@blueprintjs/core';
-import { HEADER_NAV_HEIGHT } from '../../constants/layout';
+import {
+  HEADER_NAV_HEIGHT,
+  MOBILE_HEADER_NAV_HEIGHT,
+} from '../../constants/layout';
 
 export interface Props {
   src: string;
@@ -45,8 +48,10 @@ export function Drawer({
     [],
   );
 
+  const headerHeight =
+    window.innerWidth <= 700 ? MOBILE_HEADER_NAV_HEIGHT : HEADER_NAV_HEIGHT;
   const size = isMaximized
-    ? window.innerHeight - HEADER_NAV_HEIGHT
+    ? window.innerHeight - headerHeight
     : window.innerHeight * 0.5;
 
   return (
@@ -59,10 +64,9 @@ export function Drawer({
         >
           <H5>{title}</H5>
           {!!filePath && (
-            <FlexBox>
+            <FlexBox style={{ flexShrink: 0 }}>
               <Button
                 minimal
-                className={styles.maximizeButton}
                 icon={isMaximized ? 'minimize' : 'maximize'}
                 title={isMaximized ? 'Restore size' : 'Maximize'}
                 onClick={toggleMaximize}
@@ -80,7 +84,7 @@ export function Drawer({
       icon={icon}
       isOpen={!!src}
       onClose={onClose}
-      className={`drawer-container ${Classes.DARK}`}
+      className={`drawer-container ${Classes.DARK} ${styles.drawer}`}
       transitionDuration={0}
     >
       <FlexBox className={styles.drawerContainer}>
@@ -96,9 +100,10 @@ export function Drawer({
 }
 
 const styles = {
-  maximizeButton: css`
-    &:focus:not(:focus-visible) {
-      outline: none;
+  drawer: css`
+    .bp6-drawer-header > .bp6-heading {
+      overflow: visible;
+      min-width: 0;
     }
   `,
   drawerContainer: css`

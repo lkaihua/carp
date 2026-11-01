@@ -39,7 +39,7 @@ import { LoadingBoundary } from './components/LoadingBoundary/LoadingBoundary';
 import { css } from '@emotion/css';
 import { Colors } from '@blueprintjs/core';
 import { FlexBox } from './components/FlexBox/FlexBox';
-import { HEADER_NAV_HEIGHT, LIST_ROW_HEIGHT } from './constants/layout';
+import { LIST_ROW_HEIGHT } from './constants/layout';
 import { useActiveVerticalPos } from './utils/useActiveVerticalPos';
 import { useActiveView } from './utils/useActiveView';
 import { formatStartTime } from './utils/time';
@@ -327,8 +327,7 @@ const styles = {
   listPage: css`
     flex: 1 1 auto;
     width: 100%;
-    /* 50px for header */
-    height: calc(100dvh - ${HEADER_NAV_HEIGHT}px);
+    min-height: 0;
     overflow: hidden;
   `,
   serverInfoList: css`

@@ -20,11 +20,11 @@ func Folder(w http.ResponseWriter, r *http.Request, entries []*types.DisplayItem
 	for _, v := range entries {
 		countTypeMap[v.EntryType] += 1
 		if v.EntryType == types.EntryType_ENTRY_TYPE_IMAGE && len(coverImages) < MAX_COVER_IMAGE_COUNT {
-			coverImages = append(coverImages, v.FullUrl)
+			coverImages = append(coverImages, v.ContentUrl)
 		}
 		if v.EntryType == types.EntryType_ENTRY_TYPE_VIDEO && len(coverVideos) < MAX_COVER_VIDEO_COUNT {
 			coverVideos = append(coverVideos, &types.CoverVideo{
-				Url:     v.FullUrl,
+				Url:     v.ContentUrl,
 				SizeInt: v.SizeInt,
 			})
 		}
